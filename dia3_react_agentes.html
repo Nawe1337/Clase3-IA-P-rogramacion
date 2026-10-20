@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Día 3 — Tu primera página con React + Agentes</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --panel: #161b22;
+    --border: #30363d;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --accent: #a371f7;
+    --accent2: #58a6ff;
+    --green: #3fb950;
+    --red: #f85149;
+    --yellow: #d29922;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; overflow: hidden; }
+  body {
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+  }
+  .deck { height: 100vh; position: relative; }
+  .slide {
+    display: none;
+    height: 100vh;
+    padding: 6vh 8vw;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2.5vh;
+    position: relative;
+  }
+  .slide.active { display: flex; }
+  .slide::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+  }
+  h1 { font-size: clamp(2.2rem, 5.5vw, 4.2rem); line-height: 1.15; }
+  h2 { font-size: clamp(1.6rem, 3.8vw, 2.8rem); margin-bottom: 1vh; }
+  h2 .n {
+    color: var(--accent);
+    font-family: Consolas, monospace;
+    font-size: 0.75em;
+    vertical-align: middle;
+    margin-right: 0.4em;
+  }
+  p, li { font-size: clamp(1rem, 2.1vw, 1.45rem); line-height: 1.55; color: var(--text); }
+  .muted { color: var(--muted); }
+  ul, ol { padding-left: 1.4em; display: flex; flex-direction: column; gap: 1.2vh; }
+  .tag {
+    display: inline-block;
+    background: rgba(163,113,247,.15);
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    padding: .2em .8em;
+    border-radius: 999px;
+    font-size: .85em;
+    font-family: Consolas, monospace;
+  }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 2vw; align-items: stretch; }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 2.5vh 1.6vw;
+  }
+  .card h3 { font-size: clamp(1rem, 1.9vw, 1.3rem); margin-bottom: 1vh; }
+  .card p, .card li { font-size: clamp(.85rem, 1.5vw, 1.05rem); }
+  pre {
+    background: #0a0d12;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.8vh 1.4vw;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: clamp(.72rem, 1.45vw, 1.05rem);
+    line-height: 1.6;
+    overflow: auto;
+    white-space: pre;
+  }
+  code.inline {
+    background: rgba(88,166,255,.12);
+    color: var(--accent2);
+    padding: .1em .4em;
+    border-radius: 5px;
+    font-family: Consolas, monospace;
+    font-size: .9em;
+  }
+  .kw { color: #ff7b72; }
+  .fn { color: #d2a8ff; }
+  .str { color: #a5d6ff; }
+  .tagx { color: #7ee787; }
+  .cm { color: var(--muted); font-style: italic; }
+  .bad { border-left: 4px solid var(--red); }
+  .good { border-left: 4px solid var(--green); }
+  .bad h3 { color: var(--red); }
+  .good h3 { color: var(--green); }
+  .big-emoji { font-size: clamp(3rem, 8vw, 6rem); text-align: center; }
+  .center { text-align: center; }
+  .flow { display: flex; align-items: center; justify-content: center; gap: 1vw; flex-wrap: wrap; }
+  .flow .step {
+    background: var(--panel);
+    border: 1px solid var(--accent);
+    border-radius: 10px;
+    padding: 1.2vh 1.2vw;
+    font-size: clamp(.8rem, 1.5vw, 1.05rem);
+    text-align: center;
+  }
+  .flow .arr { color: var(--accent2); font-size: 1.6rem; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { border: 1px solid var(--border); padding: 1.4vh 1vw; text-align: left; font-size: clamp(.85rem, 1.5vw, 1.1rem); }
+  th { background: var(--panel); color: var(--accent); }
+  .checklist li { list-style: none; }
+  .checklist li::before { content: "☐ "; color: var(--accent2); font-weight: bold; }
+  .subtitle { font-size: clamp(1.1rem, 2.4vw, 1.8rem); color: var(--muted); }
+  .hl { color: var(--accent); font-weight: 600; }
+  .hl2 { color: var(--accent2); font-weight: 600; }
+  .hl-green { color: var(--green); font-weight: 600; }
+  .hl-red { color: var(--red); font-weight: 600; }
+  .hl-yellow { color: var(--yellow); font-weight: 600; }
+  /* Controles */
+  #progress { position: fixed; bottom: 0; left: 0; height: 5px; background: linear-gradient(90deg, var(--accent), var(--accent2)); width: 0; transition: width .2s; z-index: 10; }
+  #counter { position: fixed; bottom: 14px; right: 20px; color: var(--muted); font-family: Consolas, monospace; font-size: .9rem; z-index: 10; }
+  #hint { position: fixed; bottom: 14px; left: 20px; color: var(--muted); font-size: .8rem; z-index: 10; opacity: .7; }
+  .nav-btn {
+    position: fixed; top: 50%; transform: translateY(-50%);
+    background: var(--panel); border: 1px solid var(--border); color: var(--text);
+    width: 44px; height: 44px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; z-index: 10;
+  }
+  .nav-btn:hover { border-color: var(--accent); color: var(--accent); }
+  #prev { left: 14px; } #next { right: 14px; }
+  .two-col { display: grid; grid-template-columns: 1.2fr 1fr; gap: 2vw; align-items: center; }
+  @media (max-width: 800px) {
+    .grid2, .two-col { grid-template-columns: 1fr; }
+    .nav-btn { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+
+<!-- 1 · Portada -->
+<section class="slide">
+  <div><span class="tag">Día 3 · Programación con IA</span></div>
+  <h1>Tu primera página con <span class="hl">React</span><br>usando un <span class="hl2">agente IA</span></h1>
+  <p class="subtitle">Prompts · MCP · Skills · Trabajo prudente · Desafío práctico</p>
+  <p class="muted">Duración: 2 horas · Herramienta: OpenCode Desktop</p>
+</section>
+
+<!-- 2 · Agenda -->
+<section class="slide">
+  <h2><span class="n">02</span>Agenda de hoy (2 horas)</h2>
+  <div class="grid2">
+    <div class="card"><h3>⚙️ Bloque 0 — Instalamos Node.js (15 min)</h3><p>El entorno profesional para JavaScript. Lo instalamos todos juntos.</p></div>
+    <div class="card"><h3>🧠 Bloque 1 — Agentes (15 min)</h3><p>Qué es un agente de código y cómo se trabaja con OpenCode.</p></div>
+    <div class="card"><h3>✍️ Bloque 2 — Prompts (15 min)</h3><p>El arte de pedir: anatomía, ejemplos e iteración.</p></div>
+    <div class="card"><h3>🔌 Bloque 3 — MCP y Skills (12 min)</h3><p>Cómo se extiende un agente: herramientas y recetas.</p></div>
+    <div class="card"><h3>🛡️ Bloque 4 — Prudencia (8 min)</h3><p>Reglas de oro para no romper nada (ni perder nada).</p></div>
+    <div class="card"><h3>⚛️ Bloque 5 — React + Vite y Desafío (55 min)</h3><p>Proyecto real con Vite: construimos tu tarjeta personal con el agente.</p></div>
+    <div class="card"><h3>🏁 Cierre (5 min)</h3><p>Recap, checklist y próxima clase.</p></div>
+  </div>
+</section>
+
+<!-- 3 · Recap -->
+<section class="slide">
+  <h2><span class="n">03</span>¿Dónde estamos?</h2>  <div class="two-col">
+    <div>
+      <p>✅ <span class="hl-green">Clases anteriores ya sabemos:</span></p>
+      <ul>
+        <li>Usar OpenCode Desktop como entorno de trabajo</li>
+        <li>Crear un <code class="inline">index.html</code> con HTML básico</li>
+        <li>Abrirlo en el navegador</li>
+      </ul>
+      <p style="margin-top:2vh">🚀 <span class="hl">Hoy damos dos saltos:</span></p>
+      <ul>
+        <li>De <b>página estática</b> → a una <b>app interactiva con React</b></li>
+        <li>De <b>escribir todo a mano</b> → a <b>trabajar con un agente</b></li>
+      </ul>
+    </div>
+    <div class="big-emoji">📄 ➡️ ⚛️</div>
+  </div>
+</section>
+
+<!-- 4 · Qué es un agente -->
+<section class="slide">
+  <h2><span class="n">04</span>¿Qué es un agente de código?</h2>
+  <div class="two-col">
+    <div>
+      <div class="card bad" style="margin-bottom:2vh">
+        <h3>💬 Chat normal</h3>
+        <p>Te da código… y <b>tú</b> lo copias, lo pegas, lo guardas y lo probás.</p>
+      </div>
+      <div class="card good">
+        <h3>🤖 Agente</h3>
+        <p><b>Piensa → actúa → observa → repite.</b> Lee y edita tus archivos, ejecuta comandos y verifica el resultado. Tú eres el <span class="hl">supervisor</span>.</p>
+      </div>
+    </div>
+    <div class="flow" style="flex-direction:column">
+      <div class="step">🧠 Piensa<br><span class="muted">(el modelo planea)</span></div>
+      <div class="arr">↓</div>
+      <div class="step">🔧 Usa herramientas<br><span class="muted">(lee / edita / ejecuta)</span></div>
+      <div class="arr">↓</div>
+      <div class="step">👀 Observa el resultado</div>
+      <div class="arr">↓ ↺ repite hasta lograr la tarea</div>
+    </div>
+  </div>
+</section>
+
+<!-- 5 · OpenCode harness -->
+<section class="slide">
+  <h2><span class="n">05</span>OpenCode: nuestro "cockpit"</h2>
+  <p>OpenCode es el <span class="hl">harness</span>: el entorno que conecta al modelo con tus archivos y herramientas.</p>
+  <div class="grid2">
+    <div class="card"><h3>💬 Sesión</h3><p>Conversación con memoria de tu proyecto. Lo que ya dijiste no hace falta repetirlo… pero conviene ser claro igual.</p></div>
+    <div class="card"><h3>🔒 Permisos</h3><p>El agente <b>pide permiso</b> antes de editar o ejecutar. Es tu momento de decidir: <span class="hl-yellow">¡leé siempre qué pide!</span></p></div>
+    <div class="card"><h3>🔍 Diff (cambios)</h3><p>Te muestra exactamente qué líneas van a cambiar. Rojo = se quita, verde = se agrega.</p></div>
+    <div class="card"><h3>📐 Regla de oro</h3><p><b>Nada entra a tu código sin que tú lo veas.</b> Aceptar sin leer es la mala costumbre #1.</p></div>
+  </div>
+</section>
+
+<!-- 6 · El prompt es la interfaz -->
+<section class="slide center">
+  <h2><span class="n">06</span>El prompt es la nueva interfaz</h2>
+  <p style="font-size:clamp(1.2rem,2.6vw,2rem)">Antes programabas escribiendo código.<br>Ahora también programás <span class="hl">describiendo con precisión</span>.</p>
+  <p class="muted">La calidad de la salida depende de la calidad de la entrada.</p>
+  <div class="big-emoji">🗑️ → 🎯</div>
+</section>
+
+<!-- 7 · Anatomía del prompt -->
+<section class="slide">
+  <h2><span class="n">07</span>Anatomía de un buen prompt</h2>
+  <div class="grid2">
+    <div class="card"><h3>1 · Contexto 📋</h3><p>¿Qué proyecto es? ¿Qué existe ya? <span class="muted">"Tengo un proyecto React con Vite…"</span></p></div>
+    <div class="card"><h3>2 · Objetivo concreto 🎯</h3><p>Una sola cosa clara y verificable. <span class="muted">"Agregá un botón que cuente clics."</span></p></div>
+    <div class="card"><h3>3 · Restricciones 🚧</h3><p>Colores, estilo, límites. <span class="muted">"Sin librerías externas. Tema oscuro."</span></p></div>
+    <div class="card"><h3>4 · Formato / plan 📐</h3><p><span class="muted">"Primero proponerme un plan breve, después el código."</span></p></div>
+  </div>
+  <p style="margin-top:1vh">💡 <span class="hl">Truco pro:</span> pedí <b>el plan antes que el código</b>. Corregir un plan cuesta 10 segundos; corregir 200 líneas, mucho más.</p>
+</section>
+
+<!-- 8 · Malos vs buenos prompts -->
+<section class="slide">
+  <h2><span class="n">08</span>Prompts: malos vs buenos</h2>
+  <div class="grid2">
+    <div class="card bad">
+      <h3>❌ Malos</h3>
+      <ul>
+        <li>"Haceme una página"</li>
+        <li>"Está mal, arreglalo"</li>
+        <li>"Haceme el sitio entero de una vez"</li>
+        <li>"No anda" <span class="muted">(y nada más)</span></li>
+      </ul>
+    </div>
+    <div class="card good">
+      <h3>✅ Buenos</h3>
+      <ul>
+        <li>"Tengo un proyecto React con Vite. Agregá en App.jsx un botón que cuente clics y muestre el número al lado. Sin librerías extra."</li>
+        <li>"El botón no incrementa. La consola muestra <code class="inline">useState is not defined</code>. Revisá y explicame el error."</li>
+      </ul>
+    </div>
+  </div>
+  <p>🔎 Notá el patrón: <span class="hl2">contexto + objetivo + detalle del error exacto</span>.</p>
+</section>
+
+<!-- 9 · Pasos chicos -->
+<section class="slide">
+  <h2><span class="n">09</span>Iterá en pasos chicos</h2>
+  <div class="two-col">
+    <div class="flow" style="flex-direction:column">
+      <div class="step">_PEDIR UNA cosa chica_</div>
+      <div class="arr">↓</div>
+      <div class="step">_REVISAR el diff_</div>
+      <div class="arr">↓</div>
+      <div class="step">_PROBAR en el navegador_</div>
+      <div class="arr">↓</div>
+      <div class="step">_SIGUIENTE cosa_ ↺</div>
+    </div>
+    <div>
+      <p><span class="hl-green">¿Por qué?</span></p>
+      <ul>
+        <li>Los errores son fáciles de detectar (cambió una cosa)</li>
+        <li><b>Aprendés</b> de cada cambio en vez de recibir una bola de código</li>
+        <li>Controlás el rumbo: el agente no se va por las ramas</li>
+      </ul>
+      <p class="hl-red">NO: "haceme todo el sitio de una".</p>
+    </div>
+  </div>
+</section>
+
+<!-- 10 · MCP -->
+<section class="slide">
+  <h2><span class="n">10</span>¿Qué es MCP?</h2>
+  <p><b>Model Context Protocol</b> — un protocolo <span class="hl">abierto y estandarizado</span> para conectar modelos de IA con herramientas y servicios externos.</p>
+  <div class="card" style="margin:1vh 0">
+    <h3>🔌 Analogía: el enchufe universal</h3>
+    <p>Antes, cada app de IA inventaba su propio "enchufe" para conectarse a GitHub, bases de datos, etc. MCP define <b>un solo enchufe estándar</b>: cualquier agente se conecta a cualquier servidor MCP (GitHub, navegador, base de datos…).</p>
+  </div>
+  <div class="center" style="font-family:Consolas,monospace; font-size:clamp(.8rem,1.6vw,1.1rem)">
+    <span class="hl">Agente (OpenCode)</span> 🔌 ←MCP→ 🔌 <span class="hl2">GitHub</span> · 🔌 <span class="hl2">Navegador</span> · 🔌 <span class="hl2">Base de datos</span>
+  </div>
+</section>
+
+<!-- 11 · MCP en la práctica -->
+<section class="slide">
+  <h2><span class="n">11</span>MCP en la práctica</h2>
+  <div class="grid2">
+    <div class="card"><h3>🐙 Servidor GitHub</h3><p>El agente puede crear issues, revisar pull requests, buscar código en repos.</p></div>
+    <div class="card"><h3>🌐 Servidor Navegador</h3><p>El agente abre tu página, hace clic, toma capturas y te dice si se ve bien.</p></div>
+    <div class="card"><h3>🗄️ Servidor Base de datos</h3><p>El agente consulta y modifica datos reales (con tus permisos).</p></div>
+    <div class="card"><h3>⚙️ En OpenCode</h3><p>Los servidores MCP se configuran una vez y aparecen como <b>herramientas nuevas</b> para el agente. Se listan y administran desde la app.</p></div>
+  </div>
+  <p class="muted">Hoy no los necesitamos — pero es la pieza que hace que un agente <b>escale</b> más allá de editar archivos.</p>
+</section>
+
+<!-- 12 · Skills -->
+<section class="slide">
+  <h2><span class="n">12</span>¿Qué son las Skills?</h2>
+  <p>Una <span class="hl">skill</span> es un paquete de <b>instrucciones y recursos</b> para tareas repetibles: "la receta de la casa".</p>
+  <div class="grid2">
+    <div class="card"><h3>📦 Qué contiene</h3><p>Instrucciones paso a paso (en Markdown), plantillas, scripts. El agente la carga <b>cuando tu tarea coincide</b> con ella.</p></div>
+    <div class="card"><h3>🧁 Ejemplos</h3><p>"Cómo hacer deploy a producción", "Cómo escribir tests", "Cómo estructurar un proyecto React". Le enseñás una vez, lo usa siempre.</p></div>
+  </div>
+  <p>💡 Así personalizás al agente <b>sin reprogramarlo</b>: le das instrucciones escritas, no código.</p>
+</section>
+
+<!-- 13 · Comparativa -->
+<section class="slide">
+  <h2><span class="n">13</span>Prompt vs Skill vs MCP</h2>
+  <table>
+    <tr><th></th><th>✍️ Prompt</th><th>🧩 Skill</th><th>🔌 MCP</th></tr>
+    <tr><td><b>Qué es</b></td><td>Instrucción puntual</td><td>Instrucciones reutilizables</td><td>Herramientas y conexiones</td></tr>
+    <tr><td><b>Analogía</b></td><td>Lo que le pedís hoy</td><td>El recetario de la casa</td><td>Las manos del agente</td></tr>
+    <tr><td><b>Duración</b></td><td>Esta conversación</td><td>Se reutiliza en cada tarea que aplique</td><td>Instalado y siempre disponible</td></tr>
+    <tr><td><b>Ejemplo</b></td><td>"Agregá un botón de likes"</td><td>Skill "deploy": pasos oficiales de tu equipo</td><td>Servidor GitHub para crear PRs</td></tr>
+  </table>
+  <p style="margin-top:1vh">Y todo vive dentro del <span class="hl">harness</span> (OpenCode), que junta modelo + herramientas + tus archivos.</p>
+</section>
+
+<!-- 14 · Reglas de oro -->
+<section class="slide">
+  <h2><span class="n">14</span>Trabajar con prudencia: reglas de oro 🛡️</h2>
+  <ol>
+    <li><b>Pensá antes de pedir.</b> ¿Qué querés exactamente? ¿Cómo se ve terminado?</li>
+    <li><b>Pedí pasos chicos.</b> Una feature por prompt.</li>
+    <li><b>Leé siempre el diff</b> antes de aceptar un cambio.</li>
+    <li><b>Probá en el navegador</b> después de cada cambio.</li>
+    <li><b>Guardá tu avance.</b> Copia de seguridad o git.</li>
+    <li><b>Pedí explicaciones.</b> "¿Qué hiciste y por qué?" es un prompt poderoso.</li>
+  </ol>
+</section>
+
+<!-- 15 · No es infalible -->
+<section class="slide">
+  <h2><span class="n">15</span>El agente no es infalible ⚠️</h2>
+  <div class="grid2">
+    <div class="card bad">
+      <h3>Errores típicos</h3>
+      <ul>
+        <li>Inventa funciones o librerías que <b>no existen</b> (alucinaciones)</li>
+        <li>Rutas de archivo incorrectas</li>
+        <li>Código que "parece" correcto pero no funciona</li>
+        <li>Sobreconfianza: nunca dice "no sé"</li>
+      </ul>
+    </div>
+    <div class="card good">
+      <h3>Tu rol: control de calidad</h3>
+      <ul>
+        <li>Si no entendés un cambio, <b>no lo aceptes</b>: pedí que lo explique</li>
+        <li>Verificá en el navegador, no confíes en "ya está listo"</li>
+        <li>Desconfiá de respuestas larguísimas a preguntas simples</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 16 · Seguridad -->
+<section class="slide">
+  <h2><span class="n">16</span>Seguridad básica 🔐</h2>
+  <ul class="checklist">
+    <li><b>Nunca</b> pegues contraseñas ni API keys en el chat</li>
+    <li><b>No aceptes comandos que no entendés</b> — antes preguntá: "¿qué hace esto?"</li>
+    <li>No le des permisos de escritura <b>fuera de tu proyecto</b></li>
+    <li>Cuidado con "instalá esta librería": verificá que sea conocida</li>
+    <li>Tu código puede ir a servidores externos: <b>no pongas datos privados</b> en archivos que le pasás al agente</li>
+  </ul>
+</section>
+
+<!-- 17 · Qué es React -->
+<section class="slide">
+  <h2><span class="n">17</span>¿Qué es React? ⚛️</h2>
+  <p>Biblioteca de JavaScript para construir interfaces (creada por Meta, 2013). Tres ideas clave:</p>
+  <div class="grid2">
+    <div class="card"><h3>🧱 Componentes</h3><p>Piezas reutilizables e independientes: un botón, una tarjeta, un menú. Como bloques de Lego.</p></div>
+    <div class="card"><h3>📥 Props</h3><p>Los datos que <b>entran</b> a un componente desde afuera. Configuran cómo se ve.</p></div>
+    <div class="card"><h3>⚡ Estado (state)</h3><p>Los datos que <b> cambian</b>. Cuando cambian, React re-dibuja la pantalla solo. ¡Magia!</p></div>
+    <div class="card"><h3>🎯 Hoy</h3><p>Con estos 3 conceptos + un agente, vas a construir tu primera app interactiva.</p></div>
+  </div>
+</section>
+
+<!-- 18 · JSX -->
+<section class="slide">
+  <h2><span class="n">18</span>JSX en 60 segundos</h2>
+  <p>JSX = <b>HTML dentro de JavaScript</b>. Así se escribe un componente React:</p>
+  <pre><span class="kw">function</span> <span class="fn">Tarjeta</span>() {
+  <span class="kw">const</span> nombre = <span class="str">"Ana"</span>;
+  <span class="kw">return</span> (
+    <span class="tagx">&lt;div className="tarjeta"&gt;</span>   <span className="cm">{/* ojo: className, no class */}</span>
+      <span class="tagx">&lt;h1&gt;</span>Hola, {nombre}<span class="tagx">&lt;/h1&gt;</span>   <span className="cm">{/* {} para meter JS */}</span>
+      <span class="tagx">&lt;p&gt;</span>Mi primera app React<span class="tagx">&lt;/p&gt;</span>
+    <span class="tagx">&lt;/div&gt;</span>
+  );
+}</pre>
+  <ul>
+    <li><code class="inline">{"{ }"}</code> → para insertar JavaScript dentro del HTML</li>
+    <li><code class="inline">className</code> en vez de <code class="inline">class</code></li>
+    <li>Todas las etiquetas se cierran: <code class="inline">&lt;img /&gt;</code></li>
+  </ul>
+</section>
+
+<!-- 19 · Instalar Node -->
+<section class="slide">
+  <h2><span class="n">19</span>Instalamos Node.js ⚙️</h2>
+  <p><b>Node.js</b> ejecuta JavaScript fuera del navegador. Es la puerta al mundo profesional: <code class="inline">npm</code> (el "app store" de paquetes), Vite, y miles de librerías.</p>
+  <div class="grid2">
+    <div class="card">
+      <h3>Opción A — Instalador (recomendada)</h3>
+      <p>1. Entrar a <code class="inline">nodejs.org</code><br>
+      2. Descargar la versión <b>LTS</b> (botón verde)<br>
+      3. Siguiente → Siguiente → Instalar ✅</p>
+    </div>
+    <div class="card">
+      <h3>Opción B — Terminal (Windows)</h3>
+      <pre>winget install OpenJS.NodeJS.LTS</pre>
+      <p class="muted">Lo puede hacer el agente por vos… ¡pero ahora entienden qué hace!</p>
+    </div>
+  </div>
+  <p>✅ Verificación: abrir una terminal nueva y escribir <code class="inline">node -v</code> y <code class="inline">npm -v</code> → deben mostrar números de versión.</p>
+</section>
+
+<!-- 20 · Vite -->
+<section class="slide">
+  <h2><span class="n">20</span>Nuestro proyecto con Vite ⚡</h2>
+  <p><b>Vite</b> es la herramienta estándar para crear proyectos React: servidor de desarrollo con recarga instantánea, archivos organizados, listo para crecer.</p>
+  <pre>npm create vite@latest mi-tarjeta -- --template react
+<span class="cm"># el agente puede ejecutar esto por nosotros…</span>
+cd mi-tarjeta
+npm install
+npm run dev   <span class="cm"># → http://localhost:5173 🎉</span></pre>
+  <div class="grid2">
+    <div class="card"><h3>📁 Estructura clave</h3><p><code class="inline">src/App.jsx</code> → tu componente principal<br><code class="inline">src/index.css</code> → estilos<br>Guardás → el navegador se actualiza <b>solo</b>.</p></div>
+    <div class="card"><h3>🤖 Hoy el agente hace esto</h3><p>Vos pedís, el agente crea el proyecto, instala y levanta el servidor. Pero <b>vos entendés qué está pasando</b> — esa es la diferencia.</p></div>
+  </div>
+</section>
+
+<!-- 21 · Demo -->
+<section class="slide">
+  <h2><span class="n">21</span>Demo en vivo: el primer prompt 🎬</h2>
+  <p><b>1 · Pedimos el plan primero:</b></p>
+  <pre>Quiero crear una tarjeta de presentación personal con React + Vite.
+Proponeme un plan breve antes de ejecutar cualquier comando.</pre>
+  <p><b>2 · Aprobamos y dejamos que arme la base:</b></p>
+  <pre>Me gusta el plan. Creá el proyecto con Vite (template react) en la
+carpeta mi-tarjeta, instalá las dependencias y levantá el servidor
+de desarrollo. Después limpiá App.jsx y dejá solo un componente
+Tarjeta con nombre, rol y una frase.</pre>
+  <p class="muted">👀 Miren cómo OpenCode pide permiso para cada comando, muestra el diff, y la web se recarga sola al guardar.</p>
+</section>
+
+<!-- 21 · El desafío -->
+<section class="slide">
+  <h2><span class="n">22</span>El desafío de hoy 🏆</h2>
+  <div class="card" style="border-color:var(--accent)">
+    <h3>"Mi tarjeta personal interactiva" — 40 minutos</h3>
+    <p><b>Requisitos mínimos:</b></p>
+    <ul>
+      <li>👨‍💼 Avatar (puede ser un emoji 🧑‍💻) + nombre + rol + bio</li>
+      <li>Lista de tus intereses / hobbies</li>
+      <li>👍 Botón "Seguir" que cambia de texto al hacer clic <span class="muted">(estado)</span></li>
+      <li>❤️ Contador de likes que suma de a uno <span class="muted">(estado)</span></li>
+    </ul>
+    <p><b>Extensiones (si terminás antes):</b> modo oscuro 🌙, sección de proyectos, formulario de contacto.</p>
+    <p>📄 Instrucciones y prompts de ayuda: archivo <code class="inline">desafio.md</code></p>
+  </div>
+</section>
+
+<!-- 23 · Flujo correcto -->
+<section class="slide">
+  <h2><span class="n">23</span>El flujo de trabajo correcto 🔄</h2>
+  <div class="flow">
+    <div class="step">🤔<br>Pensar</div><div class="arr">→</div>
+    <div class="step">📋<br>Pedir plan</div><div class="arr">→</div>
+    <div class="step">✍️<br>Prompt chico</div><div class="arr">→</div>
+    <div class="step">🔍<br>Revisar diff</div><div class="arr">→</div>
+    <div class="step">🌐<br>Probar</div><div class="arr">→</div>
+    <div class="step">↺<br>Repetir</div>
+  </div>
+  <div class="card" style="margin-top:2vh">
+    <h3>💣 Si algo se rompe</h3>
+    <p>1. No escribas "no anda". 2. Abrí la consola del navegador <code class="inline">F12</code>. 3. Copiá el <b>error exacto</b>. 4. Pegaselo al agente: <i>"Sale este error: … ¿qué significa y cómo lo arreglo?"</i></p>
+  </div>
+</section>
+
+<!-- 24 · Cierre -->
+<section class="slide center">
+  <h2><span class="n">24</span>¡Lo lograste! 🎉</h2>
+  <p>Hoy aprendiste:</p>
+  <p style="font-size:clamp(1rem,2.2vw,1.6rem)">
+    🤖 Qué es un agente · ✍️ prompting · 🔌 MCP · 🧩 Skills · 🛡️ prudencia · ⚛️ <span class="hl">tu primera app React</span>
+  </p>
+  <div class="card" style="max-width:600px;margin:1vh auto">
+    <h3>📌 Próxima clase</h3>
+    <p>Componentes en archivos separados + props + publicar tu web en internet (deploy).</p>
+    <p class="muted">Tarea opcional: terminar una extensión del desafío 💪</p>
+  </div>
+  <p class="muted">Dudas durante el desafío: levantá la mano 🙋 — o mejor, preguntale primero a tu agente 😉</p>
+</section>
+
+</div>
+
+<div id="progress"></div>
+<div id="counter">1 / 24</div>
+<div id="hint">← → navegar · Inicio/Fin extremos</div>
+<button class="nav-btn" id="prev">‹</button>
+<button class="nav-btn" id="next">›</button>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  let i = 0;
+  function show(n) {
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach((s, k) => s.classList.toggle('active', k === i));
+    document.getElementById('progress').style.width = ((i + 1) / slides.length * 100) + '%';
+    document.getElementById('counter').textContent = (i + 1) + ' / ' + slides.length;
+  }
+  document.getElementById('next').onclick = () => show(i + 1);
+  document.getElementById('prev').onclick = () => show(i - 1);
+  document.addEventListener('keydown', e => {
+    if (['ArrowRight','ArrowDown',' ','PageDown','Enter'].includes(e.key)) { e.preventDefault(); show(i + 1); }
+    else if (['ArrowLeft','ArrowUp','PageUp'].includes(e.key)) { e.preventDefault(); show(i - 1); }
+    else if (e.key === 'Home') { e.preventDefault(); show(0); }
+    else if (e.key === 'End') { e.preventDefault(); show(slides.length - 1); }
+  });
+  document.addEventListener('click', e => {
+    if (e.target.closest('button')) return;
+    if (e.clientX > window.innerWidth / 2) show(i + 1); else show(i - 1);
+  });
+  show(0);
+</script>
+</body>
+</html>
