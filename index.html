@@ -241,6 +241,23 @@
     font-size: .85rem; font-weight: 800;
   }
 
+/* QR */
+  .qr-wrap { display: flex; justify-content: center; margin: 20px 0; }
+  .qr-card {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 20px;
+    box-shadow: var(--shadow-md); padding: 26px; max-width: 380px; width: 100%;
+    text-align: center;
+  }
+  .qr-card img {
+    width: 100%; max-width: 280px; aspect-ratio: 1; border-radius: 14px;
+    display: block; margin: 0 auto 14px; background: #fff; padding: 10px;
+    border: 1px solid var(--border);
+  }
+  .qr-card .url {
+    font-family: "JetBrains Mono", monospace; font-size: .72rem; color: var(--muted);
+    word-break: break-all; background: var(--bg); border-radius: 8px; padding: 8px 10px;
+  }
+
   footer { text-align: center; color: var(--muted); font-size: .85rem; margin-top: 44px; }
 
   @media print {
@@ -265,6 +282,7 @@
     <button class="active" data-tab="desafio">🏆 Desafío</button>
     <button data-tab="guia">🛡️ Guía de trabajo</button>
     <button data-tab="clases">📚 Clases</button>
+    <button data-tab="qr">📱 QR</button>
   </nav>
 </div>
 
@@ -584,6 +602,20 @@ muestra este error: [PEGA EL ERROR EXACTO].
   </div>
   <div class="callout tip"><span class="c-ico">💡</span><div><b>Consejos:</b> corto es mejor (si es muy largo, cada regla pesa menos) · actualizalo cuando algo del agente te moleste, en vez de repetírselo en cada sesión · es tu "skill" casera: la receta de la casa para tu agente.</div></div>
   <div class="callout tip"><span class="c-ico">💬</span><div>"El agente acelera tus manos, no reemplaza tu cabeza."</div></div>
+</section>
+
+<!-- ══════════════ QR ══════════════ -->
+<section class="doc" id="qr">
+  <h2><span class="ico">📱</span>Ingresá desde tu celular</h2>
+  <p>Escaneá este código con la cámara de tu teléfono y esta página se abre al instante — así tenés el desafío, la guía y las clases siempre a mano.</p>
+  <div class="qr-wrap">
+    <div class="qr-card">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=600x600&amp;margin=30&amp;qzone=1&amp;data=https%3A%2F%2Fnawe1337.github.io%2FClase3-IA-P-rogramacion%2F" alt="QR para abrir esta página en el celular" width="600" height="600">
+      <p><strong>Apuntá la cámara 📷</strong> y tocá el enlace que aparece.</p>
+      <div class="url">https://nawe1337.github.io/Clase3-IA-P-rogramacion/</div>
+    </div>
+  </div>
+  <div class="callout tip"><span class="c-ico">💡</span><div>¿Estás leyendo esto en el celular? Ya estás adentro — compartí la página con un compañero por WhatsApp 😉</div></div>
 </section>
 
 </main>
