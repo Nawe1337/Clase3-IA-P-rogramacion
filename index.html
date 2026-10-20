@@ -554,6 +554,35 @@ muestra este error: [PEGA EL ERROR EXACTO].
     <li>¿Guardé mi avance?</li>
     <li>¿Qué quiero construir la próxima clase? (anotalo: será tu primer prompt)</li>
   </ul>
+  <h2><span class="ico">🤖</span>8. Guía a tu agente con un <code>AGENTS.md</code></h2>
+  <p>OpenCode lee automáticamente un archivo llamado <code>AGENTS.md</code> al abrir tu proyecto. Es la forma de dejarle instrucciones "de la casa": quién sos, qué es el proyecto y cómo querés que trabaje. <strong>Creá ese archivo en la raíz de tu carpeta</strong> con este contenido (completa tus datos):</p>
+  <div class="copyable">
+    <div class="bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">AGENTS.md · raíz del proyecto</span></div>
+    <pre># AGENTS.md
+
+## Sobre este proyecto
+- App de React + Vite: mi tarjeta de presentación personal interactiva.
+- Alumno: [TU NOMBRE]. Estoy aprendiendo: explicame las cosas con paciencia.
+
+## Cómo quiero que trabajes
+- Hacé UNA sola tarea por pedido, en pasos chicos. No adelantes trabajo.
+- Antes de ejecutar un comando, explicame en una línea qué hace.
+- Después de cada cambio, decime cómo lo pruebo en el navegador.
+- Cuando escribas código nuevo, explicamelo como para un principiante.
+- Si mi pedido es poco claro, haceme preguntas antes de escribir código.
+
+## Reglas
+- No instales librerías nuevas sin preguntarme antes.
+- No modifiques archivos fuera de esta carpeta.
+- Nunca escribas contraseñas ni claves en el código.
+- Si algo falla: mostrame el error, explicalo, y después arreglalo.
+
+## Comandos de este proyecto
+- `npm install` → instala las dependencias
+- `npm run dev` → levanta el servidor en http://localhost:5173</pre>
+    <button class="copy-btn">Copiar</button>
+  </div>
+  <div class="callout tip"><span class="c-ico">💡</span><div><b>Consejos:</b> corto es mejor (si es muy largo, cada regla pesa menos) · actualizalo cuando algo del agente te moleste, en vez de repetírselo en cada sesión · es tu "skill" casera: la receta de la casa para tu agente.</div></div>
   <div class="callout tip"><span class="c-ico">💬</span><div>"El agente acelera tus manos, no reemplaza tu cabeza."</div></div>
 </section>
 
