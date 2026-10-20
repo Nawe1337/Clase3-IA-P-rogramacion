@@ -3,155 +3,297 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Día 3 · Desafío React + Guía de trabajo</title>
+<title>Programación con IA · Día 3 — Desafío, Guía y Clases</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #f6f8fa; --panel: #ffffff; --border: #d0d7de;
-    --text: #1f2328; --muted: #656d76;
-    --accent: #8250df; --accent2: #0969da;
-    --green: #1a7f37; --red: #cf222e;
-    --code-bg: #f0f1f3;
+    --bg: #f7f8fc;
+    --panel: #ffffff;
+    --border: #e5e8f0;
+    --text: #171b26;
+    --muted: #5c6474;
+    --brand: #6d5ae8;
+    --brand-dark: #5544c9;
+    --brand-soft: #efecff;
+    --blue: #2f7cf6;
+    --blue-soft: #e8f1ff;
+    --green: #12894f;
+    --green-soft: #e4f7ec;
+    --red: #d5484f;
+    --yellow-soft: #fff7e0;
+    --yellow-border: #e6b93f;
+    --shadow-sm: 0 1px 2px rgba(23,27,38,.05), 0 1px 6px rgba(23,27,38,.04);
+    --shadow-md: 0 4px 14px rgba(23,27,38,.08), 0 1px 4px rgba(23,27,38,.05);
+    --radius: 16px;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
   body {
-    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    font-family: "Inter", system-ui, -apple-system, sans-serif;
     background: var(--bg); color: var(--text);
-    line-height: 1.6; padding-bottom: 60px;
+    line-height: 1.65; -webkit-font-smoothing: antialiased;
+    padding-bottom: 80px;
   }
-  header {
-    background: linear-gradient(135deg, #8250df, #0969da);
-    color: #fff; padding: 28px 16px; text-align: center;
+  ::selection { background: #6d5ae833; }
+
+  /* ══════════ HERO ══════════ */
+  .hero {
+    position: relative; overflow: hidden;
+    background: radial-gradient(1200px 500px at 80% -10%, #7f6cff55, transparent 60%),
+                radial-gradient(900px 400px at -10% 110%, #2f7cf633, transparent 55%),
+                linear-gradient(135deg, #15102e 0%, #241b57 55%, #1d2a6b 100%);
+    color: #fff; padding: 72px 20px 88px; text-align: center;
   }
-  header h1 { font-size: clamp(1.4rem, 4vw, 2.2rem); }
-  header p { opacity: .9; margin-top: 6px; font-size: clamp(.9rem, 2.5vw, 1.1rem); }
-  nav {
-    position: sticky; top: 0; z-index: 10;
-    display: flex; background: var(--panel);
-    border-bottom: 1px solid var(--border);
-    overflow-x: auto;
+  .hero::after {
+    content: ""; position: absolute; inset: 0;
+    background-image: radial-gradient(rgba(255,255,255,.09) 1px, transparent 1px);
+    background-size: 26px 26px; mask-image: linear-gradient(180deg, transparent 40%, #000);
+    pointer-events: none;
   }
+  .hero .badge {
+    position: relative; display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.22);
+    backdrop-filter: blur(6px); border-radius: 999px;
+    padding: 7px 16px; font-size: .82rem; font-weight: 600; letter-spacing: .04em;
+    color: #d9d4ff; text-transform: uppercase;
+  }
+  .hero .badge .dot { width: 8px; height: 8px; border-radius: 50%; background: #7ef0b0; box-shadow: 0 0 12px #7ef0b0; }
+  .hero h1 {
+    position: relative; margin: 18px auto 14px; max-width: 760px;
+    font-size: clamp(1.7rem, 5vw, 3rem); font-weight: 800; letter-spacing: -.03em; line-height: 1.15;
+  }
+  .hero h1 .grad {
+    background: linear-gradient(90deg, #a899ff, #7ec3ff);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .hero p {
+    position: relative; max-width: 560px; margin: 0 auto;
+    color: #c6c4dd; font-size: clamp(.95rem, 2.6vw, 1.12rem);
+  }
+
+  /* ══════════ NAV ══════════ */
+  .nav-wrap { position: sticky; top: 0; z-index: 20; background: rgba(247,248,252,.85); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); }
+  nav { max-width: 880px; margin: 0 auto; display: flex; gap: 6px; padding: 12px 16px; }
   nav button {
-    flex: 1; padding: 14px 10px; border: none; background: none;
-    font-size: clamp(.85rem, 2.5vw, 1.05rem); font-weight: 600;
-    color: var(--muted); cursor: pointer; white-space: nowrap;
-    border-bottom: 3px solid transparent;
+    flex: 1; padding: 11px 12px; border: 1px solid transparent; border-radius: 12px; background: none;
+    font: 600 clamp(.82rem, 2.4vw, .98rem)/1.2 "Inter", sans-serif; color: var(--muted);
+    cursor: pointer; white-space: nowrap; transition: all .18s ease;
   }
-  nav button.active { color: var(--accent); border-bottom-color: var(--accent); }
-  main { max-width: 860px; margin: 0 auto; padding: 20px 16px; }
-  section.doc { display: none; }
+  nav button:hover { background: #ffffff; color: var(--text); box-shadow: var(--shadow-sm); }
+  nav button.active {
+    background: var(--brand); color: #fff;
+    box-shadow: 0 4px 14px #6d5ae855;
+  }
+
+  /* ══════════ LAYOUT ══════════ */
+  main { max-width: 880px; margin: 0 auto; padding: 28px 16px 0; }
+  section.doc { display: none; animation: fadeUp .35s ease; }
   section.doc.active { display: block; }
-  h2 { font-size: clamp(1.25rem, 3.5vw, 1.8rem); margin: 28px 0 12px; color: var(--accent); }
-  h2:first-child { margin-top: 8px; }
-  h3 { font-size: clamp(1.05rem, 3vw, 1.3rem); margin: 22px 0 8px; }
-  p, li { font-size: clamp(.95rem, 2.5vw, 1.08rem); }
-  ul, ol { padding-left: 1.4em; margin: 10px 0; display: flex; flex-direction: column; gap: 6px; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+  h2 {
+    display: flex; align-items: center; gap: 10px;
+    font-size: clamp(1.25rem, 3.6vw, 1.65rem); font-weight: 800; letter-spacing: -.02em;
+    margin: 34px 0 14px;
+  }
+  h2 .ico {
+    display: inline-grid; place-items: center; width: 38px; height: 38px; border-radius: 11px;
+    background: var(--brand-soft); font-size: 1.05rem; flex: none;
+  }
+  section.doc > h2:first-child { margin-top: 6px; }
+  h3 { font-size: clamp(1.05rem, 3vw, 1.25rem); font-weight: 700; margin: 24px 0 8px; letter-spacing: -.01em; }
+  p, li { font-size: clamp(.92rem, 2.4vw, 1.02rem); color: #2c3345; }
+  ul, ol { padding-left: 1.35em; margin: 10px 0; display: flex; flex-direction: column; gap: 7px; }
+  strong { font-weight: 700; }
   code {
-    background: var(--code-bg); padding: .15em .45em; border-radius: 5px;
-    font-family: Consolas, monospace; font-size: .9em; color: var(--accent2);
+    background: var(--brand-soft); color: var(--brand-dark);
+    padding: .12em .45em; border-radius: 6px;
+    font-family: "JetBrains Mono", Consolas, monospace; font-size: .86em; font-weight: 500;
   }
-  blockquote {
-    border-left: 4px solid var(--accent2);
-    background: #ddf4ff44; border-radius: 0 10px 10px 0;
-    padding: 12px 14px; margin: 14px 0; font-size: clamp(.9rem, 2.5vw, 1rem);
+
+  /* ══════════ COMPONENTES ══════════ */
+  .meta-card {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;
+    background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius);
+    box-shadow: var(--shadow-sm); padding: 18px 20px; margin-bottom: 14px;
   }
-  table { border-collapse: collapse; width: 100%; margin: 14px 0; }
-  th, td { border: 1px solid var(--border); padding: 10px 12px; text-align: left; font-size: clamp(.85rem, 2.2vw, 1rem); }
-  th { background: var(--code-bg); }
-  .meta {
-    background: var(--panel); border: 1px solid var(--border);
-    border-radius: 12px; padding: 14px 18px; margin-bottom: 10px;
+  .meta-card div { font-size: .92rem; color: var(--muted); }
+  .meta-card b { display: block; color: var(--text); font-size: .8rem; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 3px; }
+
+  .callout { border-radius: 14px; padding: 14px 18px; margin: 16px 0; font-size: clamp(.9rem, 2.4vw, .98rem); border: 1px solid; display: flex; gap: 10px; align-items: flex-start; }
+  .callout .c-ico { font-size: 1.15rem; line-height: 1.4; flex: none; }
+  .callout.tip { background: var(--green-soft); border-color: #9fdcb8; color: #0e5c36; }
+  .callout.warn { background: var(--yellow-soft); border-color: var(--yellow-border); color: #6b5310; }
+  .callout.brand { background: var(--brand-soft); border-color: #c9c0ff; color: #3a2d8f; }
+
+  table { border-collapse: separate; border-spacing: 0; width: 100%; margin: 14px 0; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; box-shadow: var(--shadow-sm); background: var(--panel); }
+  th, td { padding: 12px 16px; text-align: left; font-size: clamp(.85rem, 2.2vw, .96rem); border-bottom: 1px solid var(--border); }
+  tr:last-child td { border-bottom: none; }
+  th { background: #f2f3fa; font-weight: 700; color: var(--text); }
+  td { color: #2c3345; }
+
+  .checklist { list-style: none; padding-left: 0; }
+  .checklist li {
+    position: relative; padding-left: 34px; font-size: clamp(.92rem, 2.4vw, 1rem);
   }
-  .meta p { font-size: clamp(.9rem, 2.4vw, 1rem); }
-  .checklist li { list-style: none; }
-  .checklist li::before { content: "☐ "; color: var(--accent2); font-weight: bold; }
-  .tip { background: #dafbe1; border: 1px solid var(--green); border-radius: 10px; padding: 12px 14px; margin: 14px 0; }
-  .warn { background: #fff8c5; border: 1px solid #9a6700; border-radius: 10px; padding: 12px 14px; margin: 14px 0; }
-  footer { text-align: center; color: var(--muted); font-size: .85rem; margin-top: 30px; }
-  .hl { color: var(--accent); font-weight: 600; }
-  .hl-green { color: var(--green); font-weight: 600; }
-  .hl-red { color: var(--red); font-weight: 600; }
-  /* Bloques copiables */
-  .copyable { position: relative; margin: 12px 0; }
+  .checklist li::before {
+    content: ""; position: absolute; left: 0; top: .28em;
+    width: 19px; height: 19px; border-radius: 6px;
+    border: 2px solid #c9c0ff; background: var(--panel);
+  }
+  .checklist li::after { content: none; }
+
+  .hl { color: var(--brand-dark); font-weight: 700; }
+  .hl-green { color: var(--green); font-weight: 700; }
+  .hl-red { color: var(--red); font-weight: 700; }
+
+  /* Bloques copiables (editor) */
+  .copyable { position: relative; margin: 14px 0; border-radius: 14px; overflow: hidden; box-shadow: var(--shadow-md); border: 1px solid #23262f; background: #171921; }
+  .copyable .bar {
+    display: flex; align-items: center; gap: 7px;
+    padding: 10px 14px; background: #1e2029; border-bottom: 1px solid #2a2d38;
+  }
+  .copyable .bar .d { width: 11px; height: 11px; border-radius: 50%; }
+  .copyable .bar .d1 { background: #ff5f57; } .copyable .bar .d2 { background: #febc2e; } .copyable .bar .d3 { background: #28c840; }
+  .copyable .bar .lbl { margin-left: 6px; color: #7d8391; font-size: .74rem; font-family: "JetBrains Mono", monospace; }
   .copyable pre {
-    background: #1f2328; color: #e6edf3; border-radius: 10px;
-    padding: 14px 90px 14px 14px; font-family: Consolas, monospace;
-    font-size: clamp(.8rem, 2.2vw, .95rem); line-height: 1.55;
+    padding: 16px 96px 16px 16px; color: #dbe0ec;
+    font-family: "JetBrains Mono", Consolas, monospace;
+    font-size: clamp(.78rem, 2.2vw, .88rem); line-height: 1.65;
     white-space: pre-wrap; word-break: break-word;
   }
   .copy-btn {
-    position: absolute; top: 8px; right: 8px;
-    background: #8250df; color: #fff; border: none; border-radius: 7px;
-    padding: 6px 12px; font-size: .8rem; font-weight: 600; cursor: pointer;
+    position: absolute; right: 10px; bottom: 10px;
+    background: #2a2d38; color: #c3c9d6; border: 1px solid #3a3e4c; border-radius: 9px;
+    padding: 7px 14px; font: 600 .78rem "Inter", sans-serif; cursor: pointer;
+    transition: all .18s ease;
   }
-  .copy-btn:hover { background: #6639ba; }
-  .copy-btn.done { background: var(--green); }
-  /* Clases */
-  .clases-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin: 16px 0; }
-  .clase-card {
+  .copy-btn:hover { background: var(--brand); border-color: var(--brand); color: #fff; }
+  .copy-btn.done { background: var(--green); border-color: var(--green); color: #fff; }
+
+  blockquote {
+    border-left: 4px solid var(--brand); background: var(--panel);
+    border-radius: 0 14px 14px 0; padding: 14px 18px; margin: 14px 0;
+    box-shadow: var(--shadow-sm); font-size: clamp(.9rem, 2.4vw, .98rem);
+  }
+
+  /* Requisitos numerados */
+  .req { list-style: none; padding-left: 0; counter-reset: req; }
+  .req li {
+    counter-increment: req; position: relative; padding: 12px 14px 12px 58px;
     background: var(--panel); border: 1px solid var(--border); border-radius: 14px;
-    padding: 20px 18px; display: flex; flex-direction: column; gap: 10px;
+    box-shadow: var(--shadow-sm); margin-bottom: 8px; transition: all .18s ease;
   }
+  .req li:hover { transform: translateX(4px); border-color: #c9c0ff; }
+  .req li::before {
+    content: counter(req); position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+    width: 32px; height: 32px; border-radius: 10px; background: var(--brand-soft); color: var(--brand-dark);
+    display: grid; place-items: center; font-weight: 800; font-size: .95rem;
+  }
+
+  /* Tarjetas de clase */
+  .clases-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin: 18px 0; }
+  .clase-card {
+    position: relative; overflow: hidden;
+    background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius);
+    box-shadow: var(--shadow-sm); padding: 22px 20px 18px;
+    display: flex; flex-direction: column; gap: 10px;
+    transition: all .22s ease;
+  }
+  .clase-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: #c9c0ff; }
+  .clase-card::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px; }
+  .clase-card.c1::before { background: linear-gradient(90deg, #6d5ae8, #9d8cff); }
+  .clase-card.c2::before { background: linear-gradient(90deg, #2f7cf6, #6db6ff); }
+  .clase-card.c3::before { background: linear-gradient(90deg, #0fb98a, #57e0b4); }
   .clase-card .num {
-    display: inline-block; width: fit-content; background: #ddf4ff; color: var(--accent2);
-    font-weight: 700; border-radius: 999px; padding: 3px 12px; font-size: .8rem;
+    display: inline-block; width: fit-content; border-radius: 999px;
+    font-weight: 700; font-size: .74rem; letter-spacing: .07em; text-transform: uppercase;
+    padding: 4px 12px;
   }
-  .clase-card h3 { margin: 0; }
-  .clase-card p { color: var(--muted); font-size: .95rem; flex-grow: 1; }
+  .c1 .num { background: var(--brand-soft); color: var(--brand-dark); }
+  .c2 .num { background: var(--blue-soft); color: #1a5ec4; }
+  .c3 .num { background: var(--green-soft); color: var(--green); }
+  .clase-card h3 { margin: 0; font-size: 1.08rem; }
+  .clase-card p { color: var(--muted); font-size: .9rem; flex-grow: 1; }
   .btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
   .btn {
-    display: inline-block; text-align: center; text-decoration: none; cursor: pointer;
-    border-radius: 8px; padding: 9px 14px; font-size: .9rem; font-weight: 600;
-    border: 1px solid var(--border); color: var(--text); background: var(--code-bg);
-    flex: 1; min-width: 110px;
+    display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+    text-align: center; text-decoration: none; cursor: pointer;
+    border-radius: 11px; padding: 10px 16px;
+    font: 600 .87rem "Inter", sans-serif;
+    border: 1px solid var(--border); color: var(--text); background: #fff;
+    flex: 1; min-width: 105px; transition: all .18s ease;
   }
-  .btn:hover { border-color: var(--accent); color: var(--accent); }
-  .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-  .btn-primary:hover { background: #6639ba; color: #fff; }
+  .btn:hover { border-color: var(--brand); color: var(--brand-dark); box-shadow: var(--shadow-sm); transform: translateY(-1px); }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--brand), #8a76f0); border: none; color: #fff;
+    box-shadow: 0 3px 12px #6d5ae844;
+  }
+  .btn-primary:hover { color: #fff; transform: translateY(-2px); box-shadow: 0 6px 18px #6d5ae855; }
+
+  .steps h3 { display: flex; align-items: center; gap: 10px; }
+  .steps h3 .s-badge {
+    width: 30px; height: 30px; border-radius: 9px; flex: none;
+    display: inline-grid; place-items: center;
+    background: linear-gradient(135deg, var(--brand), #8a76f0); color: #fff;
+    font-size: .85rem; font-weight: 800;
+  }
+
+  footer { text-align: center; color: var(--muted); font-size: .85rem; margin-top: 44px; }
+
   @media print {
-    nav { display: none; }
+    .nav-wrap, .copy-btn, .hero::after { display: none; }
+    .hero { padding: 30px 16px; }
     section.doc { display: block !important; }
-    .copy-btn { display: none; }
-    .copyable pre { padding: 14px; color: #000; background: #eee; }
     body { padding-bottom: 0; }
+    .copyable pre { color: #000; background: #f0f0f0; }
   }
 </style>
 </head>
 <body>
 
-<header>
-  <h1>⚛️ Día 3 · Tu primera app con React + Agentes</h1>
-  <p>Desafío, guía de trabajo y diapositivas — todo en un solo lugar</p>
-</header>
+<div class="hero">
+  <span class="badge"><span class="dot"></span> Programación con IA · Día 3</span>
+  <h1>Tu primera app con <span class="grad">React + Agentes</span></h1>
+  <p>Desafío, guía de trabajo y material de las clases — todo lo que necesitás, en un solo lugar.</p>
+</div>
 
-<nav>
-  <button class="active" data-tab="desafio">🏆 Desafío</button>
-  <button data-tab="guia">🛡️ Guía de trabajo</button>
-  <button data-tab="clases">📚 Clases</button>
-</nav>
+<div class="nav-wrap">
+  <nav>
+    <button class="active" data-tab="desafio">🏆 Desafío</button>
+    <button data-tab="guia">🛡️ Guía de trabajo</button>
+    <button data-tab="clases">📚 Clases</button>
+  </nav>
+</div>
 
 <main>
 
 <!-- ══════════════ DESAFÍO ══════════════ -->
 <section class="doc active" id="desafio">
-  <div class="meta">
-    <p><b>Duración:</b> ~35 minutos · <b>Herramientas:</b> OpenCode Desktop + Node.js + navegador</p>
-    <p><b>Tecnología:</b> React con Vite (proyecto real, con <code>npm</code>)</p>
+
+  <div class="meta-card">
+    <div><b>⏱ Duración</b>~35 minutos</div>
+    <div><b>🧰 Herramientas</b>OpenCode · Node.js · navegador</div>
+    <div><b>⚛️ Tecnología</b>React + Vite (con npm)</div>
   </div>
-  <div class="warn">⚠️ <b>Requisito previo:</b> Node.js instalado (lo hicimos todos juntos en clase). Verificá con <code>node -v</code> en la terminal.</div>
 
-  <h2>🎯 Objetivo</h2>
-  <p>Construir tu primera aplicación React con Vite: una <b>tarjeta de presentación personal interactiva</b>, trabajando <b>con el agente</b> siguiendo el ciclo de trabajo correcto (pestaña 🛡️ Guía de trabajo).</p>
+  <div class="callout warn"><span class="c-ico">⚠️</span><div><b>Requisito previo:</b> Node.js instalado (lo hicimos juntos en clase). Verificá con <code>node -v</code> en la terminal.</div></div>
 
-  <h2>✅ Requisitos mínimos</h2>
-  <ol>
-    <li>👨‍💼 <b>Avatar</b> (imagen o emoji grande tipo 🧑‍💻) + <b>nombre</b> + <b>rol</b> (ej: "Estudiante de programación")</li>
-    <li>📝 Una <b>bio</b> corta (2-3 líneas sobre vos)</li>
-    <li>🎯 Una <b>lista de intereses/hobbies</b> (mínimo 4)</li>
-    <li>👍 Un botón <b>"Seguir"</b> que al hacer clic cambie a <b>"Siguiendo ✓"</b> <i>(uso de estado)</i></li>
-    <li>❤️ Un <b>contador de likes</b> con botón que sume de a uno <i>(uso de estado)</i></li>
+  <h2><span class="ico">🎯</span>Objetivo</h2>
+  <p>Construir tu primera aplicación React con Vite: una <strong>tarjeta de presentación personal interactiva</strong>, trabajando <strong>con el agente</strong> y siguiendo el ciclo de trabajo correcto (pestaña 🛡️ <em>Guía de trabajo</em>).</p>
+
+  <h2><span class="ico">✅</span>Requisitos mínimos</h2>
+  <ol class="req">
+    <li><strong>Avatar</strong> (imagen o emoji grande tipo 🧑‍💻) + <strong>nombre</strong> + <strong>rol</strong> (ej: "Estudiante de programación")</li>
+    <li>Una <strong>bio</strong> corta (2-3 líneas sobre vos)</li>
+    <li>Una <strong>lista de intereses/hobbies</strong> (mínimo 4)</li>
+    <li>Un botón <strong>"Seguir"</strong> que al hacer clic cambie a <strong>"Siguiendo ✓"</strong> <em>(uso de estado)</em></li>
+    <li>Un <strong>contador de likes</strong> con botón que sume de a uno <em>(uso de estado)</em></li>
   </ol>
 
-  <h2>⚡ Extensiones (si terminás antes — UNA por vez)</h2>
+  <h2><span class="ico">⚡</span>Extensiones (si terminás antes — UNA por vez)</h2>
   <table>
     <tr><th>Nivel</th><th>Extensión</th></tr>
     <tr><td>🌙 1</td><td>Botón modo oscuro/claro que cambie los colores de la tarjeta</td></tr>
@@ -160,72 +302,107 @@
     <tr><td>🚀 4</td><td>Caja de búsqueda que filtre tus intereses mientras escribís</td></tr>
   </table>
 
-  <h2>🧭 Paso a paso (¡pasos chicos!)</h2>
+  <h2><span class="ico">🧭</span>Paso a paso (¡pasos chicos!)</h2>
 
-  <h3>Paso 0 — Preparar el terreno</h3>
-  <p>Creá una carpeta nueva para el proyecto y abrila en OpenCode.</p>
+  <div class="steps">
+    <h3><span class="s-badge">1</span>Pedir el plan (NO el código)</h3>
+    <div class="copyable">
+      <div class="bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">prompt · opencode</span></div>
+      <pre>Quiero crear una tarjeta de presentación personal con React + Vite.
+Proponeme un plan breve antes de ejecutar cualquier comando.</pre>
+      <button class="copy-btn">Copiar</button>
+    </div>
+    <p>Chequeá el plan: ¿incluye crear el proyecto con Vite y los 5 requisitos? Si falta algo:</p>
+    <div class="copyable">
+      <div class="bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">prompt · opencode</span></div>
+      <pre>Al plan agregale: un botón de "Seguir" y un contador de likes.</pre>
+      <button class="copy-btn">Copiar</button>
+    </div>
 
-  <h3>Paso 1 — Pedir el plan (NO el código)</h3>
-  <div class="copyable"><pre>Quiero crear una tarjeta de presentación personal con React + Vite.
-Proponeme un plan breve antes de ejecutar cualquier comando.</pre><button class="copy-btn">Copiar</button></div>
-  <p>Chequeá el plan: ¿incluye crear el proyecto con Vite y los 5 requisitos? Si falta algo:</p>
-  <div class="copyable"><pre>Al plan agregale: un botón de "Seguir" y un contador de likes.</pre><button class="copy-btn">Copiar</button></div>
-
-  <h3>Paso 2 — Crear el proyecto</h3>
-  <div class="copyable"><pre>Me gusta el plan. Creá el proyecto con Vite (template react) en la
+    <h3><span class="s-badge">2</span>Crear el proyecto</h3>
+    <div class="copyable">
+      <div class="bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">prompt · opencode</span></div>
+      <pre>Me gusta el plan. Creá el proyecto con Vite (template react) en la
 carpeta "mi-tarjeta", ejecutá la instalación de dependencias y
-explicame qué hizo cada comando.</pre><button class="copy-btn">Copiar</button></div>
-  <p><b>Al terminar:</b> revisá cada permiso que pide (¿qué comando va a correr?), aceptá, y verificá que puedas abrir <code>http://localhost:5173</code> en el navegador.</p>
+explicame qué hizo cada comando.</pre>
+      <button class="copy-btn">Copiar</button>
+    </div>
+    <p><strong>Al terminar:</strong> revisá cada permiso que pide (¿qué comando va a correr?), aceptá, y verificá que puedas abrir <code>http://localhost:5173</code> en el navegador.</p>
 
-  <h3>Paso 3 — Limpiar y poner la estructura base</h3>
-  <div class="copyable"><pre>Limpiá el contenido de ejemplo de App.jsx y dejá solo un componente
+    <h3><span class="s-badge">3</span>Limpiar y poner la estructura base</h3>
+    <div class="copyable">
+      <div class="bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">prompt · opencode</span></div>
+      <pre>Limpiá el contenido de ejemplo de App.jsx y dejá solo un componente
 Tarjeta con avatar (emoji), mi nombre, rol y bio.
-Mis datos: [TU NOMBRE], [TU ROL], [TU BIO].</pre><button class="copy-btn">Copiar</button></div>
-  <p><b>Al terminar:</b> mirá el navegador — la web se recarga sola al guardar ✨</p>
+Mis datos: [TU NOMBRE], [TU ROL], [TU BIO].</pre>
+      <button class="copy-btn">Copiar</button>
+    </div>
+    <p><strong>Al terminar:</strong> mirá el navegador — la web se recarga sola al guardar ✨</p>
 
-  <h3>Paso 4 — Lista de intereses</h3>
-  <div class="copyable"><pre>Ahora agregá dentro de la tarjeta una sección "Mis intereses"
-con esta lista: [INTERÉS 1], [INTERÉS 2], [INTERÉS 3], [INTERÉS 4].</pre><button class="copy-btn">Copiar</button></div>
+    <h3><span class="s-badge">4</span>Lista de intereses</h3>
+    <div class="copyable">
+      <div class="bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">prompt · opencode</span></div>
+      <pre>Ahora agregá dentro de la tarjeta una sección "Mis intereses"
+con esta lista: [INTERÉS 1], [INTERÉS 2], [INTERÉS 3], [INTERÉS 4].</pre>
+      <button class="copy-btn">Copiar</button>
+    </div>
 
-  <h3>Paso 5 — Botón Seguir (¡estado!)</h3>
-  <div class="copyable"><pre>Agregá un botón que diga "Seguir". Al hacer clic debe cambiar
+    <h3><span class="s-badge">5</span>Botón Seguir (¡estado!)</h3>
+    <div class="copyable">
+      <div class="bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">prompt · opencode</span></div>
+      <pre>Agregá un botón que diga "Seguir". Al hacer clic debe cambiar
 a "Siguiendo ✓" y volver a "Seguir" si clickeo de nuevo.
-Usá estado de React. Explicame brevemente cómo funciona.</pre><button class="copy-btn">Copiar</button></div>
+Usá estado de React. Explicame brevemente cómo funciona.</pre>
+      <button class="copy-btn">Copiar</button>
+    </div>
 
-  <h3>Paso 6 — Contador de likes</h3>
-  <div class="copyable"><pre>Agregá un botón de corazón con un contador que empiece en 0
-y sume 1 en cada clic.</pre><button class="copy-btn">Copiar</button></div>
+    <h3><span class="s-badge">6</span>Contador de likes</h3>
+    <div class="copyable">
+      <div class="bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">prompt · opencode</span></div>
+      <pre>Agregá un botón de corazón con un contador que empiece en 0
+y sume 1 en cada clic.</pre>
+      <button class="copy-btn">Copiar</button>
+    </div>
 
-  <h3>Paso 7 — Estilo</h3>
-  <div class="copyable"><pre>Mejorá el diseño: tarjeta centrada, bordes redondeados, sombra suave,
-buena tipografía. Paleta: [TUS COLORES o "elegila vos con buen gusto"].</pre><button class="copy-btn">Copiar</button></div>
+    <h3><span class="s-badge">7</span>Estilo</h3>
+    <div class="copyable">
+      <div class="bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">prompt · opencode</span></div>
+      <pre>Mejorá el diseño: tarjeta centrada, bordes redondeados, sombra suave,
+buena tipografía. Paleta: [TUS COLORES o "elegila vos con buen gusto"].</pre>
+      <button class="copy-btn">Copiar</button>
+    </div>
 
-  <h3>Paso 8 — Si algo se rompe</h3>
-  <div class="copyable"><pre>Al hacer clic en [X] no pasa nada. La consola del navegador (F12)
+    <h3><span class="s-badge">8</span>Si algo se rompe</h3>
+    <div class="copyable">
+      <div class="bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">prompt · opencode</span></div>
+      <pre>Al hacer clic en [X] no pasa nada. La consola del navegador (F12)
 muestra este error: [PEGA EL ERROR EXACTO].
-¿Qué significa y cómo lo arreglo?</pre><button class="copy-btn">Copiar</button></div>
-  <p>🔧 ¿Se cortó el servidor de desarrollo? Pará la terminal y volvé a ejecutar <code>npm run dev</code>, o pedile al agente que lo levante.</p>
+¿Qué significa y cómo lo arreglo?</pre>
+      <button class="copy-btn">Copiar</button>
+    </div>
+    <p>🔧 ¿Se cortó el servidor de desarrollo? Pará la terminal y volvé a ejecutar <code>npm run dev</code>, o pedile al agente que lo levante.</p>
 
-  <h3>Paso 9 — Extensiones</h3>
-  <p>Elegí UNA de la tabla y escribí tu propio prompt. 💪</p>
+    <h3><span class="s-badge">9</span>Extensiones</h3>
+    <p>Elegí UNA de la tabla y escribí tu propio prompt. 💪</p>
+  </div>
 
-  <h2>📋 Criterios de éxito</h2>
+  <h2><span class="ico">📋</span>Criterios de éxito</h2>
   <ul class="checklist">
     <li>Los 5 requisitos funcionan en <code>http://localhost:5173</code></li>
     <li>Leíste (y entendiste mayormente) cada diff que aceptaste</li>
     <li>Probaste después de cada paso</li>
     <li>Bonus: le pediste al agente que te explique una parte del código</li>
   </ul>
-  <div class="tip">🎯 <b>Recuerdo del día:</b> el agente acelera tus manos, no reemplaza tu cabeza.</div>
+  <div class="callout tip"><span class="c-ico">🎯</span><div><b>Recuerdo del día:</b> el agente acelera tus manos, no reemplaza tu cabeza.</div></div>
 </section>
 
 <!-- ══════════════ CLASES ══════════════ -->
 <section class="doc" id="clases">
-  <h2>📚 Material de las clases</h2>
-  <p>Acá vas a encontrar las diapositivas de cada clase. Podés verlas online o descargarlas para repasar.</p>
+  <h2><span class="ico">📚</span>Material de las clases</h2>
+  <p>Las diapositivas de cada clase, para ver online o descargar y repasar cuando quieras.</p>
 
   <div class="clases-grid">
-    <div class="clase-card">
+    <div class="clase-card c1">
       <span class="num">Día 1</span>
       <h3>👋 Bienvenida: Programación con IA</h3>
       <p>Presentación de la cursada, qué es la programación y cómo vamos a trabajar con agentes de IA.</p>
@@ -234,7 +411,7 @@ muestra este error: [PEGA EL ERROR EXACTO].
       </div>
     </div>
 
-    <div class="clase-card">
+    <div class="clase-card c2">
       <span class="num">Día 2</span>
       <h3>⚙️ Primeros pasos: Entorno y HTML</h3>
       <p>Preparamos el entorno de trabajo y creamos nuestra primera página web con HTML.</p>
@@ -243,7 +420,7 @@ muestra este error: [PEGA EL ERROR EXACTO].
       </div>
     </div>
 
-    <div class="clase-card">
+    <div class="clase-card c3">
       <span class="num">Día 3</span>
       <h3>⚛️ React + Agentes de IA</h3>
       <p>Prompts, MCP, skills, trabajo prudente y el desafío: tu primera app React con Vite.</p>
@@ -254,28 +431,28 @@ muestra este error: [PEGA EL ERROR EXACTO].
     </div>
   </div>
 
-  <div class="tip">💡 Las diapositivas del Día 3 se abren en el navegador: navegá con las flechas ← → del teclado.</div>
+  <div class="callout tip"><span class="c-ico">💡</span><div>Las diapositivas del Día 3 se abren en el navegador: navegá con las flechas <strong>← →</strong> del teclado.</div></div>
 </section>
 
 <!-- ══════════════ GUÍA ══════════════ -->
 <section class="doc" id="guia">
-  <h2>1. La mentalidad: tú eres el supervisor</h2>
-  <p>Un agente de IA (como el que corre dentro de OpenCode) no es un robot todopoderoso ni un simple autocompletado. Es un <b>asistente muy rápido pero poco confiable</b>:</p>
+  <h2><span class="ico">🧠</span>1. La mentalidad: tú eres el supervisor</h2>
+  <p>Un agente de IA (como el que corre dentro de OpenCode) no es un robot todopoderoso ni un simple autocompletado. Es un <strong>asistente muy rápido pero poco confiable</strong>:</p>
   <ul>
     <li>✅ Es excelente para: escribir código repetitivo, explicar, refactorizar, encontrar errores.</li>
     <li>⚠️ Es débil para: saber exactamente qué TÚ quieres, verificar que funciona, cuidar tus datos.</li>
   </ul>
-  <div class="tip"><b>Regla base:</b> el agente propone, tú dispones. Nada entra a tu código sin que lo leas.</div>
+  <div class="callout tip"><span class="c-ico">⭐</span><div><b>Regla base:</b> el agente propone, tú dispones. Nada entra a tu código sin que lo leas.</div></div>
 
-  <h2>2. Antes de escribir cualquier prompt</h2>
+  <h2><span class="ico">🤔</span>2. Antes de escribir cualquier prompt</h2>
   <ol>
-    <li><b>Entendé la tarea</b>: ¿qué quiero construir? ¿cómo se ve funcionando?</li>
-    <li><b>Dividí en pasos chicos</b>: si tu idea necesita más de una frase para describirla, son varios prompts.</li>
-    <li><b>Tené un plan</b>: pedile primero el plan al agente, no el código.</li>
+    <li><strong>Entendé la tarea</strong>: ¿qué quiero construir? ¿cómo se ve funcionando?</li>
+    <li><strong>Dividí en pasos chicos</strong>: si tu idea necesita más de una frase para describirla, son varios prompts.</li>
+    <li><strong>Tené un plan</strong>: pedile primero el plan al agente, no el código.</li>
   </ol>
   <blockquote>❌ "Haceme una página con todo"<br>✅ "Quiero X. Proponeme un plan breve antes de escribir código."</blockquote>
 
-  <h2>3. Anatomía de un buen prompt</h2>
+  <h2><span class="ico">✍️</span>3. Anatomía de un buen prompt</h2>
   <table>
     <tr><th>Parte</th><th>Qué lleva</th><th>Ejemplo</th></tr>
     <tr><td>📋 Contexto</td><td>Qué proyecto, qué existe ya</td><td>"Tengo un proyecto React con Vite"</td></tr>
@@ -284,47 +461,46 @@ muestra este error: [PEGA EL ERROR EXACTO].
     <tr><td>📐 Formato</td><td>Qué querés de vuelta</td><td>"Primero el plan, después el código"</td></tr>
   </table>
   <ul>
-    <li><b>Sé específico</b>: números, colores, textos exactos. "Un botón azul (#58a6ff) con texto grande".</li>
-    <li><b>Da ejemplos</b>: "algo como el perfil de GitHub, en chico".</li>
-    <li><b>Pedí explicaciones</b>: "explicame qué hiciste" es tu mejor herramienta de aprendizaje.</li>
-    <li><b>Una cosa por prompt</b>: si pedís 5 cosas, cuando falle no sabrás cuál rompió.</li>
+    <li><strong>Sé específico</strong>: números, colores, textos exactos. "Un botón azul (#58a6ff) con texto grande".</li>
+    <li><strong>Da ejemplos</strong>: "algo como el perfil de GitHub, en chico".</li>
+    <li><strong>Pedí explicaciones</strong>: "explicame qué hiciste" es tu mejor herramienta de aprendizaje.</li>
+    <li><strong>Una cosa por prompt</strong>: si pedís 5 cosas, cuando falle no sabrás cuál rompió.</li>
   </ul>
 
-  <h2>4. El ciclo de trabajo (memorizalo)</h2>
-  <blockquote style="background:#fbefff;border-color:var(--accent)">
-    🤔 PENSAR → 📋 PEDIR PLAN → ✍️ PROMPT CHICO → 🔍 REVISAR EL DIFF → 🌐 PROBAR → ↺ REPETIR
-  </blockquote>
+  <h2><span class="ico">🔄</span>4. El ciclo de trabajo (memorizalo)</h2>
+  <div class="callout brand"><span class="c-ico">🔁</span><div style="font-weight:600; font-family:'JetBrains Mono',monospace; font-size:.85em">🤔 PENSAR → 📋 PEDIR PLAN → ✍️ PROMPT CHICO → 🔍 REVISAR EL DIFF → 🌐 PROBAR → ↺ REPETIR</div></div>
+
   <h3>Si algo se rompe</h3>
   <ol>
     <li>No escribas "no anda".</li>
-    <li>Abrí la consola del navegador: <b>F12</b> → pestaña <i>Console</i>.</li>
-    <li>Copiá el <b>mensaje de error exacto</b> (texto rojo).</li>
+    <li>Abrí la consola del navegador: <strong>F12</strong> → pestaña <em>Console</em>.</li>
+    <li>Copiá el <strong>mensaje de error exacto</strong> (texto rojo).</li>
     <li>Pegaselo al agente: "Al hacer clic en el botón no pasa nada. La consola muestra <code>Uncaught ReferenceError: useState is not defined</code>. ¿Qué significa y cómo lo arreglo?"</li>
   </ol>
 
-  <h2>5. Reglas de prudencia (¡no negociables!)</h2>
+  <h2><span class="ico">🛡️</span>5. Reglas de prudencia (¡no negociables!)</h2>
   <h3>Con el agente</h3>
   <ul class="checklist">
-    <li><b>Leo siempre el diff</b> antes de aceptar un cambio.</li>
-    <li><b>No acepto comandos que no entiendo</b>: primero pregunto "¿qué hace esto?".</li>
-    <li><b>Pido explicaciones</b> de código que no comprendo.</li>
-    <li><b>Verifico en el navegador</b> después de cada cambio, no "confío".</li>
-    <li>Uso <b>pasos chicos</b>: una feature por prompt.</li>
+    <li><strong>Leo siempre el diff</strong> antes de aceptar un cambio.</li>
+    <li><strong>No acepto comandos que no entiendo</strong>: primero pregunto "¿qué hace esto?".</li>
+    <li><strong>Pido explicaciones</strong> de código que no comprendo.</li>
+    <li><strong>Verifico en el navegador</strong> después de cada cambio, no "confío".</li>
+    <li>Uso <strong>pasos chicos</strong>: una feature por prompt.</li>
   </ul>
   <h3>Seguridad</h3>
   <ul class="checklist">
-    <li><b>Nunca</b> pego contraseñas ni API keys en el chat.</li>
+    <li><strong>Nunca</strong> pego contraseñas ni API keys en el chat.</li>
     <li>No pongo datos personales privados en archivos que le paso al agente.</li>
-    <li>Solo doy permisos de escritura <b>dentro de mi proyecto</b>.</li>
+    <li>Solo doy permisos de escritura <strong>dentro de mi proyecto</strong>.</li>
     <li>Desconfío de librerías desconocidas que el agente quiera instalar.</li>
   </ul>
   <h3>Respaldo</h3>
   <ul class="checklist">
-    <li>Guardo una <b>copia</b> de mi carpeta antes de cambios grandes.</li>
+    <li>Guardo una <strong>copia</strong> de mi carpeta antes de cambios grandes.</li>
     <li>Cuando aprendamos git: commits frecuentes con mensajes claros.</li>
   </ul>
 
-  <h2>6. Vocabulario rápido</h2>
+  <h2><span class="ico">📖</span>6. Vocabulario rápido</h2>
   <table>
     <tr><th>Término</th><th>Significado</th></tr>
     <tr><td><b>Agente</b></td><td>IA que piensa → usa herramientas → observa → repite, hasta completar tu tarea.</td></tr>
@@ -337,19 +513,19 @@ muestra este error: [PEGA EL ERROR EXACTO].
     <tr><td><b>Alucinación</b></td><td>Cuando el agente inventa con seguridad algo falso (una librería, una función).</td></tr>
   </table>
 
-  <h2>7. Chequeo final de cada día de trabajo</h2>
+  <h2><span class="ico">🏁</span>7. Chequeo final de cada día de trabajo</h2>
   <ul class="checklist">
     <li>¿Entiendo todo el código que tengo en mi proyecto?</li>
     <li>¿Mi página funciona en el navegador?</li>
     <li>¿Guardé mi avance?</li>
     <li>¿Qué quiero construir la próxima clase? (anotalo: será tu primer prompt)</li>
   </ul>
-  <div class="tip">💬 "El agente acelera tus manos, no reemplaza tu cabeza."</div>
+  <div class="callout tip"><span class="c-ico">💬</span><div>"El agente acelera tus manos, no reemplaza tu cabeza."</div></div>
 </section>
 
 </main>
 
-<footer>Día 3 · Programación con IA — Desafío + Guía de trabajo</footer>
+<footer>Día 3 · Programación con IA — Desafío · Guía · Clases</footer>
 
 <script>
   // Pestañas
@@ -360,7 +536,7 @@ muestra este error: [PEGA EL ERROR EXACTO].
     docs.forEach(x => x.classList.remove('active'));
     b.classList.add('active');
     document.getElementById(b.dataset.tab).classList.add('active');
-    window.scrollTo({ top: 0 });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   });
   // Botones copiar
   document.querySelectorAll('.copy-btn').forEach(btn => {
