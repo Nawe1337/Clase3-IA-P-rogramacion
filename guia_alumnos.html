@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Día 3 · Desafío React + Guía de trabajo</title>
+<style>
+  :root {
+    --bg: #f6f8fa; --panel: #ffffff; --border: #d0d7de;
+    --text: #1f2328; --muted: #656d76;
+    --accent: #8250df; --accent2: #0969da;
+    --green: #1a7f37; --red: #cf222e;
+    --code-bg: #f0f1f3;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    background: var(--bg); color: var(--text);
+    line-height: 1.6; padding-bottom: 60px;
+  }
+  header {
+    background: linear-gradient(135deg, #8250df, #0969da);
+    color: #fff; padding: 28px 16px; text-align: center;
+  }
+  header h1 { font-size: clamp(1.4rem, 4vw, 2.2rem); }
+  header p { opacity: .9; margin-top: 6px; font-size: clamp(.9rem, 2.5vw, 1.1rem); }
+  nav {
+    position: sticky; top: 0; z-index: 10;
+    display: flex; background: var(--panel);
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+  }
+  nav button {
+    flex: 1; padding: 14px 10px; border: none; background: none;
+    font-size: clamp(.85rem, 2.5vw, 1.05rem); font-weight: 600;
+    color: var(--muted); cursor: pointer; white-space: nowrap;
+    border-bottom: 3px solid transparent;
+  }
+  nav button.active { color: var(--accent); border-bottom-color: var(--accent); }
+  main { max-width: 860px; margin: 0 auto; padding: 20px 16px; }
+  section.doc { display: none; }
+  section.doc.active { display: block; }
+  h2 { font-size: clamp(1.25rem, 3.5vw, 1.8rem); margin: 28px 0 12px; color: var(--accent); }
+  h2:first-child { margin-top: 8px; }
+  h3 { font-size: clamp(1.05rem, 3vw, 1.3rem); margin: 22px 0 8px; }
+  p, li { font-size: clamp(.95rem, 2.5vw, 1.08rem); }
+  ul, ol { padding-left: 1.4em; margin: 10px 0; display: flex; flex-direction: column; gap: 6px; }
+  code {
+    background: var(--code-bg); padding: .15em .45em; border-radius: 5px;
+    font-family: Consolas, monospace; font-size: .9em; color: var(--accent2);
+  }
+  blockquote {
+    border-left: 4px solid var(--accent2);
+    background: #ddf4ff44; border-radius: 0 10px 10px 0;
+    padding: 12px 14px; margin: 14px 0; font-size: clamp(.9rem, 2.5vw, 1rem);
+  }
+  table { border-collapse: collapse; width: 100%; margin: 14px 0; }
+  th, td { border: 1px solid var(--border); padding: 10px 12px; text-align: left; font-size: clamp(.85rem, 2.2vw, 1rem); }
+  th { background: var(--code-bg); }
+  .meta {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 12px; padding: 14px 18px; margin-bottom: 10px;
+  }
+  .meta p { font-size: clamp(.9rem, 2.4vw, 1rem); }
+  .checklist li { list-style: none; }
+  .checklist li::before { content: "☐ "; color: var(--accent2); font-weight: bold; }
+  .tip { background: #dafbe1; border: 1px solid var(--green); border-radius: 10px; padding: 12px 14px; margin: 14px 0; }
+  .warn { background: #fff8c5; border: 1px solid #9a6700; border-radius: 10px; padding: 12px 14px; margin: 14px 0; }
+  footer { text-align: center; color: var(--muted); font-size: .85rem; margin-top: 30px; }
+  .hl { color: var(--accent); font-weight: 600; }
+  .hl-green { color: var(--green); font-weight: 600; }
+  .hl-red { color: var(--red); font-weight: 600; }
+  /* Bloques copiables */
+  .copyable { position: relative; margin: 12px 0; }
+  .copyable pre {
+    background: #1f2328; color: #e6edf3; border-radius: 10px;
+    padding: 14px 90px 14px 14px; font-family: Consolas, monospace;
+    font-size: clamp(.8rem, 2.2vw, .95rem); line-height: 1.55;
+    white-space: pre-wrap; word-break: break-word;
+  }
+  .copy-btn {
+    position: absolute; top: 8px; right: 8px;
+    background: #8250df; color: #fff; border: none; border-radius: 7px;
+    padding: 6px 12px; font-size: .8rem; font-weight: 600; cursor: pointer;
+  }
+  .copy-btn:hover { background: #6639ba; }
+  .copy-btn.done { background: var(--green); }
+  @media print {
+    nav { display: none; }
+    section.doc { display: block !important; }
+    .copy-btn { display: none; }
+    .copyable pre { padding: 14px; color: #000; background: #eee; }
+    body { padding-bottom: 0; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>⚛️ Día 3 · Tu primera app con React + Agentes</h1>
+  <p>Desafío y guía de trabajo — todo lo que necesitás en un solo lugar</p>
+</header>
+
+<nav>
+  <button class="active" data-tab="desafio">🏆 Desafío</button>
+  <button data-tab="guia">🛡️ Guía de trabajo</button>
+</nav>
+
+<main>
+
+<!-- ══════════════ DESAFÍO ══════════════ -->
+<section class="doc active" id="desafio">
+  <div class="meta">
+    <p><b>Duración:</b> ~35 minutos · <b>Herramientas:</b> OpenCode Desktop + Node.js + navegador</p>
+    <p><b>Tecnología:</b> React con Vite (proyecto real, con <code>npm</code>)</p>
+  </div>
+  <div class="warn">⚠️ <b>Requisito previo:</b> Node.js instalado (lo hicimos todos juntos en clase). Verificá con <code>node -v</code> en la terminal.</div>
+
+  <h2>🎯 Objetivo</h2>
+  <p>Construir tu primera aplicación React con Vite: una <b>tarjeta de presentación personal interactiva</b>, trabajando <b>con el agente</b> siguiendo el ciclo de trabajo correcto (pestaña 🛡️ Guía de trabajo).</p>
+
+  <h2>✅ Requisitos mínimos</h2>
+  <ol>
+    <li>👨‍💼 <b>Avatar</b> (imagen o emoji grande tipo 🧑‍💻) + <b>nombre</b> + <b>rol</b> (ej: "Estudiante de programación")</li>
+    <li>📝 Una <b>bio</b> corta (2-3 líneas sobre vos)</li>
+    <li>🎯 Una <b>lista de intereses/hobbies</b> (mínimo 4)</li>
+    <li>👍 Un botón <b>"Seguir"</b> que al hacer clic cambie a <b>"Siguiendo ✓"</b> <i>(uso de estado)</i></li>
+    <li>❤️ Un <b>contador de likes</b> con botón que sume de a uno <i>(uso de estado)</i></li>
+  </ol>
+
+  <h2>⚡ Extensiones (si terminás antes — UNA por vez)</h2>
+  <table>
+    <tr><th>Nivel</th><th>Extensión</th></tr>
+    <tr><td>🌙 1</td><td>Botón modo oscuro/claro que cambie los colores de la tarjeta</td></tr>
+    <tr><td>📁 2</td><td>Sección "Mis proyectos": tarjetas con título + descripción</td></tr>
+    <tr><td>📝 3</td><td>Formulario (nombre + mensaje) que muestre un saludo personalizado</td></tr>
+    <tr><td>🚀 4</td><td>Caja de búsqueda que filtre tus intereses mientras escribís</td></tr>
+  </table>
+
+  <h2>🧭 Paso a paso (¡pasos chicos!)</h2>
+
+  <h3>Paso 0 — Preparar el terreno</h3>
+  <p>Creá una carpeta nueva para el proyecto y abrila en OpenCode.</p>
+
+  <h3>Paso 1 — Pedir el plan (NO el código)</h3>
+  <div class="copyable"><pre>Quiero crear una tarjeta de presentación personal con React + Vite.
+Proponeme un plan breve antes de ejecutar cualquier comando.</pre><button class="copy-btn">Copiar</button></div>
+  <p>Chequeá el plan: ¿incluye crear el proyecto con Vite y los 5 requisitos? Si falta algo:</p>
+  <div class="copyable"><pre>Al plan agregale: un botón de "Seguir" y un contador de likes.</pre><button class="copy-btn">Copiar</button></div>
+
+  <h3>Paso 2 — Crear el proyecto</h3>
+  <div class="copyable"><pre>Me gusta el plan. Creá el proyecto con Vite (template react) en la
+carpeta "mi-tarjeta", ejecutá la instalación de dependencias y
+explicame qué hizo cada comando.</pre><button class="copy-btn">Copiar</button></div>
+  <p><b>Al terminar:</b> revisá cada permiso que pide (¿qué comando va a correr?), aceptá, y verificá que puedas abrir <code>http://localhost:5173</code> en el navegador.</p>
+
+  <h3>Paso 3 — Limpiar y poner la estructura base</h3>
+  <div class="copyable"><pre>Limpiá el contenido de ejemplo de App.jsx y dejá solo un componente
+Tarjeta con avatar (emoji), mi nombre, rol y bio.
+Mis datos: [TU NOMBRE], [TU ROL], [TU BIO].</pre><button class="copy-btn">Copiar</button></div>
+  <p><b>Al terminar:</b> mirá el navegador — la web se recarga sola al guardar ✨</p>
+
+  <h3>Paso 4 — Lista de intereses</h3>
+  <div class="copyable"><pre>Ahora agregá dentro de la tarjeta una sección "Mis intereses"
+con esta lista: [INTERÉS 1], [INTERÉS 2], [INTERÉS 3], [INTERÉS 4].</pre><button class="copy-btn">Copiar</button></div>
+
+  <h3>Paso 5 — Botón Seguir (¡estado!)</h3>
+  <div class="copyable"><pre>Agregá un botón que diga "Seguir". Al hacer clic debe cambiar
+a "Siguiendo ✓" y volver a "Seguir" si clickeo de nuevo.
+Usá estado de React. Explicame brevemente cómo funciona.</pre><button class="copy-btn">Copiar</button></div>
+
+  <h3>Paso 6 — Contador de likes</h3>
+  <div class="copyable"><pre>Agregá un botón de corazón con un contador que empiece en 0
+y sume 1 en cada clic.</pre><button class="copy-btn">Copiar</button></div>
+
+  <h3>Paso 7 — Estilo</h3>
+  <div class="copyable"><pre>Mejorá el diseño: tarjeta centrada, bordes redondeados, sombra suave,
+buena tipografía. Paleta: [TUS COLORES o "elegila vos con buen gusto"].</pre><button class="copy-btn">Copiar</button></div>
+
+  <h3>Paso 8 — Si algo se rompe</h3>
+  <div class="copyable"><pre>Al hacer clic en [X] no pasa nada. La consola del navegador (F12)
+muestra este error: [PEGA EL ERROR EXACTO].
+¿Qué significa y cómo lo arreglo?</pre><button class="copy-btn">Copiar</button></div>
+  <p>🔧 ¿Se cortó el servidor de desarrollo? Pará la terminal y volvé a ejecutar <code>npm run dev</code>, o pedile al agente que lo levante.</p>
+
+  <h3>Paso 9 — Extensiones</h3>
+  <p>Elegí UNA de la tabla y escribí tu propio prompt. 💪</p>
+
+  <h2>📋 Criterios de éxito</h2>
+  <ul class="checklist">
+    <li>Los 5 requisitos funcionan en <code>http://localhost:5173</code></li>
+    <li>Leíste (y entendiste mayormente) cada diff que aceptaste</li>
+    <li>Probaste después de cada paso</li>
+    <li>Bonus: le pediste al agente que te explique una parte del código</li>
+  </ul>
+  <div class="tip">🎯 <b>Recuerdo del día:</b> el agente acelera tus manos, no reemplaza tu cabeza.</div>
+</section>
+
+<!-- ══════════════ GUÍA ══════════════ -->
+<section class="doc" id="guia">
+  <h2>1. La mentalidad: tú eres el supervisor</h2>
+  <p>Un agente de IA (como el que corre dentro de OpenCode) no es un robot todopoderoso ni un simple autocompletado. Es un <b>asistente muy rápido pero poco confiable</b>:</p>
+  <ul>
+    <li>✅ Es excelente para: escribir código repetitivo, explicar, refactorizar, encontrar errores.</li>
+    <li>⚠️ Es débil para: saber exactamente qué TÚ quieres, verificar que funciona, cuidar tus datos.</li>
+  </ul>
+  <div class="tip"><b>Regla base:</b> el agente propone, tú dispones. Nada entra a tu código sin que lo leas.</div>
+
+  <h2>2. Antes de escribir cualquier prompt</h2>
+  <ol>
+    <li><b>Entendé la tarea</b>: ¿qué quiero construir? ¿cómo se ve funcionando?</li>
+    <li><b>Dividí en pasos chicos</b>: si tu idea necesita más de una frase para describirla, son varios prompts.</li>
+    <li><b>Tené un plan</b>: pedile primero el plan al agente, no el código.</li>
+  </ol>
+  <blockquote>❌ "Haceme una página con todo"<br>✅ "Quiero X. Proponeme un plan breve antes de escribir código."</blockquote>
+
+  <h2>3. Anatomía de un buen prompt</h2>
+  <table>
+    <tr><th>Parte</th><th>Qué lleva</th><th>Ejemplo</th></tr>
+    <tr><td>📋 Contexto</td><td>Qué proyecto, qué existe ya</td><td>"Tengo un proyecto React con Vite"</td></tr>
+    <tr><td>🎯 Objetivo</td><td>Una sola cosa concreta</td><td>"Agregá un botón que cuente clics"</td></tr>
+    <tr><td>🚧 Restricciones</td><td>Límites y estilo</td><td>"Sin librerías externas, tema oscuro"</td></tr>
+    <tr><td>📐 Formato</td><td>Qué querés de vuelta</td><td>"Primero el plan, después el código"</td></tr>
+  </table>
+  <ul>
+    <li><b>Sé específico</b>: números, colores, textos exactos. "Un botón azul (#58a6ff) con texto grande".</li>
+    <li><b>Da ejemplos</b>: "algo como el perfil de GitHub, en chico".</li>
+    <li><b>Pedí explicaciones</b>: "explicame qué hiciste" es tu mejor herramienta de aprendizaje.</li>
+    <li><b>Una cosa por prompt</b>: si pedís 5 cosas, cuando falle no sabrás cuál rompió.</li>
+  </ul>
+
+  <h2>4. El ciclo de trabajo (memorizalo)</h2>
+  <blockquote style="background:#fbefff;border-color:var(--accent)">
+    🤔 PENSAR → 📋 PEDIR PLAN → ✍️ PROMPT CHICO → 🔍 REVISAR EL DIFF → 🌐 PROBAR → ↺ REPETIR
+  </blockquote>
+  <h3>Si algo se rompe</h3>
+  <ol>
+    <li>No escribas "no anda".</li>
+    <li>Abrí la consola del navegador: <b>F12</b> → pestaña <i>Console</i>.</li>
+    <li>Copiá el <b>mensaje de error exacto</b> (texto rojo).</li>
+    <li>Pegaselo al agente: "Al hacer clic en el botón no pasa nada. La consola muestra <code>Uncaught ReferenceError: useState is not defined</code>. ¿Qué significa y cómo lo arreglo?"</li>
+  </ol>
+
+  <h2>5. Reglas de prudencia (¡no negociables!)</h2>
+  <h3>Con el agente</h3>
+  <ul class="checklist">
+    <li><b>Leo siempre el diff</b> antes de aceptar un cambio.</li>
+    <li><b>No acepto comandos que no entiendo</b>: primero pregunto "¿qué hace esto?".</li>
+    <li><b>Pido explicaciones</b> de código que no comprendo.</li>
+    <li><b>Verifico en el navegador</b> después de cada cambio, no "confío".</li>
+    <li>Uso <b>pasos chicos</b>: una feature por prompt.</li>
+  </ul>
+  <h3>Seguridad</h3>
+  <ul class="checklist">
+    <li><b>Nunca</b> pego contraseñas ni API keys en el chat.</li>
+    <li>No pongo datos personales privados en archivos que le paso al agente.</li>
+    <li>Solo doy permisos de escritura <b>dentro de mi proyecto</b>.</li>
+    <li>Desconfío de librerías desconocidas que el agente quiera instalar.</li>
+  </ul>
+  <h3>Respaldo</h3>
+  <ul class="checklist">
+    <li>Guardo una <b>copia</b> de mi carpeta antes de cambios grandes.</li>
+    <li>Cuando aprendamos git: commits frecuentes con mensajes claros.</li>
+  </ul>
+
+  <h2>6. Vocabulario rápido</h2>
+  <table>
+    <tr><th>Término</th><th>Significado</th></tr>
+    <tr><td><b>Agente</b></td><td>IA que piensa → usa herramientas → observa → repite, hasta completar tu tarea.</td></tr>
+    <tr><td><b>Harness</b></td><td>El entorno que conecta modelo + herramientas + tus archivos (OpenCode).</td></tr>
+    <tr><td><b>Sesión</b></td><td>Una conversación con el agente, con memoria de tu proyecto.</td></tr>
+    <tr><td><b>Diff</b></td><td>Vista de qué líneas de código se agregan/quitan en un cambio.</td></tr>
+    <tr><td><b>Prompt</b></td><td>La instrucción que le das al agente.</td></tr>
+    <tr><td><b>MCP</b> (Model Context Protocol)</td><td>Protocolo estándar para conectar agentes con herramientas externas (GitHub, navegador, bases de datos).</td></tr>
+    <tr><td><b>Skill</b></td><td>Paquete de instrucciones reutilizables para tareas repetibles (la "receta de la casa").</td></tr>
+    <tr><td><b>Alucinación</b></td><td>Cuando el agente inventa con seguridad algo falso (una librería, una función).</td></tr>
+  </table>
+
+  <h2>7. Chequeo final de cada día de trabajo</h2>
+  <ul class="checklist">
+    <li>¿Entiendo todo el código que tengo en mi proyecto?</li>
+    <li>¿Mi página funciona en el navegador?</li>
+    <li>¿Guardé mi avance?</li>
+    <li>¿Qué quiero construir la próxima clase? (anotalo: será tu primer prompt)</li>
+  </ul>
+  <div class="tip">💬 "El agente acelera tus manos, no reemplaza tu cabeza."</div>
+</section>
+
+</main>
+
+<footer>Día 3 · Programación con IA — Desafío + Guía de trabajo</footer>
+
+<script>
+  // Pestañas
+  const btns = document.querySelectorAll('nav button');
+  const docs = document.querySelectorAll('section.doc');
+  btns.forEach(b => b.onclick = () => {
+    btns.forEach(x => x.classList.remove('active'));
+    docs.forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    document.getElementById(b.dataset.tab).classList.add('active');
+    window.scrollTo({ top: 0 });
+  });
+  // Botones copiar
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.onclick = async () => {
+      const text = btn.parentElement.querySelector('pre').innerText;
+      try { await navigator.clipboard.writeText(text); }
+      catch {
+        const ta = document.createElement('textarea');
+        ta.value = text; document.body.appendChild(ta);
+        ta.select(); document.execCommand('copy'); ta.remove();
+      }
+      btn.textContent = '✓ Copiado'; btn.classList.add('done');
+      setTimeout(() => { btn.textContent = 'Copiar'; btn.classList.remove('done'); }, 1500);
+    };
+  });
+</script>
+</body>
+</html>
