@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Programación con IA · Día 3 — Desafío, Guía y Clases</title>
+<title>Programación con IA · Día 4 — Mi Tienda, Herramientas y Clases</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -207,6 +207,7 @@
   .clase-card.c1::before { background: linear-gradient(90deg, #6d5ae8, #9d8cff); }
   .clase-card.c2::before { background: linear-gradient(90deg, #2f7cf6, #6db6ff); }
   .clase-card.c3::before { background: linear-gradient(90deg, #0fb98a, #57e0b4); }
+  .clase-card.c4::before { background: linear-gradient(90deg, #e8912d, #f7c154); }
   .clase-card .num {
     display: inline-block; width: fit-content; border-radius: 999px;
     font-weight: 700; font-size: .74rem; letter-spacing: .07em; text-transform: uppercase;
@@ -215,6 +216,7 @@
   .c1 .num { background: var(--brand-soft); color: var(--brand-dark); }
   .c2 .num { background: var(--blue-soft); color: #1a5ec4; }
   .c3 .num { background: var(--green-soft); color: var(--green); }
+  .c4 .num { background: var(--yellow-soft); color: #b06f0a; }
   .clase-card h3 { margin: 0; font-size: 1.08rem; }
   .clase-card p { color: var(--muted); font-size: .9rem; flex-grow: 1; }
   .btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
@@ -260,6 +262,61 @@
 
   footer { text-align: center; color: var(--muted); font-size: .85rem; margin-top: 44px; }
 
+  /* ══════════ MOBILE ══════════ */
+  @media (max-width: 640px) {
+    body { padding-bottom: 40px; }
+    /* Hero más compacto */
+    .hero { padding: 44px 16px 52px; }
+    .hero p { font-size: .95rem; }
+    /* Nav: pestañas compactas y deslizables */
+    .nav-wrap { backdrop-filter: blur(10px); }
+    nav { gap: 4px; padding: 8px 10px; }
+    nav button { padding: 9px 8px; font-size: .78rem; border-radius: 10px; }
+    /* Contenido con menos aire */
+    main { padding: 18px 12px 0; }
+    h2 { font-size: 1.2rem; margin: 26px 0 12px; gap: 8px; }
+    h2 .ico { width: 32px; height: 32px; font-size: .95rem; border-radius: 9px; }
+    h3 { font-size: 1rem; margin: 18px 0 6px; }
+    /* Tablas: scroll horizontal en vez de romper el layout */
+    table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    th, td { padding: 10px 12px; white-space: nowrap; }
+    /* Bloques copiables: el botón pasa abajo, sin tapar el texto */
+    .copyable pre { padding: 14px 14px 52px 14px; font-size: .78rem; }
+    .copy-btn { right: 10px; bottom: 10px; left: auto; }
+    .copyable .bar { padding: 8px 12px; }
+    .copyable .bar .lbl { display: none; }
+    /* Callouts y blockquotes más compactos */
+    .callout { padding: 12px 14px; font-size: .9rem; flex-direction: column; gap: 4px; }
+    blockquote { padding: 12px 14px; }
+    /* Requisitos: badge más chico */
+    .req li { padding: 10px 12px 10px 50px; }
+    .req li::before { width: 28px; height: 28px; font-size: .85rem; left: 10px; }
+    .req li:hover { transform: none; }
+    /* Cards de clases: sin hover-lift, botones apilados */
+    .clase-card { padding: 18px 16px 14px; }
+    .clase-card:hover { transform: none; }
+    .btn-row { flex-direction: column; }
+    .btn { min-width: 0; width: 100%; }
+    /* Meta card apilada */
+    .meta-card { grid-template-columns: 1fr; gap: 8px; padding: 14px 16px; }
+    /* QR: tarjeta compacta, código legible pero no gigante */
+    .qr-wrap { margin: 14px 0; }
+    .qr-card { padding: 18px 16px; border-radius: 16px; }
+    .qr-card img { max-width: 230px; margin-bottom: 10px; }
+    .qr-card p { font-size: .92rem; }
+    /* Steps badges */
+    .steps h3 .s-badge { width: 26px; height: 26px; font-size: .78rem; }
+    /* Checklist más compacta */
+    .checklist li { padding-left: 30px; font-size: .92rem; }
+    .checklist li::before { width: 17px; height: 17px; top: .22em; }
+    footer { margin-top: 30px; padding: 0 16px; }
+  }
+  /* Móviles bien chicos */
+  @media (max-width: 380px) {
+    nav button { font-size: .72rem; padding: 8px 6px; }
+    .qr-card img { max-width: 200px; }
+  }
+
   @media print {
     .nav-wrap, .copy-btn, .hero::after { display: none; }
     .hero { padding: 30px 16px; }
@@ -272,14 +329,15 @@
 <body>
 
 <div class="hero">
-  <span class="badge"><span class="dot"></span> Programación con IA · Día 3</span>
-  <h1>Tu primera app con <span class="grad">React + Agentes</span></h1>
-  <p>Desafío, guía de trabajo y material de las clases — todo lo que necesitás, en un solo lugar.</p>
+  <span class="badge"><span class="dot"></span> Programación con IA · Día 4</span>
+  <h1>Día 4: <span class="grad">Mi Tienda</span> + herramientas pro 🛠️</h1>
+  <p>Desafío del día (catálogo + carrito), MCP, skills, .env, seguridad y el material de todas las clases.</p>
 </div>
 
 <div class="nav-wrap">
   <nav>
     <button class="active" data-tab="desafio">🏆 Desafío</button>
+    <button data-tab="herramientas">🧰 Herramientas</button>
     <button data-tab="guia">🛡️ Guía de trabajo</button>
     <button data-tab="clases">📚 Clases</button>
     <button data-tab="qr">📱 QR</button>
@@ -292,135 +350,142 @@
 <section class="doc active" id="desafio">
 
   <div class="meta-card">
-    <div><b>⏱ Duración</b>~35 minutos</div>
+    <div><b>⏱ Duración</b>~35 minutos + extras</div>
     <div><b>🧰 Herramientas</b>OpenCode · Node.js · navegador</div>
     <div><b>⚛️ Tecnología</b>React + Vite (con npm)</div>
   </div>
 
-  <div class="callout warn"><span class="c-ico">⚠️</span><div><b>Requisito previo:</b> Node.js instalado (lo hicimos juntos en clase). Verificá con <code>node -v</code> en la terminal.</div></div>
+  <div class="callout warn"><span class="c-ico">⚠️</span><div><b>Nuevo proyecto:</b> hoy arrancamos <code>mi-tienda</code> desde cero. Requisito: Node.js del Día 3 (verificá con <code>node -v</code>).</div></div>
 
-  <h2><span class="ico">⚙️</span>Paso 0 — Instalá Node.js con el agente (si no lo tienes)</h2>
-  <p>Si no pudiste instalar Node.js en clase, tu agente puede hacerlo por vos. Copiá y pegá estos prompts en OpenCode Desktop, <strong>en este orden</strong>:</p>
-
-  <div class="steps">
-    <h3><span class="s-badge">0.1</span>Primero, verificar si ya lo tenés</h3>
-    <div class="copyable">
-      <div class="bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">prompt · opencode</span></div>
-      <pre>Verificá si tengo Node.js y npm instalados en mi PC. Ejecutá
-"node -v" y "npm -v" en la terminal y decime qué versión tengo
-de cada uno.</pre>
-      <button class="copy-btn">Copiar</button>
-    </div>
-    <p>Si te muestra números de versión (ej: <code>v22.x.x</code>) → ✅ ya lo tenés, saltá al <strong>Paso 1</strong>.</p>
-
-    <h3><span class="s-badge">0.2</span>Si NO lo tenés: que lo instale</h3>
-    <div class="copyable">
-      <div class="bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">prompt · opencode</span></div>
-      <pre>No tengo Node.js instalado. Instalá la versión LTS de Node.js
-en Windows usando winget (OpenJS.NodeJS.LTS). Antes de ejecutar,
-explicame qué comando vas a correr y qué hace.</pre>
-      <button class="copy-btn">Copiar</button>
-    </div>
-    <p><strong>Importante:</strong> cuando el agente te pida permiso para ejecutar el comando, <strong>leelo</strong> — ahí está aprendiendo a trabajar con prudencia 😉</p>
-
-    <h3><span class="s-badge">0.3</span>Verificar que quedó instalado</h3>
-    <div class="copyable">
-      <div class="bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">prompt · opencode</span></div>
-      <pre>Ahora verificá de nuevo con "node -v" y "npm -v" que Node.js
-y npm quedaron instalados correctamente.</pre>
-      <button class="copy-btn">Copiar</button>
-    </div>
-    <div class="callout warn"><span class="c-ico">🔁</span><div>Si <code>node -v</code> sigue sin funcionar después de instalar: <strong>cerrá y volvé a abrir OpenCode Desktop</strong> (la terminal necesita reiniciarse para "ver" el Node nuevo) y probá de nuevo.</div></div>
-  </div>
+  <div class="callout tip"><span class="c-ico">🧠</span><div>La semana que viene esta tienda se conecta a un <b>backend real</b>: los productos vendrán de una API. ¡Construí bien la base!</div></div>
 
   <h2><span class="ico">🎯</span>Objetivo</h2>
-  <p>Construir tu primera aplicación React con Vite: una <strong>tarjeta de presentación personal interactiva</strong>, trabajando <strong>con el agente</strong> y siguiendo el ciclo de trabajo correcto (pestaña 🛡️ <em>Guía de trabajo</em>).</p>
+  <p>Construir tu primera app con <strong>componentes separados, listas y estado compartido</strong>: una tienda con catálogo, buscador, filtros y carrito. Seguí el ciclo de trabajo correcto (pestaña 🛡️ <em>Guía de trabajo</em>).</p>
 
-  <h2><span class="ico">✅</span>Requisitos mínimos</h2>
+  <h2><span class="ico">✅</span>Requisitos mínimos (los 5)</h2>
   <ol class="req">
-    <li><strong>Avatar</strong> (imagen o emoji grande tipo 🧑‍💻) + <strong>nombre</strong> + <strong>rol</strong> (ej: "Estudiante de programación")</li>
-    <li>Una <strong>bio</strong> corta (2-3 líneas sobre vos)</li>
-    <li>Una <strong>lista de intereses/hobbies</strong> (mínimo 4)</li>
-    <li>Un botón <strong>"Seguir"</strong> que al hacer clic cambie a <strong>"Siguiendo ✓"</strong> <em>(uso de estado)</em></li>
-    <li>Un <strong>contador de likes</strong> con botón que sume de a uno <em>(uso de estado)</em></li>
+    <li><strong>Catálogo</strong>: al menos 6 productos (nombre, precio, categoría, emoji) cada uno en un componente <code>ProductCard</code> <em>(usá <code>.map()</code> + <code>key</code>)</em></li>
+    <li><strong>Buscador</strong> por nombre que filtre mientras escribís</li>
+    <li><strong>Filtro por categoría</strong>: chips/botones (Todos + cada categoría)</li>
+    <li><strong>Carrito</strong>: botón "Agregar" en cada card → 🛒 con contador en el navbar <em>(estado compartido: vive en App)</em></li>
+    <li><strong>Panel del carrito</strong>: lista de agregados, total en $ y botón "Vaciar"</li>
   </ol>
 
-  <h2><span class="ico">⚡</span>Extensiones (si terminás antes — UNA por vez)</h2>
+  <h2><span class="ico">⚡</span>Niveles extra (si terminás antes — UNO por vez)</h2>
   <table>
-    <tr><th>Nivel</th><th>Extensión</th></tr>
-    <tr><td>🌙 1</td><td>Botón modo oscuro/claro que cambie los colores de la tarjeta</td></tr>
-    <tr><td>📁 2</td><td>Sección "Mis proyectos": tarjetas con título + descripción</td></tr>
-    <tr><td>📝 3</td><td>Formulario (nombre + mensaje) que muestre un saludo personalizado</td></tr>
-    <tr><td>🚀 4</td><td>Caja de búsqueda que filtre tus intereses mientras escribís</td></tr>
+    <tr><th>Nivel</th><th>Extra</th></tr>
+    <tr><td>🔢 L2</td><td>Cantidades +/- por producto en el carrito (el total cambia) · mensaje "no hay resultados" cuando el filtro no encuentra nada</td></tr>
+    <tr><td>🌟 L3</td><td>Ordenar por precio (menor/mayor) · modo oscuro con toggle · clic en un producto → ficha completa en un modal</td></tr>
+    <tr><td>🎫 L4</td><td>Cupón de descuento falso (<code>BIENVENIDA10</code> = -10%) · checkout con formulario validado (nombre, email)</td></tr>
   </table>
 
   <h2><span class="ico">🧭</span>Paso a paso (¡pasos chicos!)</h2>
 
   <div class="steps">
+    <h3><span class="s-badge">0</span>Crear el proyecto + tu puerto + la skill</h3>
+    <div class="copyable">
+      <div class="bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">terminal</span></div>
+      <pre>npm create vite@latest mi-tienda -- --template react
+cd mi-tienda
+npm install
+npm run dev</pre>
+      <button class="copy-btn">Copiar</button>
+    </div>
+    <p><strong>🔌 Tu puerto (lo elegís vos):</strong> en la raíz del proyecto creá un archivo <code>.env</code> con tu número (4 dígitos, mayor a 1024):</p>
+    <div class="copyable">
+      <div class="bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">.env · raíz del proyecto</span></div>
+      <pre>VITE_PORT=5174</pre>
+      <button class="copy-btn">Copiar</button>
+    </div>
+    <p>Y pedile al agente que lo conecte (usá TU número en el prompt):</p>
+    <div class="copyable">
+      <div class="bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">prompt · opencode</span></div>
+      <pre>Creá un archivo .env en la raíz con VITE_PORT=5174 y configurá
+el vite.config.js para que el servidor de desarrollo use ese puerto
+(usá loadEnv para leer la variable, con 5173 como fallback si no existe).
+Explicame en dos líneas qué tocaste.</pre>
+      <button class="copy-btn">Copiar</button>
+    </div>
+    <p><strong>🎨 La skill de diseño</strong> — se instala con un comando, del repo oficial de Anthropic (fuente confiable). Cuando pregunte para qué agente → <strong>opencode</strong>:</p>
+    <div class="copyable">
+      <div class="bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">terminal · dentro de mi-tienda</span></div>
+      <pre>npx skills add anthropics/skills@frontend-design</pre>
+      <button class="copy-btn">Copiar</button>
+    </div>
+    <p>💡 Sin internet o si falla: la skill es solo texto — copiala a mano desde la pestaña <strong>🧰 Herramientas</strong> a <code>.opencode/skills/frontend-design/SKILL.md</code>.</p>
+
     <h3><span class="s-badge">1</span>Pedir el plan (NO el código)</h3>
     <div class="copyable">
       <div class="bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">prompt · opencode</span></div>
-      <pre>Quiero crear una tarjeta de presentación personal con React + Vite.
-Proponeme un plan breve antes de ejecutar cualquier comando.</pre>
+      <pre>Estoy haciendo una tienda simple en React + Vite llamada mi-tienda.
+Requisitos: catálogo de productos con buscador, filtro por categoría
+y carrito con contador en el navbar, panel con total y botón vaciar.
+Antes de escribir código: proponeme un plan de pasos chicos, uno por
+vez, con los componentes y dónde vive cada estado. No escribas código
+todavía.</pre>
       <button class="copy-btn">Copiar</button>
     </div>
-    <p>Chequeá el plan: ¿incluye crear el proyecto con Vite y los 5 requisitos? Si falta algo:</p>
+    <p>Chequeá el plan: ¿incluye los 5 requisitos? ¿el estado del carrito vive en App? Si falta algo, pedilo:</p>
     <div class="copyable">
       <div class="bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">prompt · opencode</span></div>
-      <pre>Al plan agregale: un botón de "Seguir" y un contador de likes.</pre>
-      <button class="copy-btn">Copiar</button>
-    </div>
-
-    <h3><span class="s-badge">2</span>Crear el proyecto</h3>
-    <div class="copyable">
-      <div class="bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">prompt · opencode</span></div>
-      <pre>Me gusta el plan. Creá el proyecto con Vite (template react) en la
-carpeta "mi-tarjeta", ejecutá la instalación de dependencias y
-explicame qué hizo cada comando.</pre>
-      <button class="copy-btn">Copiar</button>
-    </div>
-    <p><strong>Al terminar:</strong> revisá cada permiso que pide (¿qué comando va a correr?), aceptá, y verificá que puedas abrir <code>http://localhost:5173</code> en el navegador.</p>
-
-    <h3><span class="s-badge">3</span>Limpiar y poner la estructura base</h3>
-    <div class="copyable">
-      <div class="bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">prompt · opencode</span></div>
-      <pre>Limpiá el contenido de ejemplo de App.jsx y dejá solo un componente
-Tarjeta con avatar (emoji), mi nombre, rol y bio.
-Mis datos: [TU NOMBRE], [TU ROL], [TU BIO].</pre>
-      <button class="copy-btn">Copiar</button>
-    </div>
-    <p><strong>Al terminar:</strong> mirá el navegador — la web se recarga sola al guardar ✨</p>
-
-    <h3><span class="s-badge">4</span>Lista de intereses</h3>
-    <div class="copyable">
-      <div class="bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">prompt · opencode</span></div>
-      <pre>Ahora agregá dentro de la tarjeta una sección "Mis intereses"
-con esta lista: [INTERÉS 1], [INTERÉS 2], [INTERÉS 3], [INTERÉS 4].</pre>
+      <pre>Al plan agregale: que el buscador y el filtro funcionen a la vez,
+y que el carrito se guarde en localStorage.</pre>
       <button class="copy-btn">Copiar</button>
     </div>
 
-    <h3><span class="s-badge">5</span>Botón Seguir (¡estado!)</h3>
+    <h3><span class="s-badge">2</span>Datos + lista de productos</h3>
     <div class="copyable">
       <div class="bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">prompt · opencode</span></div>
-      <pre>Agregá un botón que diga "Seguir". Al hacer clic debe cambiar
-a "Siguiendo ✓" y volver a "Seguir" si clickeo de nuevo.
-Usá estado de React. Explicame brevemente cómo funciona.</pre>
+      <pre>Paso 1: creá src/datos.js con un array de 6 productos
+(nombre, precio, categoría, emoji) y mostrálos en App con .map(),
+cada uno en un componente ProductCard (nombre, precio, emoji).</pre>
+      <button class="copy-btn">Copiar</button>
+    </div>
+    <p><strong>Al terminar:</strong> probá en <code>http://localhost:TU_PUERTO</code> (el de tu <code>.env</code>) — tenés que ver las 6 cards ✨</p>
+
+    <h3><span class="s-badge">3</span>Buscador</h3>
+    <div class="copyable">
+      <div class="bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">prompt · opencode</span></div>
+      <pre>Paso 2: agregá un input de búsqueda en un componente Navbar que
+filtre los productos por nombre mientras escribo. El estado de
+búsqueda vive en App.</pre>
       <button class="copy-btn">Copiar</button>
     </div>
 
-    <h3><span class="s-badge">6</span>Contador de likes</h3>
+    <h3><span class="s-badge">4</span>Filtro por categoría</h3>
     <div class="copyable">
       <div class="bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">prompt · opencode</span></div>
-      <pre>Agregá un botón de corazón con un contador que empiece en 0
-y sume 1 en cada clic.</pre>
+      <pre>Paso 3: agregá un componente Filtros con chips por categoría
+(y "Todos"). Combiná el filtro con el buscador (los dos a la vez).</pre>
       <button class="copy-btn">Copiar</button>
     </div>
 
-    <h3><span class="s-badge">7</span>Estilo</h3>
+    <h3><span class="s-badge">5</span>Carrito (¡estado compartido!)</h3>
     <div class="copyable">
       <div class="bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">prompt · opencode</span></div>
-      <pre>Mejorá el diseño: tarjeta centrada, bordes redondeados, sombra suave,
-buena tipografía. Paleta: [TUS COLORES o "elegila vos con buen gusto"].</pre>
+      <pre>Paso 4: cada ProductCard tiene un botón "Agregar". El carrito es
+un estado en App (array). El Navbar muestra 🛒 con la cantidad.
+Abajo, un componente Carrito lista lo agregado, muestra el total
+y tiene botón "Vaciar".
+Explicame cómo sube el evento desde ProductCard hasta App.</pre>
+      <button class="copy-btn">Copiar</button>
+    </div>
+    <p>💡 Esta es la parte nueva del día: los datos bajan con <strong>props</strong>, los eventos suben con <strong>funciones</strong>. Pedile la explicación — es lo más importante de la clase.</p>
+
+    <h3><span class="s-badge">6</span>Que el carrito sobreviva al recargar</h3>
+    <div class="copyable">
+      <div class="bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">prompt · opencode</span></div>
+      <pre>Paso 5: guardá el carrito en localStorage para que sobreviva al
+recargar (JSON.stringify al cambiar, JSON.parse al arrancar).</pre>
+      <button class="copy-btn">Copiar</button>
+    </div>
+
+    <h3><span class="s-badge">7</span>✨ Pulir el diseño (OBLIGATORIO)</h3>
+    <div class="copyable">
+      <div class="bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">prompt · opencode</span></div>
+      <pre>Usá la skill frontend-design para pulir todo el diseño de mi-tienda:
+paleta coherente, espaciados consistentes, cards con hover,
+botones con estados, y que se vea bien en el celular.</pre>
       <button class="copy-btn">Copiar</button>
     </div>
 
@@ -434,16 +499,31 @@ muestra este error: [PEGA EL ERROR EXACTO].
     </div>
     <p>🔧 ¿Se cortó el servidor de desarrollo? Pará la terminal y volvé a ejecutar <code>npm run dev</code>, o pedile al agente que lo levante.</p>
 
-    <h3><span class="s-badge">9</span>Extensiones</h3>
-    <p>Elegí UNA de la tabla y escribí tu propio prompt. 💪</p>
+    <h3><span class="s-badge">9</span>Niveles extra</h3>
+    <p>Elegí UNO de la tabla y escribí tu propio prompt. 💪</p>
+  </div>
+
+  <h2><span class="ico">🗺️</span>Estructura objetivo (el agente te la arma por pasos)</h2>
+  <div class="copyable">
+    <div class="bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">estructura · mi-tienda</span></div>
+    <pre>src/
+├── datos.js            ← el array de productos
+├── App.jsx             ← estado del carrito + búsqueda (vive acá)
+└── components/
+    ├── Navbar.jsx      ← logo + buscador + 🛒 contador
+    ├── Filtros.jsx     ← chips de categoría
+    ├── ProductCard.jsx ← cada producto
+    └── Carrito.jsx     ← lista + total + vaciar</pre>
+    <button class="copy-btn">Copiar</button>
   </div>
 
   <h2><span class="ico">📋</span>Criterios de éxito</h2>
   <ul class="checklist">
-    <li>Los 5 requisitos funcionan en <code>http://localhost:5173</code></li>
+    <li>Los 5 requisitos funcionan en <code>http://localhost: TU PUERTO</code> (el que definiste en el <code>.env</code>)</li>
+    <li>Usaste la skill <code>frontend-design</code> para pulir el diseño</li>
     <li>Leíste (y entendiste mayormente) cada diff que aceptaste</li>
-    <li>Probaste después de cada paso</li>
-    <li>Bonus: le pediste al agente que te explique una parte del código</li>
+    <li>Probaste cada requisito vos mismo/a, no solo "confiaste"</li>
+    <li>Bonus: le pediste al agente que te explique cómo sube el evento del carrito hasta App</li>
   </ul>
   <div class="callout tip"><span class="c-ico">🎯</span><div><b>Recuerdo del día:</b> el agente acelera tus manos, no reemplaza tu cabeza.</div></div>
 </section>
@@ -481,9 +561,19 @@ muestra este error: [PEGA EL ERROR EXACTO].
         <a class="btn" href="dia3_react_agentes.html" download>⬇️ Descargar</a>
       </div>
     </div>
+
+    <div class="clase-card c4">
+      <span class="num">Día 4</span>
+      <h3>🛠️ MCP, Skills, .env y Seguridad</h3>
+      <p>Herramientas pro del agente, variables de entorno, seguridad y el desafío: tu tienda con carrito.</p>
+      <div class="btn-row">
+        <a class="btn btn-primary" href="dia4_mcp_skills.html" target="_blank">👀 Ver online</a>
+        <a class="btn" href="dia4_mcp_skills.html" download>⬇️ Descargar</a>
+      </div>
+    </div>
   </div>
 
-  <div class="callout tip"><span class="c-ico">💡</span><div>Las diapositivas del Día 3 se abren en el navegador: navegá con las flechas <strong>← →</strong> del teclado.</div></div>
+  <div class="callout tip"><span class="c-ico">💡</span><div>Las diapositivas del Día 3 y 4 se abren en el navegador: navegá con las flechas <strong>← →</strong> del teclado.</div></div>
 </section>
 
 <!-- ══════════════ GUÍA ══════════════ -->
@@ -579,7 +669,7 @@ muestra este error: [PEGA EL ERROR EXACTO].
     <pre># AGENTS.md
 
 ## Sobre este proyecto
-- App de React + Vite: mi tarjeta de presentación personal interactiva.
+- App de React + Vite: mi tienda con catálogo, buscador, filtros y carrito.
 - Alumno: [TU NOMBRE]. Estoy aprendiendo: explicame las cosas con paciencia.
 
 ## Cómo quiero que trabajes
@@ -593,15 +683,163 @@ muestra este error: [PEGA EL ERROR EXACTO].
 - No instales librerías nuevas sin preguntarme antes.
 - No modifiques archivos fuera de esta carpeta.
 - Nunca escribas contraseñas ni claves en el código.
+- Los valores que cambian por entorno (como URLs de API) van en el archivo .env.
 - Si algo falla: mostrame el error, explicalo, y después arreglalo.
 
 ## Comandos de este proyecto
 - `npm install` → instala las dependencias
-- `npm run dev` → levanta el servidor en http://localhost:5173</pre>
+- `npm run dev` → levanta el servidor en http://localhost:VITE_PORT (tu .env)</pre>
     <button class="copy-btn">Copiar</button>
   </div>
   <div class="callout tip"><span class="c-ico">💡</span><div><b>Consejos:</b> corto es mejor (si es muy largo, cada regla pesa menos) · actualizalo cuando algo del agente te moleste, en vez de repetírselo en cada sesión · es tu "skill" casera: la receta de la casa para tu agente.</div></div>
   <div class="callout tip"><span class="c-ico">💬</span><div>"El agente acelera tus manos, no reemplaza tu cabeza."</div></div>
+</section>
+
+<!-- ══════════════ HERRAMIENTAS (Día 4) ══════════════ -->
+<section class="doc" id="herramientas">
+  <h2><span class="ico">🔌</span>MCP — dale superpoderes al agente</h2>
+  <p><strong>Qué es:</strong> un estándar abierto para conectar al agente con servicios externos. Sin MCP, el agente solo ve tu carpeta: lee y escribe archivos y corre comandos. <strong>Con MCP</strong> puede buscar documentación actualizada, leer páginas web, ver tu GitHub… sin que vos programes nada.</p>
+  <table>
+    <tr><th>Server</th><th>Para qué te sirve</th></tr>
+    <tr><td><b>context7</b></td><td>Documentación actualizada de React, Vite y cualquier librería</td></tr>
+    <tr><td><b>fetch</b></td><td>Leer páginas web y documentación online</td></tr>
+    <tr><td><b>github</b></td><td>Issues, PRs y repos (cuando lleguemos a git)</td></tr>
+  </table>
+  <h3>¿Dónde buscar más?</h3>
+  <ul>
+    <li>🔎 <code>github.com/modelcontextprotocol/servers</code> — la lista oficial</li>
+    <li>📦 Buscá <em>"awesome mcp servers"</em> en GitHub</li>
+    <li>📖 La doc de OpenCode: <code>opencode.ai/docs</code></li>
+    <li>💡 El truco máximo: preguntarle al propio agente — <em>"¿qué server MCP me serviría para X?"</em></li>
+  </ul>
+  <div class="callout warn"><span class="c-ico">⚠️</span><div>Solo instalá servers MCP de <b>fuentes confiables</b>: cada uno es código externo que accede a tu agente.</div></div>
+
+  <h2><span class="ico">📜</span>Skills — las recetas del agente</h2>
+  <p>Una skill es un archivo de instrucciones que le enseña una tarea específica. 🧑‍🍳 <strong>Analogía de cocina:</strong> <code>AGENTS.md</code> es "soy vegetariano" (reglas siempre activas) · una <strong>skill</strong> es "así se hace la lasaña" (se usa cuando corresponde) · <strong>MCP</strong> son el horno y la heladera (los aparatos).</p>
+  <p>Vive en <code>.opencode/skills/&lt;nombre&gt;/SKILL.md</code> (o <code>.agents/skills/</code> si la instalás con el comando). El agente la detecta solo cuando tu pedido matchea su descripción, o la invocás: <strong>"usá la skill frontend-design"</strong>.</p>
+
+  <h2><span class="ico">🎨</span>Skill oficial: frontend-design (la del desafío)</h2>
+  <p><strong>Instalación recomendada</strong> — un comando, desde el <strong>repo oficial de Anthropic</strong> (fuente confiable ✅). Ejecutalo dentro de tu proyecto y cuando pregunte para qué agente elegí <strong>opencode</strong>:</p>
+  <div class="copyable">
+    <div class="bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">terminal · dentro de mi-tienda</span></div>
+    <pre>npx skills add anthropics/skills@frontend-design</pre>
+    <button class="copy-btn">Copiar</button>
+  </div>
+  <div class="callout warn"><span class="c-ico">⚠️</span><div>Instalá skills solo de fuentes confiables (publishers verificados como <strong>anthropics</strong>, o repos con mucha instalación): las skills corren con los permisos de tu agente.</div></div>
+
+  <h2><span class="ico">📋</span>Plan B sin internet: copiar la skill a mano</h2>
+  <p>Una skill es solo un archivo de texto. Si no tenés internet o el comando falla, creá la carpeta <code>.opencode/skills/diseno-ui/</code> en tu proyecto y guardá este contenido como <code>SKILL.md</code>:</p>
+  <div class="copyable">
+    <div class="bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">.opencode/skills/diseno-ui/SKILL.md</span></div>
+    <pre>---
+name: diseno-ui
+description: Aplicá principios de diseño UI/UX para pulir la interfaz de este proyecto React. Usala cuando el usuario pida mejorar, pulir o "hacer más lindo" el diseño, o cuando mencione esta skill explícitamente.
+---
+
+# Skill: Diseño UI
+
+Cuando apliques esta skill, seguí estas reglas EN ORDEN. Hacé los cambios
+de a poco y explicá en una línea qué cambiaste y por qué.
+
+## 1. Paleta de colores
+- Máximo 1 color principal + 1 de acento + neutros (blanco/gris/negro).
+- Definí los colores como variables CSS en :root (--brand, --bg, --text).
+- Nada de colores al azar por componente: todos salen de esas variables.
+
+## 2. Tipografía
+- Una sola familia de fuentes para texto (system-ui está perfecto).
+- Máximo 3 tamaños visibles: título grande, subtítulo, texto normal.
+- Contraste alto entre texto y fondo.
+
+## 3. Espaciado consistente
+- Elegí una unidad base (ej: 8px) y usá múltiplos: 8, 16, 24, 32.
+- Mismo espaciado entre elementos hermanos (mismo gap en las grillas).
+
+## 4. Jerarquía visual
+- Lo importante se ve primero: título > precio > botón.
+- Un solo botón principal visible por pantalla.
+- Cards con border-radius y sombra suave.
+
+## 5. Estados e interacción
+- Todo lo clickeable reacciona: :hover (cambio sutil) y cursor: pointer.
+- Los botones deshabilitados se ven deshabilitados.
+
+## 6. Móvil primero
+- Probá en ventana angosta (~375px): nada debe desbordar.
+- Usá flex con wrap o grid con auto-fit para grillas de cards.
+
+## 7. Cierre
+- Después de cada ronda, indicá cómo verificarlo en el navegador.
+- No agregues librerías de CSS nuevas a menos que el usuario lo pida.</pre>
+    <button class="copy-btn">Copiar</button>
+  </div>
+
+  <h2><span class="ico">♿</span>Bonus: accesibilidad-web (a mano)</h2>
+  <p>Mismo mecanismo: carpeta <code>.opencode/skills/accesibilidad-web/</code> + este <code>SKILL.md</code>. Úsala después del diseño, como control de calidad.</p>
+  <div class="copyable">
+    <div class="bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">.opencode/skills/accesibilidad-web/SKILL.md</span></div>
+    <pre>---
+name: accesibilidad-web
+description: Control de calidad de accesibilidad para proyectos web React. Usala cuando el usuario pida revisar/accesibilizar la página, antes de dar por terminada una pantalla, o cuando mencione esta skill explícitamente.
+---
+
+# Skill: Accesibilidad Web
+
+Recorré la pantalla/componente actual y verificá estos puntos.
+Para cada problema: describilo en una línea, propón la corrección
+y aplicala solo cuando el usuario apruebe.
+
+## Checklist
+1. Contraste: texto legible sobre su fondo.
+2. Imágenes: todo img tiene alt descriptivo (o alt="" si es decorativa).
+3. Botones reales: lo clickeable es un button, no un div con onClick.
+4. Labels en inputs: cada input con su label (placeholder NO cuenta).
+5. Teclado: se navega con Tab; el foco se ve.
+6. Semántica: un solo h1, títulos en orden, listas ul/li, main y nav.
+7. Tamaños táctiles: botones con área cómoda (mínimo ~44px).
+8. Estados no solo con color: error con texto + ícono.</pre>
+    <button class="copy-btn">Copiar</button>
+  </div>
+  <div class="callout tip"><span class="c-ico">💡</span><div>Una skill es solo un archivo de texto. Si el agente no la detecta, pegá sus instrucciones como prompt normal — mismo efecto. Y animate a escribir la tuya: <code>mi-estilo</code> con TUS reglas.</div></div>
+
+  <h2><span class="ico">🔑</span>.env — variables de entorno</h2>
+  <div class="callout warn"><span class="c-ico">🚫</span><div>Nunca escribas claves ni valores que cambian <b>dentro del código</b>. Si el código se sube, el secreto se sube con él.</div></div>
+  <p>Los valores que cambian por entorno (la URL de una API, <strong>el puerto de tu tienda</strong>) viven en un archivo aparte: <code>.env</code>, en la <strong>raíz del proyecto</strong>. En Vite, las variables deben empezar con <code>VITE_</code>:</p>
+  <div class="copyable">
+    <div class="bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">.env + código</span></div>
+    <pre># Archivo .env (en la raíz del proyecto)
+VITE_PORT=5174              # 🔌 TU puerto: elegilo vos (4 dígitos, mayor a 1024)
+VITE_API_URL=http://localhost:3000
+
+# En el código se lee así:
+# const url = import.meta.env.VITE_API_URL;
+
+# Y el .gitignore evita subir el .env:
+node_modules
+.env
+.env.*
+dist</pre>
+    <button class="copy-btn">Copiar</button>
+  </div>
+  <ul>
+    <li>🔌 Para que <code>VITE_PORT</code> realmente cambie el servidor, el agente lo conecta en el <code>vite.config.js</code> — el prompt exacto está en el <strong>Paso 0</strong> del desafío</li>
+    <li>Truco pro: subir un <code>.env.example</code> con los nombres (sin valores) para que otros sepan qué falta</li>
+    <li>⚠️ En el frontend <strong>no hay secretos verdaderos</strong>: todo lo que llega al navegador es público. Los de verdad viven en el backend — <em>próxima clase</em> 👀</li>
+  </ul>
+
+  <h2><span class="ico">🛡️</span>Seguridad básica (de la clase de hoy)</h2>
+  <h3>Con el agente</h3>
+  <ul>
+    <li>🔐 Permisos solo dentro de la carpeta del proyecto</li>
+    <li>🤖 <strong>Prompt injection:</strong> si el agente lee una web o código que "le ordena" algo — eso NO es instrucción tuya. Contenido leído ≠ orden del usuario</li>
+    <li>🔌 MCP solo de fuentes confiables · 📦 dudá de dependencias desconocidas · 💾 hacé backups</li>
+  </ul>
+  <h3>En el código</h3>
+  <ul>
+    <li>Secretos → <code>.env</code>, jamás en el código</li>
+    <li>Nunca <code>innerHTML</code> con datos del usuario — en React <code>{'{dato}'}</code> ya escapa solo</li>
+    <li><code>key</code> única en listas · errores de consola → copiados exactos al agente</li>
+  </ul>
 </section>
 
 <!-- ══════════════ QR ══════════════ -->
@@ -620,7 +858,7 @@ muestra este error: [PEGA EL ERROR EXACTO].
 
 </main>
 
-<footer>Día 3 · Programación con IA — Desafío · Guía · Clases</footer>
+<footer>Día 4 · Programación con IA — Desafío · Herramientas · Guía · Clases</footer>
 
 <script>
   // Pestañas
