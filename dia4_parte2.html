@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Día 4 · Parte 2 — Skills de diseño + tu primer .env</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --panel: #161b22;
+    --border: #30363d;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --accent: #a371f7;
+    --accent2: #58a6ff;
+    --green: #3fb950;
+    --red: #f85149;
+    --yellow: #d29922;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; overflow: hidden; }
+  body {
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+  }
+  .deck { height: 100vh; position: relative; }
+  .slide {
+    display: none;
+    height: 100vh;
+    padding: 6vh 8vw;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2.5vh;
+    position: relative;
+  }
+  .slide.active { display: flex; }
+  .slide::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, var(--green), var(--accent));
+  }
+  h1 { font-size: clamp(2.2rem, 5.5vw, 4.2rem); line-height: 1.15; }
+  h2 { font-size: clamp(1.6rem, 3.8vw, 2.8rem); margin-bottom: 1vh; }
+  h2 .n {
+    color: var(--accent);
+    font-family: Consolas, monospace;
+    font-size: 0.75em;
+    vertical-align: middle;
+    margin-right: 0.4em;
+  }
+  p, li { font-size: clamp(1rem, 2.1vw, 1.45rem); line-height: 1.55; color: var(--text); }
+  .muted { color: var(--muted); }
+  ul, ol { padding-left: 1.4em; display: flex; flex-direction: column; gap: 1.2vh; }
+  .tag {
+    display: inline-block;
+    background: rgba(63,185,80,.15);
+    border: 1px solid var(--green);
+    color: var(--green);
+    padding: .2em .8em;
+    border-radius: 999px;
+    font-size: .85em;
+    font-family: Consolas, monospace;
+  }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 2vw; align-items: stretch; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.2vw; align-items: stretch; }
+  .menu-grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: repeat(3, auto); gap: .9vh 1.4vw; align-items: stretch; }
+  .menu-grid .card { padding: 1.2vh 1.1vw; border-radius: 12px; }
+  .menu-grid .card h3 { font-size: clamp(.85rem, 1.5vw, 1.05rem); margin-bottom: .4vh; }
+  .menu-grid .card p { font-size: clamp(.75rem, 1.25vw, .92rem); line-height: 1.35; margin-bottom: .5vh; }
+  .menu-grid pre { font-size: clamp(.6rem, 1.1vw, .8rem); padding: .8vh .7vw; }
+  .menu-grid .card ul { gap: .3vh; }
+  .menu-grid .card li { font-size: clamp(.72rem, 1.15vw, .86rem); }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 2vh 1.4vw;
+  }
+  .card h3 { font-size: clamp(.95rem, 1.8vw, 1.25rem); margin-bottom: .6vh; }
+  .card p, .card li { font-size: clamp(.8rem, 1.4vw, 1rem); }
+  pre {
+    background: #0a0d12;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.6vh 1.2vw;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: clamp(.72rem, 1.4vw, 1rem);
+    line-height: 1.6;
+    overflow: auto;
+    white-space: pre;
+  }
+  pre.copiable { cursor: pointer; border-color: rgba(88,166,255,.45); }
+  pre.copiable:hover { border-color: var(--accent2); }
+  pre.copiable.copied { border-color: var(--green); box-shadow: 0 0 12px rgba(63,185,80,.35); }
+  pre.copiable.copied::after {
+    content: " ✓ ¡copiado!";
+    color: var(--green);
+    font-size: .8em;
+  }
+  code.inline {
+    background: rgba(88,166,255,.12);
+    color: var(--accent2);
+    padding: .1em .4em;
+    border-radius: 5px;
+    font-family: Consolas, monospace;
+    font-size: .9em;
+  }
+  .kw { color: #ff7b72; }
+  .fn { color: #d2a8ff; }
+  .str { color: #a5d6ff; }
+  .cm { color: var(--muted); font-style: italic; }
+  .bad { border-left: 4px solid var(--red); }
+  .good { border-left: 4px solid var(--green); }
+  .star { border-left: 4px solid var(--yellow); }
+  .bad h3 { color: var(--red); }
+  .good h3 { color: var(--green); }
+  .star h3 { color: var(--yellow); }
+  .big-emoji { font-size: clamp(3rem, 8vw, 6rem); text-align: center; }
+  .center { text-align: center; }
+  .flow { display: flex; align-items: center; justify-content: center; gap: 1vw; flex-wrap: wrap; }
+  .flow .step {
+    background: var(--panel);
+    border: 1px solid var(--accent);
+    border-radius: 10px;
+    padding: 1.2vh 1.2vw;
+    font-size: clamp(.8rem, 1.5vw, 1.05rem);
+    text-align: center;
+  }
+  .flow .arr { color: var(--accent2); font-size: 1.6rem; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { border: 1px solid var(--border); padding: 1.2vh 1vw; text-align: left; font-size: clamp(.8rem, 1.45vw, 1.05rem); }
+  th { background: var(--panel); color: var(--green); }
+  .checklist li { list-style: none; }
+  .checklist li::before { content: "☐ "; color: var(--accent2); font-weight: bold; }
+  .subtitle { font-size: clamp(1.1rem, 2.4vw, 1.8rem); color: var(--muted); }
+  .hl { color: var(--accent); font-weight: 600; }
+  .hl2 { color: var(--accent2); font-weight: 600; }
+  .hl-green { color: var(--green); font-weight: 600; }
+  .hl-red { color: var(--red); font-weight: 600; }
+  .hl-yellow { color: var(--yellow); font-weight: 600; }
+  /* Controles */
+  #progress { position: fixed; bottom: 0; left: 0; height: 5px; background: linear-gradient(90deg, var(--green), var(--accent)); width: 0; transition: width .2s; z-index: 10; }
+  #counter { position: fixed; bottom: 14px; right: 20px; color: var(--muted); font-family: Consolas, monospace; font-size: .9rem; z-index: 10; }
+  #hint { position: fixed; bottom: 14px; left: 20px; color: var(--muted); font-size: .8rem; z-index: 10; opacity: .7; }
+  .nav-btn {
+    position: fixed; top: 50%; transform: translateY(-50%);
+    background: var(--panel); border: 1px solid var(--border); color: var(--text);
+    width: 44px; height: 44px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; z-index: 10;
+  }
+  .nav-btn:hover { border-color: var(--accent); color: var(--accent); }
+  #prev { left: 14px; } #next { right: 14px; }
+  .two-col { display: grid; grid-template-columns: 1.2fr 1fr; gap: 2vw; align-items: center; }
+  @media (max-width: 800px) {
+    .grid2, .grid3, .two-col { grid-template-columns: 1fr; }
+    .nav-btn { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+
+<!-- 1 · Portada -->
+<section class="slide">
+  <div><span class="tag">Día 4 · Parte 2 · retomamos</span></div>
+  <h1>Skills de diseño + tu primer <span class="hl-green">.env</span> 🎨</h1>
+  <p class="subtitle">Y después: de vuelta a mi-tienda, ustedes al volante</p>
+  <p class="muted">La clase pasada conocimos MCP y arrancamos el desafío. Hoy completamos las herramientas que nos faltan y las usamos de verdad.</p>
+</section>
+
+<!-- 2 · Dónde quedamos -->
+<section class="slide">
+  <h2><span class="n">01</span>Dónde quedamos la clase pasada</h2>
+  <div class="grid3">
+    <div class="card good">
+      <h3>✅ Ya lo vimos</h3>
+      <ul>
+        <li><span class="hl">MCP</span> completo: qué es, cómo funciona, dónde buscar</li>
+        <li>Tocamos <span class="hl">Skills</span> y <span class="hl2">.env</span> de pasada</li>
+        <li>¡La mayoría ya arrancó <span class="hl-green">mi-tienda</span>! 🎉</li>
+      </ul>
+    </div>
+    <div class="card bad">
+      <h3>❌ quedó pendiente</h3>
+      <ul>
+        <li>Instalar skills <span class="hl-red">de verdad</span> (y conocer el menú completo)</li>
+        <li>Crear el <span class="hl-red">primer .env</span> con manos propias</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>🎯 objetivo de hoy</h3>
+      <ul>
+        <li>Instalar mínimo <span class="hl-yellow">1 skill</span> de diseño</li>
+        <li>Crear tu <span class="hl-green">.env con TU puerto</span></li>
+        <li>Seguir avanzando tu tienda 🏪</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 3 · Agenda -->
+<section class="slide">
+  <h2><span class="n">02</span>Agenda de la Parte 2</h2>
+  <ul>
+    <li>⚡ <span class="hl">Recap relámpago</span> — Skills en 1 minuto (anatomía + activación)</li>
+    <li>🎨 <span class="hl">El menú de skills</span> — 5 skills de diseño del repo oficial, elegís las tuyas</li>
+    <li>🛠️ <span class="hl-green">Práctica 1</span> — instalá tu skill AHORA (1 comando)</li>
+    <li>🔑 <span class="hl2">Práctica 2</span> — tu primer <code class="inline">.env</code>: solo el puerto de momento</li>
+    <li>🏆 <span class="hl-green">Seguimiento</span> — seguimos mi-tienda paso a paso, yo circulo</li>
+  </ul>
+  <p class="muted">Pura práctica hoy: la teoría ya la conocés, ahora va todo al teclado 🚀</p>
+</section>
+
+<!-- 4 · Speed recap skills -->
+<section class="slide">
+  <h2><span class="n">03</span>Recap relámpago — ¿qué era una skill? 📜</h2>
+  <div class="two-col">
+    <pre><span class="cm">.opencode/skills/&lt;nombre&gt;/SKILL.md</span>
+┌──────────────────────────────┐
+│ ---                          │
+│ name: diseno-ui              │ <span class="cm">← cómo se llama</span>
+│ description: Aplicá buenos   │
+│   principios de diseño…      │ <span class="cm">← CUÁNDO se activa</span>
+│ ---                          │
+│ # Instrucciones              │ <span class="cm">← LA RECETA</span>
+└──────────────────────────────┘</pre>
+    <ul>
+      <li>Una skill = <span class="hl">un archivo de texto</span> con la receta de una tarea <span class="muted">(nada más, nada menos)</span></li>
+      <li><span class="hl">AGENTS.md</span> = reglas de la casa · <span class="hl">Skill</span> = receta para una tarea · <span class="hl">MCP</span> = el enchufe a servicios</li>
+      <li>Se activa <span class="hl">sola</span> si tu pedido matchea la descripción… o la invocás: <span class="hl-green">"usá la skill X"</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- 5 · El menú de skills -->
+<section class="slide">
+  <h2><span class="n">04</span>El menú 🎨 — 5 skills de diseño, todas del repo oficial</h2>
+  <div class="menu-grid">
+    <div class="card star">
+      <h3>⭐ frontend-design · LA obligatoria</h3>
+      <p>Diseño UI nivel producción, mata lo "genérico IA". Para pulir mi-tienda.</p>
+      <pre class="copiable">npx skills add anthropics/skills@frontend-design</pre>
+    </div>
+    <div class="card">
+      <h3>🌗 theme-factory</h3>
+      <p>Temas y paletas coherentes → ideal para tu <span class="hl2">modo oscuro</span> (L3 👀).</p>
+      <pre class="copiable">npx skills add anthropics/skills@theme-factory</pre>
+    </div>
+    <div class="card">
+      <h3>🏷️ brand-guidelines</h3>
+      <p>Identidad de marca: <span class="hl">colores, tipografía, tono</span>. Personalidad para la tienda.</p>
+      <pre class="copiable">npx skills add anthropics/skills@brand-guidelines</pre>
+    </div>
+    <div class="card">
+      <h3>🖼️ canvas-design</h3>
+      <p>Diseño visual puro: <span class="hl">pósters, banners, arte</span>. Para portada o promo.</p>
+      <pre class="copiable">npx skills add anthropics/skills@canvas-design</pre>
+    </div>
+    <div class="card">
+      <h3>🧠 skill-creator</h3>
+      <p>Te guía para <span class="hl">crear TU PROPIA skill</span> — el desafío extra ⭐: <code class="inline">mi-estilo</code>.</p>
+      <pre class="copiable">npx skills add anthropics/skills@skill-creator</pre>
+    </div>
+    <div class="card good">
+      <h3>🛡️ ¿Es seguro?</h3>
+      <ul>
+        <li><span class="hl-green">Repo oficial de Anthropic</span> — fuente confiable ✅</li>
+        <li>Solo <span class="hl-green">archivos de texto</span>: 0 costo extra, <span class="hl-green">capa gratuita</span> 💚</li>
+        <li>Todo queda <span class="hl">dentro de tu carpeta</span> — nada sale de tu máquina</li>
+      </ul>
+    </div>
+  </div>
+  <p class="muted">💡 Clic en cualquier comando y queda copiado → pegalo en tu terminal dentro de <code class="inline">mi-tienda</code>. Con la ⭐ alcanza; las demás son refuerzos.</p>
+</section>
+
+<!-- 6 · Cómo se activa -->
+<section class="slide">
+  <h2><span class="n">05</span>Instalada… ¿y ahora cómo la uso?</h2>
+  <div class="two-col">
+    <div>
+      <ul>
+        <li>🔍 <span class="hl">Automática:</span> el agente la detecta cuando tu pedido matchea la <em>description</em> — pedile "pulí el diseño" 💨</li>
+        <li>🗣️ <span class="hl">Explícita (más confiable):</span> la nombrás vos por su nombre</li>
+        <li>📍 Si no la encuentra: verificá que quedó en <code class="inline">.agents/skills/</code> (o reiniciá la sesión)</li>
+        <li>⏳ Cuando el instalador pregunte <em>"para qué agente"</em> → elegís <span class="hl-green">opencode</span></li>
+      </ul>
+    </div>
+    <div>
+      <p>Prompts copiables (¡clic!):</p>
+      <pre class="copiable">usá la skill frontend-design para pulir el diseño
+de mi-tienda: paleta coherente, espaciados, hover
+en las cards y que se vea bien en el celular.</pre>
+      <pre class="copiable">aplicá la skill theme-factory: creame un tema
+oscuro coherente para mi-tienda con un solo
+color de acento.</pre>
+    </div>
+  </div>
+</section>
+
+<!-- 7 · Práctica 1 -->
+<section class="slide">
+  <h2><span class="n">06</span>🛠️ Práctica 1 — instalá tu skill (ahora sí)</h2>
+  <div class="grid2">
+    <div class="card good">
+      <h3>¿Cómo?</h3>
+      <ol>
+        <li>Abrí tu proyecto <code class="inline">mi-tienda</code> en el agente</li>
+        <li>y escribí en la <span class="hl">terminal</span> (clic para copiar):</li>
+      </ol>
+      <pre class="copiable">npx skills add anthropics/skills@frontend-design</pre>
+      <p>Es solo un comando de terminal que baja archivos de texto: <span class="hl">no consume nada de tu capa gratuita</span> 🆓</p>
+    </div>
+    <div class="card">
+      <h3>Lo mínimo que tienen que lograr HOY</h3>
+      <ul>
+        <li>✅ <strong>1 skill instalada</strong>: la ⭐ obligatoria</li>
+        <li>✨ Extra: <span class="hl">theme-factory</span> si vas por L3 (modo oscuro)</li>
+        <li>✨ Extra: <span class="hl">skill-creator</span> si querés crear <code class="inline">mi-estilo</code></li>
+        <li>⚠️ ¿Atascado? Levantá la mano <span class="hl-yellow">antes</span> de improvisar</li>
+      </ul>
+    </div>
+  </div>
+  <p class="muted">5 minutos ⏱️ — ¿Ya la tenés? Probá activarla en la práctica de la diapo anterior, o avisame y seguimos con .env.</p>
+</section>
+
+<!-- 8 · .env recap -->
+<section class="slide">
+  <h2><span class="n">07</span>Recap — .env en 30 segundos 🔑</h2>
+  <div class="grid2">
+    <div class="card bad">
+      <h3>❌ Lo que NO va en el código</h3>
+      <pre><span class="kw">const</span> API_KEY = <span class="str">"sk-abc123-SECRETO"</span>;
+<span class="cm">// si el código se sube, el secreto se sube</span></pre>
+    </div>
+    <div class="card good">
+      <h3>✅ Lo que sí: aparte, en .env</h3>
+      <pre><span class="cm"># .env — RAÍZ del proyecto (NO se sube a git)</span>
+VITE_PORT=5174</pre>
+    </div>
+  </div>
+  <ul>
+    <li>Reglas que vimos: prefijo <code class="inline">VITE_</code> obligatorio en Vite, el <code class="inline">.env</code> <span class="hl">nunca se sube</span> (irá al <code class="inline">.gitignore</code>)</li>
+    <li>📌 Hoy es <span class="hl-green">el caso tranquilo</span>: el puerto no es un secreto. Empezamos por ahí para crear la costumbre de usar .env 🚀</li>
+    <li>⏳ Los secretos de verdad → backend (próxima clase 😉)</li>
+  </ul>
+</section>
+
+<!-- 9 · Práctica 2: primer .env -->
+<section class="slide">
+  <h2><span class="n">08</span>🛠️ Práctica 2 — tu PRIMER .env (solo el puerto)</h2>
+  <div class="two-col">
+    <div>
+      <ol>
+        <li>Elegí <span class="hl">TU número</span>: 4 dígitos, mayor a 1024 <span class="muted">(evitá el 5173 "default" de todo el mundo 😄)</span></li>
+        <li>En la <span class="hl">raíz de mi-tienda</span>, creá el archivo <code class="inline">.env</code> — <span class="hl-green">una sola línea</span>:</li>
+      </ol>
+      <pre class="copiable">VITE_PORT=5174</pre>
+      <p class="muted">↑ reemplazá el número por el tuyo. Crealo vos a mano… o hacés el paso siguiente y el agente lo crea por vos.</p>
+    </div>
+    <div>
+      <p>Luego delegás la conexión al agente (clic para copiar):</p>
+      <pre class="copiable">Creá un archivo .env en la raíz con VITE_PORT=5174
+y configurá el vite.config.js para que el servidor
+de desarrollo use ese puerto (usá loadEnv para leer
+la variable, con 5173 como fallback si no existe).
+Explicame en dos líneas qué tocaste.</pre>
+      <p>El <span class="hl">diff del vite.config.js</span> es la lección: ahí ves dónde y cómo la variable <span class="hl">sale del .env y entra al código</span> 👀</p>
+    </div>
+  </div>
+</section>
+
+<!-- 10 · Errores comunes .env -->
+<section class="slide">
+  <h2><span class="n">09</span>⚠️ Si el puerto no funciona — checklist de errores comunes</h2>
+  <div class="grid2">
+    <div class="card bad">
+      <h3>Los clásicos</h3>
+      <ul>
+        <li><code class="inline">.env</code> no está en la <span class="hl-red">raíz</span> <span class="muted">(junto a package.json, no dentro de src/)</span></li>
+        <li>Espacios alrededor del <code class="inline">=</code>: <code class="inline">VITE_PORT = 5174</code> ❌</li>
+        <li>Sin el prefijo <code class="inline">VITE_</code> → la variable no llega al navegador</li>
+        <li>Cambiar el <code class="inline">.env</code> sin reiniciar: para el <code class="inline">npm run dev</code> y volvé a correrlo (o nueva sesión del agente)</li>
+        <li>Puerto ocupado → <span class="hl">elegí otro número</span></li>
+      </ul>
+    </div>
+    <div class="card good">
+      <h3>✅ Cómo verificar que anduvo</h3>
+      <ol>
+        <li>El agente te muestra el <span class="hl">diff</span> → aceptás</li>
+        <li><code class="inline">npm run dev</code> arranca…</li>
+        <li>…y dice tu puerto: <code class="inline">localhost:5174</code> → <span class="hl-green">el TUYO</span> 🎯</li>
+        <li>El navegador carga la tienda en ese puerto</li>
+      </ol>
+      <p>Si algo falla: copiá el error <span class="hl-red">exacto</span> (consola F12 o terminal) y se lo pegás al agente.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 11 · De vuelta al desafío -->
+<section class="slide">
+  <h2><span class="n">10</span>🏪 De vuelta a mi-tienda — ¿dónde estás?</h2>
+  <table>
+    <tr><th>Paso</th><th>Qué es</th><th>Estado esperado</th></tr>
+    <tr><td>🟢 <strong>Paso 0</strong></td><td>proyecto + <strong>tu puerto en .env</strong> + skill instalada</td><td><span class="hl-green">lo completamos TODOS hoy</span></td></tr>
+    <tr><td>▶️ <strong>Pasos 1-2</strong></td><td>plan + array de productos con .map()</td><td>muchos ya empezaron la clase pasada 🎉</td></tr>
+    <tr><td>🟡 <strong>Pasos 3-5</strong></td><td>buscador → filtros → carrito</td><td>avanzá con un prompt = una tarea</td></tr>
+    <tr><td>✨ <strong>Paso 7</strong></td><td>pulir con la skill <span class="hl">frontend-design</span></td><td><span class="hl-yellow">OBLIGATORIO antes de entregar</span></td></tr>
+    <tr><td>🚀 <strong>L2-L4</strong></td><td>extras: cantidades, modo oscuro, cupón…</td><td>para los que terminan</td></tr>
+  </table>
+  <div class="flow" style="margin-top:1vh">
+    <div class="step">🧠 Pensar</div><div class="arr">→</div>
+    <div class="step">✍️ Prompt (1 tarea)</div><div class="arr">→</div>
+    <div class="step">👀 Diff</div><div class="arr">→</div>
+    <div class="step">▶️ Probar (TU puerto)</div><div class="arr">↺</div>
+  </div>
+</section>
+
+<!-- 12 · Cierre -->
+<section class="slide">
+  <div class="big-emoji">🎉</div>
+  <h2 class="center">Cierre de la Parte 2</h2>
+  <ul class="checklist">
+    <li>Instalé al menos <strong>1 skill de diseño</strong> del repo oficial (y sé que son solo texto = gratis)</li>
+    <li>Creé mi <strong>primer .env</strong> con mi propio puerto y el agente lo conectó al <code class="inline">vite.config.js</code></li>
+    <li>Mi tienda avanza al ciclo: pensar → prompt → diff → probar</li>
+  </ul>
+  <p>📅 Próxima clase: <span class="hl">BACKEND</span> — tu tienda tendrá una API real y base de datos. El <code class="inline">.env</code> que creaste hoy vuelve con las variables que SÍ son secretas. 😉</p>
+  <p class="muted center">Desafío completo + niveles extra → queda para casa. ¡Todo el material está en la guía (QR)!</p>
+</section>
+
+</div>
+
+<div id="progress"></div>
+<div id="counter">1 / 12</div>
+<div id="hint">← → navegar · clic en un comando → lo copia</div>
+<button class="nav-btn" id="prev">‹</button>
+<button class="nav-btn" id="next">›</button>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  let i = 0;
+  function show(n) {
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach((s, k) => s.classList.toggle('active', k === i));
+    document.getElementById('progress').style.width = ((i + 1) / slides.length * 100) + '%';
+    document.getElementById('counter').textContent = (i + 1) + ' / ' + slides.length;
+  }
+  document.getElementById('next').onclick = () => show(i + 1);
+  document.getElementById('prev').onclick = () => show(i - 1);
+  document.addEventListener('keydown', e => {
+    if (['ArrowRight','ArrowDown',' ','PageDown','Enter'].includes(e.key)) { e.preventDefault(); show(i + 1); }
+    else if (['ArrowLeft','ArrowUp','PageUp'].includes(e.key)) { e.preventDefault(); show(i - 1); }
+    else if (e.key === 'Home') { e.preventDefault(); show(0); }
+    else if (e.key === 'End') { e.preventDefault(); show(slides.length - 1); }
+  });
+  document.addEventListener('click', e => {
+    if (e.target.closest('button')) return;
+    if (e.target.closest('pre.copiable')) return; // el clic en un comando copia, no navega
+    if (e.clientX > window.innerWidth / 2) show(i + 1); else show(i - 1);
+  });
+  // Copiar comandos con un clic
+  document.querySelectorAll('pre.copiable').forEach(p => {
+    p.title = 'Clic para copiar';
+    p.onclick = () => {
+      navigator.clipboard.writeText(p.textContent.trim());
+      p.classList.add('copied');
+      setTimeout(() => p.classList.remove('copied'), 1200);
+    };
+  });
+  show(0);
+</script>
+</body>
+</html>

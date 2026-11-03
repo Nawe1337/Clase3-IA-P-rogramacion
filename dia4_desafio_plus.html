@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🚀 Desafío Plus — Tu tienda con links · Día 4 · Parte 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f8fc; --panel: #ffffff; --border: #e5e8f0;
+    --text: #171b26; --muted: #5c6474;
+    --brand: #6d5ae8; --brand-dark: #5544c9; --brand-soft: #efecff;
+    --blue: #2f7cf6; --blue-soft: #e8f1ff;
+    --green: #12894f; --green-soft: #e4f7ec;
+    --red: #d5484f; --yellow-soft: #fff7e0; --yellow-border: #e6b93f;
+    --shadow-sm: 0 1px 2px rgba(23,27,38,.05), 0 1px 6px rgba(23,27,38,.04);
+    --radius: 16px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: "Inter", system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.65; padding-bottom: 60px; -webkit-font-smoothing: antialiased; }
+  .hero {
+    background: radial-gradient(1200px 500px at 80% -10%, #7f6cff55, transparent 60%),
+                linear-gradient(135deg, #17102e 0%, #241b57 55%, #123a6b 100%);
+    color: #fff; padding: 46px 20px 52px; text-align: center;
+  }
+  .hero .badge { display: inline-flex; gap: 8px; align-items: center; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.22); border-radius: 999px; padding: 6px 14px; font-size: .8rem; font-weight: 600; color: #ffd9a4; text-transform: uppercase; letter-spacing: .04em; }
+  .hero .badge .dot { width: 8px; height: 8px; border-radius: 50%; background: #ffb020; box-shadow: 0 0 12px #ffb020; }
+  .hero h1 { margin: 16px auto 10px; max-width: 720px; font-size: clamp(1.6rem, 4.6vw, 2.6rem); font-weight: 800; letter-spacing: -.03em; }
+  .hero p { max-width: 560px; margin: 0 auto; color: #c6c4dd; font-size: clamp(.92rem, 2.5vw, 1.08rem); }
+  main { max-width: 860px; margin: 0 auto; padding: 26px 18px 0; }
+  h2 { display: flex; align-items: center; gap: 10px; font-size: clamp(1.2rem, 3.4vw, 1.55rem); font-weight: 800; margin: 30px 0 12px; }
+  h2 .ico { display: inline-grid; place-items: center; width: 36px; height: 36px; border-radius: 11px; background: var(--brand-soft); font-size: 1rem; flex: none; }
+  section.doc > h2:first-child { margin-top: 8px; }
+  h3 { font-size: clamp(1rem, 2.8vw, 1.18rem); font-weight: 700; margin: 20px 0 6px; }
+  p, li { font-size: clamp(.9rem, 2.3vw, 1rem); color: #2c3345; }
+  ul, ol { padding-left: 1.3em; margin: 8px 0; }
+  code { background: var(--brand-soft); color: var(--brand-dark); padding: .1em .4em; border-radius: 6px; font-family: "JetBrains Mono", Consolas, monospace; font-size: .85em; }
+  .card { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-sm); padding: 18px 20px; margin-bottom: 14px; }
+  .callout { display: flex; gap: 12px; border-radius: 12px; padding: 14px 16px; margin: 12px 0; font-size: clamp(.88rem, 2.2vw, .98rem); }
+  .callout.tip { background: var(--green-soft); border: 1px solid #bfe8cf; }
+  .callout.warn { background: var(--yellow-soft); border: 1px solid var(--yellow-border); }
+  .c-ico { font-size: 1.15rem; flex: none; }
+  .prompt { position: relative; background: #0f1420; color: #dbe4f3; border-radius: 12px; padding: 14px 16px; margin: 10px 0; font-family: "JetBrains Mono", Consolas, monospace; font-size: clamp(.76rem, 2vw, .88rem); line-height: 1.6; white-space: pre-wrap; }
+  .prompt .copy { position: absolute; top: 8px; right: 8px; background: #26304a; border: 1px solid #3a4664; color: #c6d2e8; border-radius: 8px; padding: 4px 10px; font: 600 .72rem "Inter", sans-serif; cursor: pointer; }
+  .prompt .copy:hover { background: #32405e; }
+  .prompt .copy.ok { background: #12894f; border-color: #12894f; color: #fff; }
+  .mock { background: #f0f2fa; border: 1px dashed #c9d0e4; border-radius: 12px; padding: 14px 16px; margin: 10px 0; font-size: clamp(.85rem, 2.2vw, .98rem); }
+  .mock .bar { display: flex; gap: 10px; align-items: center; background: #171b26; color: #fff; border-radius: 8px 8px 0 0; padding: 8px 12px; font: 600 .8rem "Inter", sans-serif; }
+  .mock .bar .lnk { color: #9db4ff; border-bottom: 2px solid currentColor; }
+  .mock .bar .lnk.on { color: #fff; }
+  .mock .body { background: var(--panel); border-radius: 0 0 8px 8px; padding: 12px; color: var(--muted); font-size: .88rem; }
+  table { border-collapse: collapse; width: 100%; margin: 10px 0; font-size: clamp(.82rem, 2.1vw, .94rem); }
+  th, td { border: 1px solid var(--border); padding: 9px 10px; text-align: left; }
+  th { background: var(--brand-soft); color: var(--brand-dark); }
+  .checklist { list-style: none; padding-left: 0; }
+  .checklist li::before { content: "☐ "; color: var(--green); font-weight: 700; }
+  a { color: var(--brand-dark); }
+  .back { display: inline-block; margin: 26px 0 0; background: var(--brand); color: #fff; text-decoration: none; border-radius: 10px; padding: 9px 16px; font: 600 .88rem "Inter", sans-serif; }
+  footer { text-align: center; color: var(--muted); font-size: .85rem; padding: 30px 16px 10px; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="badge"><span class="dot"></span> Día 4 · Parte 2 · ¿terminaste mi-tienda?</span>
+  <h1>🚀 Desafío Plus — tu <span style="color:#ffd9a4">tienda con links</span></h1>
+  <p>Inicio / Nosotros: tu primera app con <b>vistas</b> que cambian sin recargar la página. El siguiente paso natural de mi-tienda.</p>
+</div>
+
+<main>
+
+<h2><span class="ico">🏪</span>¿Qué es esto?</h2>
+<div class="card">
+  <p>Tu tienda hoy es <strong>una sola pantalla</strong>. En la vida real, un sitio tiene <strong>secciones con links</strong>: Inicio, Nosotros, Contacto… Hoy la preparas para eso: de la tienda que ya terminaste a una app con <strong>vistas que cambian de página sin recargar nada</strong> — eso es una <em>Single Page App</em>, la misma idea que tienen tus apps favoritas.</p>
+  <p style="margin-top:8px">🛒 Lo importante: <strong>el carrito no se pierde</strong> al navegar. Ese va a ser el control real de que entendiste bien el estado compartido.</p>
+</div>
+<div class="mock">
+  <div class="bar">🛒&nbsp;Mi Tienda&nbsp;·&nbsp;<span class="lnk on">Inicio</span>&nbsp;<span class="lnk">Nosotros</span>&nbsp;·&nbsp;🛒 3</div>
+  <div class="body">Inicio → tu catálogo, buscador, filtros y carrito tal como lo tenés…</div>
+</div>
+<div class="mock">
+  <div class="bar">🛒&nbsp;Mi Tienda&nbsp;·&nbsp;<span class="lnk">Inicio</span>&nbsp;<span class="lnk on">Nosotros</span>&nbsp;·&nbsp;🛒 3</div>
+  <div class="body">Nosotros → la historia de tu tienda: qué vendés, tu logo, un banner… y el 🛒 sigue ahí con sus 3 items.</div>
+</div>
+
+<div class="callout warn"><span class="c-ico">⚠️</span><div>Regla para entrar: solo si tu tienda ya tiene los <b>5 requisitos mínimos</b> + diseño pulido con la skill. Esto es el <b>postre</b> 🍨</div></div>
+
+<h2><span class="ico">🧭</span>Paso a paso (un prompt = una tarea — como siempre)</h2>
+
+<h3>1 · El plan primero</h3>
+<div class="prompt"><button class="copy">Copiar</button>Mi tienda (React + Vite) ya está terminada. Quiero agregar dos vistas: Inicio (lo que ya tengo) y Nosotros.
+Antes de escribir código: explicame en 4 líneas cómo agregarías "vistas" en mi app actual
+(componente nuevo AppView? estado? props?) y proponé pasos chicos, uno por vez.
+No escribas código todavía.</div>
+
+<h3>2 · Navbar con links</h3>
+<div class="prompt"><button class="copy">Copiar</button>Paso 1: en mi Navbar, los textos "Inicio" y "Nosotros" pasan a ser links clickeables.
+Al clickear, avisan a App qué vista mostrar (la función que sube el evento
+llamala onCambiarVista). El link activo tiene un subrayado.
+No cambies nada más todavía.</div>
+
+<h3>3 · App manda: el estado vista</h3>
+<div class="prompt"><button class="copy">Copiar</button>Paso 2: en App creá el estado vista con useState("inicio"). Los links del Navbar
+cambian ese estado con setVista. Dentro de App mostrá el catálogo completo
+solo si vista === "inicio" y un componente Nosotros nuevo si vista === "nosotros".
+Acepto el diff solo si el catálogo se ve exactamente igual que antes.</div>
+
+<h3>4 · La página Nosotros</h3>
+<div class="prompt"><button class="copy">Copiar</button>Paso 3: creá el componente Nosotros.jsx: el nombre de mi tienda como título,
+un párrafo propio (inventame uno breve y que se pueda editar fácil), 2-3 datos
+ej: lo que disfruto hacer y por qué elegí esos productos, y un botón
+"Volver a la tienda" que llame a onCambiarVista("inicio").
+No agregues librerías nuevas.</div>
+
+<h3>5 · ✨ Consistencia visual con la skill</h3>
+<div class="prompt"><button class="copy">Copiar</button>Usá la skill frontend-design para pulir la vista Nosotros: que comparta
+la misma paleta, tipografía y espaciados de Inicio, y que el banner
+de abajo se vea bien en el celular.</div>
+
+<h2><span class="ico">✅</span>Checklist del Desafío Plus</h2>
+<div class="card">
+  <ul class="checklist">
+    <li>Los links del navbar cambian de vista <strong>sin recargar la página</strong></li>
+    <li><strong>El carrito sobrevive a la navegación</strong>: agregá algo, anda a Nosotros y volvé — el 🛒 sigue con la misma cantidad</li>
+    <li>Nosotros comparte la identidad visual de Inicio (misma paleta y tipografía)</li>
+    <li>Probé los dos links, y desde Nosotros puedo volver a Inicio</li>
+  </ul>
+</div>
+
+<h2><span class="ico">🥇</span>Puntos extra (tarea para casa)</h2>
+<table>
+  <tr><th>Nivel</th><th>Extra</th></tr>
+  <tr><td><b>P2</b></td><td>Tercera vista <b>Ayuda / Contacto</b> con un formulario simple que valide con la misma idea del checkout</td></tr>
+  <tr><td><b>P3</b></td><td><b>Links reales de tu tienda</b>: navegá con la barra de direcciones — <code>#/inicio</code> y <code>#/nosotros</code> (escuchando <code>hashchange</code>). Si funciona: podés compartir links directos por chat 😉</td></tr>
+  <tr><td><b>P4</b></td><td>Banner/portada dibujada con la skill <code>canvas-design</code> (pósters con arte algorítmico)</td></tr>
+</table>
+
+<div class="callout tip"><span class="c-ico">🧠</span><div><b>¿Por qué esto importa?</b> La próxima clase conectamos tu tienda a un backend real: vas a tener <b>URLs de verdad</b> (<code>/nosotros</code>, producto/<code>:id</code>, <code>/carrito</code>); esta lección es la base mental de eso.</div></div>
+
+<a class="back" href="index.html">← Volver al hub del curso</a>
+
+</main>
+
+<footer>Día 4 · Parte 2 · Desafío Plus — Programación con IA</footer>
+
+<script>
+  document.querySelectorAll('.prompt .copy').forEach(btn => {
+    btn.onclick = () => {
+      navigator.clipboard.writeText(btn.parentElement.textContent.replace(/^Copiar$/m, '').trim())
+        .then(() => {
+          btn.textContent = '✓ Copiado'; btn.classList.add('ok');
+          setTimeout(() => { btn.textContent = 'Copiar'; btn.classList.remove('ok'); }, 1500);
+        });
+    };
+  });
+</script>
+</body>
+</html>
