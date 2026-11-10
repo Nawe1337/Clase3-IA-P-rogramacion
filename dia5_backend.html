@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Día 5 — De solo front a backend + base de datos</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --panel: #161b22;
+    --border: #30363d;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --accent: #a371f7;
+    --accent2: #58a6ff;
+    --green: #3fb950;
+    --red: #f85149;
+    --yellow: #d29922;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; overflow: hidden; }
+  body {
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+  }
+  .deck { height: 100vh; position: relative; }
+  .slide {
+    display: none;
+    height: 100vh;
+    padding: 6vh 8vw;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2.5vh;
+    position: relative;
+  }
+  .slide.active { display: flex; }
+  .slide::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, var(--green), var(--accent));
+  }
+  h1 { font-size: clamp(2.2rem, 5.5vw, 4.2rem); line-height: 1.15; }
+  h2 { font-size: clamp(1.6rem, 3.8vw, 2.8rem); margin-bottom: 1vh; }
+  h2 .n {
+    color: var(--accent);
+    font-family: Consolas, monospace;
+    font-size: 0.75em;
+    vertical-align: middle;
+    margin-right: 0.4em;
+  }
+  p, li { font-size: clamp(1rem, 2.1vw, 1.45rem); line-height: 1.55; color: var(--text); }
+  .muted { color: var(--muted); }
+  ul, ol { padding-left: 1.4em; display: flex; flex-direction: column; gap: 1.2vh; }
+  .tag {
+    display: inline-block;
+    background: rgba(63,185,80,.15);
+    border: 1px solid var(--green);
+    color: var(--green);
+    padding: .2em .8em;
+    border-radius: 999px;
+    font-size: .85em;
+    font-family: Consolas, monospace;
+  }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 2vw; align-items: stretch; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.2vw; align-items: stretch; }
+  .menu-grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: repeat(3, auto); gap: .9vh 1.4vw; align-items: stretch; }
+  .menu-grid .card { padding: 1.2vh 1.1vw; border-radius: 12px; }
+  .menu-grid .card h3 { font-size: clamp(.85rem, 1.5vw, 1.05rem); margin-bottom: .4vh; }
+  .menu-grid .card p { font-size: clamp(.75rem, 1.25vw, .92rem); line-height: 1.35; margin-bottom: .5vh; }
+  .menu-grid pre { font-size: clamp(.6rem, 1.1vw, .8rem); padding: .8vh .7vw; }
+  .menu-grid .card ul { gap: .3vh; }
+  .menu-grid .card li { font-size: clamp(.72rem, 1.15vw, .86rem); }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 2vh 1.4vw;
+  }
+  .card h3 { font-size: clamp(.95rem, 1.8vw, 1.25rem); margin-bottom: .6vh; }
+  .card p, .card li { font-size: clamp(.8rem, 1.4vw, 1rem); }
+  pre {
+    background: #0a0d12;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.6vh 1.2vw;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: clamp(.72rem, 1.4vw, 1rem);
+    line-height: 1.6;
+    overflow: auto;
+    white-space: pre;
+  }
+  pre.copiable { cursor: pointer; border-color: rgba(88,166,255,.45); }
+  pre.copiable:hover { border-color: var(--accent2); }
+  pre.copiable.copied { border-color: var(--green); box-shadow: 0 0 12px rgba(63,185,80,.35); }
+  pre.copiable.copied::after {
+    content: " ✓ ¡copiado!";
+    color: var(--green);
+    font-size: .8em;
+  }
+  code.inline {
+    background: rgba(88,166,255,.12);
+    color: var(--accent2);
+    padding: .1em .4em;
+    border-radius: 5px;
+    font-family: Consolas, monospace;
+    font-size: .9em;
+  }
+  .kw { color: #ff7b72; }
+  .fn { color: #d2a8ff; }
+  .str { color: #a5d6ff; }
+  .cm { color: var(--muted); font-style: italic; }
+  .bad { border-left: 4px solid var(--red); }
+  .good { border-left: 4px solid var(--green); }
+  .star { border-left: 4px solid var(--yellow); }
+  .bad h3 { color: var(--red); }
+  .good h3 { color: var(--green); }
+  .star h3 { color: var(--yellow); }
+  .big-emoji { font-size: clamp(3rem, 8vw, 6rem); text-align: center; }
+  .center { text-align: center; }
+  .flow { display: flex; align-items: center; justify-content: center; gap: 1vw; flex-wrap: wrap; }
+  .flow .step {
+    background: var(--panel);
+    border: 1px solid var(--accent);
+    border-radius: 10px;
+    padding: 1.2vh 1.2vw;
+    font-size: clamp(.8rem, 1.5vw, 1.05rem);
+    text-align: center;
+  }
+  .flow .arr { color: var(--accent2); font-size: 1.6rem; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { border: 1px solid var(--border); padding: 1.2vh 1vw; text-align: left; font-size: clamp(.8rem, 1.45vw, 1.05rem); }
+  th { background: var(--panel); color: var(--green); }
+  .checklist li { list-style: none; }
+  .checklist li::before { content: "☐ "; color: var(--accent2); font-weight: bold; }
+  .subtitle { font-size: clamp(1.1rem, 2.4vw, 1.8rem); color: var(--muted); }
+  .hl { color: var(--accent); font-weight: 600; }
+  .hl2 { color: var(--accent2); font-weight: 600; }
+  .hl-green { color: var(--green); font-weight: 600; }
+  .hl-red { color: var(--red); font-weight: 600; }
+  .hl-yellow { color: var(--yellow); font-weight: 600; }
+  /* Controles */
+  #progress { position: fixed; bottom: 0; left: 0; height: 5px; background: linear-gradient(90deg, var(--green), var(--accent)); width: 0; transition: width .2s; z-index: 10; }
+  #counter { position: fixed; bottom: 14px; right: 20px; color: var(--muted); font-family: Consolas, monospace; font-size: .9rem; z-index: 10; }
+  #hint { position: fixed; bottom: 14px; left: 20px; color: var(--muted); font-size: .8rem; z-index: 10; opacity: .7; }
+  .nav-btn {
+    position: fixed; top: 50%; transform: translateY(-50%);
+    background: var(--panel); border: 1px solid var(--border); color: var(--text);
+    width: 44px; height: 44px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; z-index: 10;
+  }
+  .nav-btn:hover { border-color: var(--accent); color: var(--accent); }
+  #prev { left: 14px; } #next { right: 14px; }
+  .two-col { display: grid; grid-template-columns: 1.2fr 1fr; gap: 2vw; align-items: center; }
+  @media (max-width: 800px) {
+    .grid2, .grid3, .two-col { grid-template-columns: 1fr; }
+    .nav-btn { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+<!-- 1 · Portada -->
+<section class="slide">
+  <div><span class="tag">Día 5 · Clase 5</span></div>
+  <h1>De <span class="hl2">solo front</span> a <span class="hl-green">backend + base de datos</span> 🗄️</h1>
+  <p class="subtitle">Con una tienda de zapatillas de verdad… y trabajando como en la industria: SDD + TDD</p>
+  <p class="muted">Hoy miramos juntos <code class="inline">tienda-prueba</code> (Pisada 👟): primero cómo está hecha solo con frontend, y después cómo se muda a una API con base de datos.</p>
+</section>
+
+<!-- 2 · Dónde quedamos -->
+<section class="slide">
+  <h2><span class="n">01</span>Dónde quedamos</h2>
+  <div class="grid3">
+    <div class="card good">
+      <h3>✅ Ya tienen</h3>
+      <ul>
+        <li><span class="hl-green">mi-tienda</span>: catálogo, buscador, filtros y carrito</li>
+        <li>Una <span class="hl">skill</span> de diseño instalada</li>
+        <li>Su primer <code class="inline">.env</code> con <span class="hl2">su puerto</span></li>
+      </ul>
+    </div>
+    <div class="card bad">
+      <h3>🤔 Pero…</h3>
+      <ul>
+        <li>Los productos están <span class="hl-red">escritos a mano</span> en un array</li>
+        <li>El carrito vive <span class="hl-red">solo en tu navegador</span></li>
+        <li>No hay <span class="hl-red">pedidos</span>: nadie se entera si comprás</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>🎯 Hoy</h3>
+      <ul>
+        <li>Aprender a trabajar con <span class="hl-yellow">SPEC + TESTS</span></li>
+        <li>Entender qué es un <span class="hl-green">backend</span> y una <span class="hl-green">base de datos</span></li>
+        <li>Ver la <span class="hl2">mudanza</span> en vivo con tienda-prueba</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 3 · Agenda -->
+<section class="slide">
+  <h2><span class="n">02</span>Agenda</h2>
+  <ul>
+    <li>🧭 <span class="hl">Modelo de trabajo</span>: SDD (primero la spec) + TDD (primero el test)</li>
+    <li>👟 <span class="hl">Tour por tienda-prueba</span> — Fase 1: solo frontend, pero bien armada</li>
+    <li>🚧 <span class="hl-red">Los límites</span> del solo front: ¿por qué necesitamos un backend?</li>
+    <li>🗄️ <span class="hl-green">Backend + BD</span>: API, endpoints, JSON, SQL — lo justo y necesario</li>
+    <li>🔁 <span class="hl2">La mudanza</span>: cambia UN archivo y los tests nos cuidan</li>
+    <li>🏆 <span class="hl-green">Práctica</span>: tu spec y tu primer test en mi-tienda</li>
+  </ul>
+</section>
+
+<!-- 4 · SDD -->
+<section class="slide">
+  <h2><span class="n">03</span>SDD — Spec-Driven Development 📝</h2>
+  <div class="two-col">
+    <div>
+      <p>Antes de pedirle código al agente, escribimos <span class="hl">QUÉ queremos</span> y <span class="hl">CÓMO sabemos que está bien</span>.</p>
+      <div class="flow" style="margin:2vh 0">
+        <div class="step">📝 Spec</div><div class="arr">→</div>
+        <div class="step">✅ Criterios</div><div class="arr">→</div>
+        <div class="step">🧪 Tests</div><div class="arr">→</div>
+        <div class="step">💻 Código</div>
+      </div>
+      <ul>
+        <li><span class="hl">Requisitos</span> numerados: R1, R2…</li>
+        <li><span class="hl">Criterios</span>: Dado / Cuando / Entonces</li>
+        <li><span class="hl-red">Fuera de alcance</span>: lo que HOY no hacemos</li>
+      </ul>
+    </div>
+    <pre><span class="cm"># docs/SPEC.md (tienda-prueba)</span>
+
+<span class="fn">### R2 · Buscador</span>
+- CA-2.1 Cuando escribo un texto, solo veo
+  productos cuyo nombre o marca lo contienen.
+- CA-2.2 Ignora mayúsculas y acentos
+  (<span class="str">"rafaga"</span> encuentra <span class="str">"Ráfaga"</span>).
+- CA-2.3 Con el texto vacío, veo todos.
+
+<span class="fn">## 🚫 Fuera de alcance (Fase 1)</span>
+- Backend, API, base de datos → Fase 2</pre>
+  </div>
+</section>
+
+<!-- 5 · TDD -->
+<section class="slide">
+  <h2><span class="n">04</span>TDD — primero el test 🔴🟢🔵</h2>
+  <div class="grid3">
+    <div class="card bad"><h3>🔴 ROJO</h3><p>Escribís el test <strong>antes</strong> del código. Lo corrés: <span class="hl-red">falla</span> (todavía no existe nada). ¡Bien!</p></div>
+    <div class="card good"><h3>🟢 VERDE</h3><p>Escribís <strong>lo mínimo</strong> para que el test pase. Ni una línea más.</p></div>
+    <div class="card"><h3 class="hl2">🔵 REFACTOR</h3><p>Ordenás y mejorás el código. Los tests te avisan si rompiste algo.</p></div>
+  </div>
+  <div class="grid2">
+    <pre><span class="cm">// src/logic/filtros.test.js  ← CA-2.2</span>
+<span class="fn">it</span>(<span class="str">'ignora mayúsculas y acentos'</span>, () => {
+  <span class="kw">const</span> r = <span class="fn">filtrarProductos</span>(lista, { texto: <span class="str">'RAFAGA'</span> })
+  <span class="fn">expect</span>(ids(r)).<span class="fn">toEqual</span>([<span class="str">1</span>])
+})</pre>
+    <div>
+      <p>Corre con <span class="hl">Vitest</span> (el de Vite):</p>
+      <pre class="copiable">npm run test:run</pre>
+      <p class="muted">tienda-prueba: <span class="hl-green">30 tests en verde</span> ✅ — cada CA de la spec tiene su test.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 6 · Prompts SDD+TDD -->
+<section class="slide">
+  <h2><span class="n">05</span>Cómo se le pide esto al agente 🤖</h2>
+  <div class="grid2">
+    <div>
+      <p><span class="hl">1 · Spec primero</span> (clic para copiar):</p>
+      <pre class="copiable">Leé docs/SPEC.md. Vamos a implementar SOLO
+el requisito R2. Antes de escribir código,
+decime qué criterios vas a cubrir y qué
+archivos vas a tocar. Esperá mi OK.</pre>
+    </div>
+    <div>
+      <p><span class="hl-green">2 · Test primero</span>:</p>
+      <pre class="copiable">Modo TDD para el criterio CA-2.1:
+1) Escribí SOLO el test y corré
+   npm run test:run para mostrarme que falla.
+2) Esperá mi OK.
+3) Recién ahí escribí el código mínimo
+   para que pase.</pre>
+    </div>
+  </div>
+  <p class="muted">💡 Estas reglas ya están en el <code class="inline">AGENTS.md</code> de tienda-prueba → el agente las lee solo en cada sesión.</p>
+</section>
+
+<!-- 7 · Tour Fase 1 -->
+<section class="slide">
+  <h2><span class="n">06</span>👟 tienda-prueba — Fase 1 (solo frontend)</h2>
+  <div class="two-col">
+    <pre>tienda-prueba/
+├── <span class="str">.env</span>                  <span class="cm">← puerto 5173 + nombre</span>
+├── <span class="str">AGENTS.md</span>             <span class="cm">← reglas para el agente</span>
+├── docs/
+│   ├── <span class="fn">SPEC.md</span>           <span class="cm">← QUÉ hace (R1…R7)</span>
+│   └── <span class="fn">MODELO_DE_TRABAJO.md</span>
+└── src/
+    ├── data/productos.js  <span class="cm">← el array (hoy)</span>
+    ├── <span class="kw">services/</span>          <span class="cm">← 🔌 la ÚNICA puerta</span>
+    ├── logic/  <span class="cm">+ tests</span>     <span class="cm">← filtrar, carrito</span>
+    ├── hooks/useCarrito   <span class="cm">← + localStorage</span>
+    └── components/        <span class="cm">← la vista</span></pre>
+    <ul>
+      <li>14 zapatillas, buscador sin acentos, filtros por <span class="hl">género</span> y <span class="hl">deporte</span>, orden por precio y descuento</li>
+      <li><span class="hl">Talle obligatorio</span> para agregar al carrito; cantidades +/−</li>
+      <li>Estructura tomada de una tienda real; <span class="hl-yellow">marcas y modelos inventados</span></li>
+      <li>Probala: <code class="inline">npm run dev</code> → <span class="hl-green">localhost:5173</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- 8 · El truco del servicio -->
+<section class="slide">
+  <h2><span class="n">07</span>El truco: una sola puerta 🚪</h2>
+  <div class="flow">
+    <div class="step">🧩 Componentes</div><div class="arr">→</div>
+    <div class="step" style="border-color:var(--green)">🔌 productosService</div><div class="arr">→</div>
+    <div class="step">📦 array local</div>
+  </div>
+  <div class="grid2">
+    <pre><span class="cm">// src/services/productosService.js</span>
+<span class="kw">import</span> { productos } <span class="kw">from</span> <span class="str">'../data/productos.js'</span>
+
+<span class="kw">export async function</span> <span class="fn">obtenerProductos</span>() {
+  <span class="kw">return</span> structuredClone(productos)
+}</pre>
+    <ul>
+      <li>Los componentes <span class="hl-red">nunca</span> importan el array directo</li>
+      <li>Le piden al servicio… y <span class="hl">no les importa</span> de dónde viene</li>
+      <li>Ya es <code class="inline">async</code> → la app ya maneja <span class="hl">"Cargando…"</span> y <span class="hl">error</span></li>
+      <li>👉 Cuando llegue la API, cambiamos <span class="hl-green">este archivo y nada más</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- 9 · Límites del solo front -->
+<section class="slide">
+  <h2><span class="n">08</span>🚧 ¿Qué NO puede hacer una tienda solo-front?</h2>
+  <table>
+    <tr><th>Problema</th><th>¿Por qué?</th><th>¿Quién lo resuelve?</th></tr>
+    <tr><td>Cambiar un precio o agregar una zapatilla</td><td>Hay que editar el código y volver a publicar</td><td>🗄️ Base de datos</td></tr>
+    <tr><td>Que el precio sea <span class="hl-red">confiable</span></td><td>Todo lo del navegador se puede tocar (F12 😈)</td><td>⚙️ Backend</td></tr>
+    <tr><td>Registrar un <span class="hl">pedido</span></td><td>localStorage es solo de TU navegador</td><td>⚙️ Backend + 🗄️ BD</td></tr>
+    <tr><td>Stock real compartido</td><td>Cada visitante ve su propia copia</td><td>🗄️ Base de datos</td></tr>
+    <tr><td>Guardar <span class="hl-red">secretos</span> (claves de pago)</td><td>Todo lo VITE_ llega al navegador = público</td><td>⚙️ Backend (.env del server)</td></tr>
+  </table>
+</section>
+
+<!-- 10 · Qué es un backend -->
+<section class="slide">
+  <h2><span class="n">09</span>⚙️ Backend + 🗄️ base de datos — el mapa</h2>
+  <div class="flow">
+    <div class="step">🖥️ Navegador<br><span class="muted">React · :5173</span></div>
+    <div class="arr">⇄<br><span class="muted" style="font-size:.6em">HTTP + JSON</span></div>
+    <div class="step" style="border-color:var(--green)">⚙️ API<br><span class="muted">Node + Express · :3001</span></div>
+    <div class="arr">⇄<br><span class="muted" style="font-size:.6em">SQL</span></div>
+    <div class="step" style="border-color:var(--yellow)">🗄️ Base de datos<br><span class="muted">SQLite (un archivo)</span></div>
+  </div>
+  <div class="grid3">
+    <div class="card"><h3>🖥️ Frontend</h3><p>Lo que se <strong>ve</strong>. Pide datos y los muestra. No guarda nada importante.</p></div>
+    <div class="card good"><h3>⚙️ Backend</h3><p>El <strong>mostrador</strong>: recibe pedidos, valida, calcula el precio real, habla con la BD.</p></div>
+    <div class="card star"><h3>🗄️ Base de datos</h3><p>El <strong>depósito</strong>: tablas con filas, que quedan guardadas aunque se apague todo.</p></div>
+  </div>
+  <p class="muted center">🍔 Analogía: vos (front) pedís en el mostrador (API), la cocina busca en la heladera (BD). Nunca entrás a la cocina.</p>
+</section>
+
+<!-- 11 · API REST -->
+<section class="slide">
+  <h2><span class="n">10</span>La API de Pisada — endpoints 🔗</h2>
+  <div class="two-col">
+    <table>
+      <tr><th>Método</th><th>Ruta</th><th>Hace</th></tr>
+      <tr><td><span class="hl-green">GET</span></td><td><code class="inline">/api/productos</code></td><td>Lista el catálogo</td></tr>
+      <tr><td><span class="hl-green">GET</span></td><td><code class="inline">/api/productos/:id</code></td><td>Una zapatilla</td></tr>
+      <tr><td><span class="hl-yellow">POST</span></td><td><code class="inline">/api/pedidos</code></td><td>Crea un pedido con el carrito</td></tr>
+    </table>
+    <pre><span class="cm">// GET /api/productos → responde JSON</span>
+[
+  {
+    <span class="str">"id"</span>: 3,
+    <span class="str">"nombre"</span>: <span class="str">"Andes Cumbre GTX"</span>,
+    <span class="str">"precio"</span>: 154999,
+    <span class="str">"talles"</span>: [38, 39, 40, 41]
+  },
+  …
+]</pre>
+  </div>
+  <ul>
+    <li><span class="hl-green">GET</span> = "dame" · <span class="hl-yellow">POST</span> = "guardá esto" · la respuesta siempre es <span class="hl">JSON</span> (como nuestros objetos de JS)</li>
+    <li>🛡️ En el POST el backend <span class="hl">recalcula el total</span> con los precios de la BD: no le cree al navegador</li>
+  </ul>
+</section>
+
+<!-- 12 · Base de datos -->
+<section class="slide">
+  <h2><span class="n">11</span>🗄️ La base de datos — una tabla es un Excel con reglas</h2>
+  <div class="grid2">
+    <div>
+      <p>Tabla <code class="inline">productos</code>:</p>
+      <table>
+        <tr><th>id</th><th>nombre</th><th>marca</th><th>precio</th></tr>
+        <tr><td>1</td><td>Velox Ráfaga 3</td><td>Velox</td><td>89999</td></tr>
+        <tr><td>3</td><td>Andes Cumbre GTX</td><td>Andes</td><td>154999</td></tr>
+        <tr><td>8</td><td>Aro Volcada Mid</td><td>Aro</td><td>189999</td></tr>
+      </table>
+    </div>
+    <div>
+      <p>Se le habla en <span class="hl">SQL</span>:</p>
+      <pre><span class="kw">SELECT</span> * <span class="kw">FROM</span> productos
+<span class="kw">WHERE</span> deporte = <span class="str">'running'</span>
+<span class="kw">ORDER BY</span> precio;
+
+<span class="kw">INSERT INTO</span> pedidos (total, fecha)
+<span class="kw">VALUES</span> (<span class="str">309998</span>, <span class="str">'2026-11-10'</span>);</pre>
+      <p class="muted"><span class="hl-green">SQLite</span>: la BD es un solo archivo (<code class="inline">pisada.db</code>). Sin instalar servidores: ideal para aprender.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 13 · .env en los dos lados -->
+<section class="slide">
+  <h2><span class="n">12</span>🔑 El .env vuelve… ahora en los dos lados</h2>
+  <div class="grid2">
+    <div class="card">
+      <h3>🖥️ Front · tienda-prueba/.env</h3>
+      <pre>VITE_PORT=5173
+VITE_NOMBRE_TIENDA=Pisada
+VITE_API_URL=http://localhost:3001/api</pre>
+      <p class="muted">Todo lo <code class="inline">VITE_</code> es <span class="hl-red">público</span>: solo direcciones y textos.</p>
+    </div>
+    <div class="card good">
+      <h3>⚙️ Back · backend/.env</h3>
+      <pre>PORT=3001
+DB_PATH=./pisada.db
+ORIGEN_PERMITIDO=http://localhost:5173
+<span class="cm"># CLAVE_PAGOS=…  ← los secretos de verdad, ACÁ</span></pre>
+      <p class="muted">Nunca llega al navegador → acá <span class="hl-green">sí</span> van los secretos.</p>
+    </div>
+  </div>
+  <p>Los dos <code class="inline">.env</code> están en el <code class="inline">.gitignore</code> y cada proyecto tiene su <code class="inline">.env.example</code> para que el compañero sepa qué completar.</p>
+</section>
+
+<!-- 14 · La mudanza -->
+<section class="slide">
+  <h2><span class="n">13</span>🔁 La mudanza — cambia UN archivo</h2>
+  <div class="grid2">
+    <div class="card bad">
+      <h3>Antes · Fase 1</h3>
+      <pre><span class="kw">export async function</span> <span class="fn">obtenerProductos</span>() {
+  <span class="kw">return</span> structuredClone(productos)
+}</pre>
+    </div>
+    <div class="card good">
+      <h3>Después · Fase 2</h3>
+      <pre><span class="kw">const</span> API = <span class="kw">import</span>.meta.env.VITE_API_URL
+
+<span class="kw">export async function</span> <span class="fn">obtenerProductos</span>() {
+  <span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">`${API}/productos`</span>)
+  <span class="kw">if</span> (!res.ok) <span class="kw">throw new</span> Error(<span class="str">'No cargó'</span>)
+  <span class="kw">return</span> res.<span class="fn">json</span>()
+}</pre>
+    </div>
+  </div>
+  <ul>
+    <li>Componentes, filtros y carrito: <span class="hl-green">no se tocan</span> ✅</li>
+    <li>Corremos <code class="inline">npm run test:run</code> → si queda en verde, la mudanza salió bien 🟢</li>
+  </ul>
+</section>
+
+<!-- 15 · Plan Fase 2 -->
+<section class="slide">
+  <h2><span class="n">14</span>🗺️ Fase 2 paso a paso (con SDD + TDD)</h2>
+  <table>
+    <tr><th>#</th><th>Paso</th><th>Qué se ve</th></tr>
+    <tr><td>1</td><td>📝 Agregar a la spec <span class="hl">R8 API</span> y <span class="hl">R9 Pedidos</span></td><td>la spec manda</td></tr>
+    <tr><td>2</td><td>🧪 Tests del backend: <code class="inline">GET /api/productos</code> devuelve 14</td><td>🔴 rojo</td></tr>
+    <tr><td>3</td><td>⚙️ <code class="inline">backend/</code> con Express + SQLite + <code class="inline">.env</code></td><td>🟢 verde</td></tr>
+    <tr><td>4</td><td>🌱 "Seed": cargar las 14 zapatillas en la BD</td><td>la tabla con datos</td></tr>
+    <tr><td>5</td><td>🔁 Cambiar <code class="inline">productosService</code> por <code class="inline">fetch</code></td><td>la tienda igual… pero desde la API</td></tr>
+    <tr><td>6</td><td>🛒 "Finalizar compra" → <code class="inline">POST /api/pedidos</code></td><td>el pedido queda en la BD</td></tr>
+  </table>
+  <p class="muted">Dos terminales: una con el <span class="hl-green">backend :3001</span> y otra con el <span class="hl2">front :5173</span>.</p>
+</section>
+
+<!-- 16 · Práctica -->
+<section class="slide">
+  <h2><span class="n">15</span>🏆 Práctica — SDD + TDD en TU mi-tienda</h2>
+  <div class="grid2">
+    <div class="card good">
+      <h3>Lo mínimo de hoy</h3>
+      <ol>
+        <li>Crear <code class="inline">docs/SPEC.md</code> con <span class="hl">3 requisitos</span> de tu tienda</li>
+        <li>Instalar Vitest y escribir <span class="hl">1 test</span> (rojo → verde)</li>
+        <li>Crear tu <code class="inline">services/productosService.js</code> y que los componentes lo usen</li>
+      </ol>
+    </div>
+    <div>
+      <p>Prompt para arrancar (clic):</p>
+      <pre class="copiable">Leé mi proyecto y creá docs/SPEC.md con 3
+requisitos (catálogo, buscador y carrito), cada
+uno con 2 criterios Dado/Cuando/Entonces.
+No escribas código todavía: mostrame la spec
+y esperá mi OK.</pre>
+      <pre class="copiable">npm install -D vitest</pre>
+    </div>
+  </div>
+  <p class="muted">✨ Extra: separá la lógica del carrito en <code class="inline">src/logic/carrito.js</code> como en tienda-prueba, con sus tests.</p>
+</section>
+
+<!-- 17 · Cierre -->
+<section class="slide">
+  <div class="big-emoji">🎉</div>
+  <h2 class="center">Cierre</h2>
+  <ul class="checklist">
+    <li>Sé qué es <strong>SDD</strong> (primero la spec) y <strong>TDD</strong> (rojo → verde → refactor)</li>
+    <li>Entiendo por qué una tienda real necesita <strong>backend + base de datos</strong></li>
+    <li>Sé qué es una API, un endpoint, JSON y una tabla SQL</li>
+    <li>Mi tienda tiene <strong>spec</strong>, <strong>1 test</strong> y un <strong>servicio</strong> listo para la mudanza</li>
+  </ul>
+  <p>📅 Próxima clase: armamos <span class="hl-green">TU backend</span> y conectamos tu mi-tienda a su propia base de datos. 🚀</p>
+</section>
+
+</div>
+
+<div id="progress"></div>
+<div id="counter">1 / 17</div>
+<div id="hint">← → navegar · clic en un comando → lo copia</div>
+<button class="nav-btn" id="prev">‹</button>
+<button class="nav-btn" id="next">›</button>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  let i = 0;
+  function show(n) {
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach((s, k) => s.classList.toggle('active', k === i));
+    document.getElementById('progress').style.width = ((i + 1) / slides.length * 100) + '%';
+    document.getElementById('counter').textContent = (i + 1) + ' / ' + slides.length;
+  }
+  document.getElementById('next').onclick = () => show(i + 1);
+  document.getElementById('prev').onclick = () => show(i - 1);
+  document.addEventListener('keydown', e => {
+    if (['ArrowRight','ArrowDown',' ','PageDown','Enter'].includes(e.key)) { e.preventDefault(); show(i + 1); }
+    else if (['ArrowLeft','ArrowUp','PageUp'].includes(e.key)) { e.preventDefault(); show(i - 1); }
+    else if (e.key === 'Home') { e.preventDefault(); show(0); }
+    else if (e.key === 'End') { e.preventDefault(); show(slides.length - 1); }
+  });
+  document.addEventListener('click', e => {
+    if (e.target.closest('button')) return;
+    if (e.target.closest('pre.copiable')) return; // el clic en un comando copia, no navega
+    if (e.clientX > window.innerWidth / 2) show(i + 1); else show(i - 1);
+  });
+  // Copiar comandos con un clic
+  document.querySelectorAll('pre.copiable').forEach(p => {
+    p.title = 'Clic para copiar';
+    p.onclick = () => {
+      navigator.clipboard.writeText(p.textContent.trim());
+      p.classList.add('copied');
+      setTimeout(() => p.classList.remove('copied'), 1200);
+    };
+  });
+  show(0);
+</script>
+</body>
+</html>
