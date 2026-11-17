@@ -258,6 +258,7 @@
   .clase-card.c3::before { background: linear-gradient(90deg, #3ddc84, #c9f31d); }
   .clase-card.c4::before { background: linear-gradient(90deg, #ffb020, #ff7a3d); }
   .clase-card.c5::before { background: linear-gradient(90deg, #ff4d1a, #c9f31d); }
+  .clase-card.c6::before { background: linear-gradient(90deg, #a371f7, #5fe8ff); }
   .clase-card .num {
     display: inline-block; width: fit-content; border-radius: 999px;
     font-weight: 700; font-size: .74rem; letter-spacing: .07em; text-transform: uppercase;
@@ -285,6 +286,7 @@
   }
   .btn-primary:hover { color: #0a0c04; transform: translateY(-2px); box-shadow: 0 8px 26px rgba(201,243,29,.35); }
 
+  .doc p.muted { color: var(--muted); font-size: .9rem; }
   .steps h3 { display: flex; align-items: center; gap: 10px; }
   .steps h3 .s-badge {
     width: 30px; height: 30px; border-radius: 9px; flex: none;
@@ -321,13 +323,17 @@
     .marquee { margin-top: -26px; }
     .nav-wrap { backdrop-filter: blur(10px); }
     nav { gap: 4px; padding: 8px 10px; }
-    nav button { padding: 9px 8px; font-size: .78rem; border-radius: 10px; }
+    nav button { padding: 9px 8px; font-size: .78rem; border-radius: 10px; flex: none; white-space: nowrap; }
+    nav { overflow-x: auto; scrollbar-width: none; }
+    nav::-webkit-scrollbar { display: none; }
     main { padding: 18px 12px 0; }
     h2 { font-size: 1.2rem; margin: 26px 0 12px; gap: 8px; }
     h2 .ico { width: 32px; height: 32px; font-size: .95rem; border-radius: 9px; }
     h3 { font-size: 1rem; margin: 18px 0 6px; }
     table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
     th, td { padding: 10px 12px; white-space: nowrap; }
+    #github th, #github td { white-space: normal; min-width: 110px; }
+    #github td code { word-break: break-word; }
     .copyable pre { padding: 14px 14px 52px 14px; font-size: .78rem; }
     .copy-btn { right: 10px; bottom: 10px; left: auto; }
     .copyable .bar { padding: 8px 12px; }
@@ -398,6 +404,7 @@
     <button class="active" data-tab="desafio">🏆 Desafío</button>
     <button data-tab="herramientas">🧰 Herramientas</button>
     <button data-tab="guia">🛡️ Guía de trabajo</button>
+    <button data-tab="github">🐙 GitHub</button>
     <button data-tab="clases">📚 Clases</button>
     <button data-tab="qr">📱 QR</button>
   </nav>
@@ -415,6 +422,8 @@
   </div>
 
   <div class="callout warn"><span class="c-ico">⚠️</span><div><b>Nuevo proyecto:</b> hoy arrancamos <code>mi-tienda</code> desde cero. Requisito: Node.js del Día 3 (verificá con <code>node -v</code>).</div></div>
+
+  <div class="callout brand"><span class="c-ico">🐙</span><div><b>Guardá tu tienda en la nube:</b> cuando tengas el primer requisito funcionando, subila a GitHub y hacé un commit por cada paso. El instructivo completo, con cuenta, instalación y comandos, está en la pestaña <a href="#github" data-goto="github">🐙 GitHub</a>.</div></div>
 
   <div class="callout tip"><span class="c-ico">🧠</span><div>La semana que viene esta tienda se conecta a un <b>backend real</b>: los productos vendrán de una API. ¡Construí bien la base!</div></div>
 
@@ -587,6 +596,220 @@ muestra este error: [PEGA EL ERROR EXACTO].
   <div class="callout tip"><span class="c-ico">🎯</span><div><b>Recuerdo del día:</b> el agente acelera tus manos, no reemplaza tu cabeza.</div></div>
 </section>
 
+<!-- ══════════════ GITHUB (Día 6) ══════════════ -->
+<section class="doc" id="github">
+
+  <div class="meta-card">
+    <div><b>⏱ Tiempo</b>~30 minutos la primera vez</div>
+    <div><b>🧰 Necesitás</b>un mail · Git · tu proyecto</div>
+    <div><b>💸 Costo</b>Gratis (plan Free)</div>
+  </div>
+
+  <div class="callout tip"><span class="c-ico">🎯</span><div><b>Al terminar esta guía</b> vas a tener tu cuenta de GitHub, Git instalado en tu compu y tu proyecto <code>mi-tienda</code> guardado en la nube, con historial de cambios. Seguí los pasos en orden: cada uno tiene su comando para copiar.</div></div>
+
+  <h2><span class="ico">🤔</span>¿Qué es Git y qué es GitHub?</h2>
+  <table>
+    <tr><th></th><th>🌿 Git</th><th>🐙 GitHub</th></tr>
+    <tr><td><b>Qué es</b></td><td>Un programa que se instala en tu compu</td><td>Una página web (github.com)</td></tr>
+    <tr><td><b>Para qué</b></td><td>Guarda el <strong>historial</strong> de tu proyecto: cada cambio queda como un "punto de guardado" al que podés volver</td><td><strong>Aloja</strong> tus proyectos en la nube para tenerlos en cualquier compu, compartirlos y trabajar en equipo</td></tr>
+    <tr><td><b>Analogía</b></td><td>Los "puntos de guardado" de un videojuego 🎮</td><td>El Google Drive de los programadores ☁️</td></tr>
+    <tr><td><b>¿Internet?</b></td><td>No lo necesita</td><td>Sí</td></tr>
+  </table>
+  <p>Se usan juntos: <strong>Git</strong> guarda los cambios en tu compu y los <strong>sube</strong> a <strong>GitHub</strong>. Además, tu perfil de GitHub es tu <strong>portfolio</strong>: es lo primero que mira alguien que te quiere contratar como programador.</p>
+
+  <h2><span class="ico">📖</span>Vocabulario mínimo</h2>
+  <table>
+    <tr><th>Palabra</th><th>Qué significa</th></tr>
+    <tr><td><code>repositorio</code> (repo)</td><td>Tu proyecto + todo su historial. Un repo por proyecto (ej: <code>mi-tienda</code>).</td></tr>
+    <tr><td><code>commit</code></td><td>Un punto de guardado con un mensaje que dice qué cambiaste (ej: "agrego buscador").</td></tr>
+    <tr><td><code>push</code></td><td>Subir tus commits de tu compu a GitHub. ⬆️</td></tr>
+    <tr><td><code>pull</code></td><td>Bajar a tu compu los cambios que hay en GitHub. ⬇️</td></tr>
+    <tr><td><code>clone</code></td><td>Descargar un repo completo de GitHub a una compu nueva.</td></tr>
+    <tr><td><code>branch</code> (rama)</td><td>Una línea de trabajo paralela. La principal se llama <code>main</code>.</td></tr>
+    <tr><td><code>.gitignore</code></td><td>Lista de archivos que Git <strong>NO</strong> tiene que subir nunca (ej: <code>.env</code>, <code>node_modules</code>).</td></tr>
+    <tr><td><code>README.md</code></td><td>La "portada" del repo: GitHub lo muestra abajo de tus archivos.</td></tr>
+  </table>
+
+  <h2><span class="ico">🧭</span>Paso a paso</h2>
+  <div class="steps">
+
+    <h3><span class="s-badge">1</span>Crear tu cuenta en GitHub</h3>
+    <ol>
+      <li>Entrá a <strong>github.com/signup</strong></li>
+      <li>Escribí tu <strong>email</strong> (usá uno que revises: te llega un código)</li>
+      <li>Elegí una <strong>contraseña</strong> fuerte (mínimo 15 caracteres, o 8 con un número y una minúscula)</li>
+      <li>Elegí tu <strong>nombre de usuario</strong>. 💡 Pensalo bien: va a aparecer en todos tus links (<code>github.com/tu-usuario</code>). Mejor algo profesional como <code>juanperez-dev</code> que <code>xX_juancito_Xx</code></li>
+      <li>Resolvé la verificación ("no soy un robot") y poné el <strong>código</strong> que te llegó por mail</li>
+      <li>Si te pregunta por un plan, elegí <strong>Free</strong> (gratis: repos ilimitados, públicos y privados)</li>
+    </ol>
+    <div class="callout warn"><span class="c-ico">🔐</span><div><b>Verificación en dos pasos (2FA):</b> GitHub te la va a pedir. Activala cuando te avise desde <em>Settings → Password and authentication</em>, con una app como Google Authenticator o Microsoft Authenticator. <b>Guardá los códigos de recuperación</b> (descargalos o anotalos en papel): si perdés el celular, son la única forma de entrar.</div></div>
+
+    <h3><span class="s-badge">2</span>Instalar Git en tu compu</h3>
+    <p><strong>Windows</strong>: abrí la terminal y pegá este comando (o descargalo de <strong>git-scm.com</strong> e instalalo con "Siguiente, Siguiente…"; las opciones que vienen marcadas están bien):</p>
+    <div class="copyable">
+      <div class="bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">terminal · Windows</span></div>
+      <pre>winget install --id Git.Git -e --source winget</pre>
+      <button class="copy-btn">Copiar</button>
+    </div>
+    <p><strong>Mac</strong>: pegá esto en la Terminal y aceptá la instalación que aparece:</p>
+    <div class="copyable">
+      <div class="bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">terminal · Mac</span></div>
+      <pre>xcode-select --install</pre>
+      <button class="copy-btn">Copiar</button>
+    </div>
+    <p><strong>Cerrá y volvé a abrir la terminal</strong> (o OpenCode) y verificá. Si muestra un número de versión, está listo ✅</p>
+    <div class="copyable">
+      <div class="bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">terminal</span></div>
+      <pre>git --version</pre>
+      <button class="copy-btn">Copiar</button>
+    </div>
+
+    <h3><span class="s-badge">3</span>Decirle a Git quién sos (una sola vez por compu)</h3>
+    <p>Cada commit lleva tu nombre y tu mail. Usá <strong>el mismo mail de tu cuenta de GitHub</strong> (así tus commits aparecen en tu perfil). Cambiá los datos por los tuyos:</p>
+    <div class="copyable">
+      <div class="bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">terminal · completá con tus datos</span></div>
+      <pre>git config --global user.name "Tu Nombre"
+git config --global user.email "tu-mail@ejemplo.com"
+git config --global init.defaultBranch main</pre>
+      <button class="copy-btn">Copiar</button>
+    </div>
+    <p class="muted">💡 ¿No querés que tu mail sea público? En GitHub: <em>Settings → Emails</em> → marcá "Keep my email addresses private" y usá el mail <code>…@users.noreply.github.com</code> que te muestra ahí.</p>
+
+    <h3><span class="s-badge">4</span>Proteger tus secretos: el <code>.gitignore</code></h3>
+    <div class="callout warn"><span class="c-ico">⚠️</span><div><b>Lo más importante de toda la guía:</b> el proyecto que crea Vite ya trae un <code>.gitignore</code> que excluye <code>node_modules</code>, pero <b>NO excluye <code>.env</code></b>. Si no lo agregás, tu <code>.env</code> se sube a internet. En un repo público, cualquiera lo puede leer.</div></div>
+    <p>Abrí el archivo <code>.gitignore</code> en la raíz de <code>mi-tienda</code> y fijate que tenga estas líneas (agregá las que falten):</p>
+    <div class="copyable">
+      <div class="bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">.gitignore · raíz del proyecto</span></div>
+      <pre>node_modules
+dist
+.env
+.env.local</pre>
+      <button class="copy-btn">Copiar</button>
+    </div>
+    <p>Y creá un <code>.env.example</code> con los <strong>nombres</strong> de tus variables pero sin valores secretos. Ese archivo sí se sube, así quien descargue tu proyecto sabe qué tiene que completar:</p>
+    <div class="copyable">
+      <div class="bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">.env.example</span></div>
+      <pre># Copiá este archivo como .env y completá tus valores
+VITE_PORT=5173</pre>
+      <button class="copy-btn">Copiar</button>
+    </div>
+
+    <h3><span class="s-badge">5</span>Crear el repositorio vacío en GitHub</h3>
+    <ol>
+      <li>En GitHub, arriba a la derecha: botón <strong>+</strong> → <strong>New repository</strong></li>
+      <li><strong>Repository name</strong>: <code>mi-tienda</code> (sin espacios ni acentos)</li>
+      <li><strong>Description</strong>: una línea, ej: "Tienda con catálogo y carrito en React + Vite"</li>
+      <li><strong>Public</strong> (lo ve cualquiera: ideal para tu portfolio) o <strong>Private</strong> (solo vos y quien invites)</li>
+      <li>⚠️ <strong>NO</strong> marques "Add a README", ni .gitignore, ni licencia: tu proyecto ya tiene archivos y el repo tiene que nacer <strong>vacío</strong></li>
+      <li><strong>Create repository</strong> → te muestra una página con una dirección que termina en <code>.git</code>. Copiala: la usás en el paso 6</li>
+    </ol>
+
+    <h3><span class="s-badge">6</span>Subir tu proyecto (el primer push)</h3>
+    <p>Abrí la terminal <strong>dentro de la carpeta</strong> <code>mi-tienda</code> (donde está el <code>package.json</code>) y corré <strong>de a uno</strong>:</p>
+    <div class="copyable">
+      <div class="bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">terminal · dentro de mi-tienda</span></div>
+      <pre>git init
+git add .
+git status</pre>
+      <button class="copy-btn">Copiar</button>
+    </div>
+    <div class="callout warn"><span class="c-ico">👀</span><div><b>Mirá la lista de <code>git status</code> antes de seguir.</b> Son los archivos que se van a subir. Si aparece <code>.env</code> o <code>node_modules</code>: <b>pará</b> y volvé al paso 4.</div></div>
+    <p>Si está todo bien, creá el primer commit y conectalo con GitHub. <strong>Reemplazá la URL por la de tu repo</strong> (la que copiaste en el paso 5):</p>
+    <div class="copyable">
+      <div class="bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">terminal · dentro de mi-tienda</span></div>
+      <pre>git commit -m "Primera versión de mi-tienda"
+git branch -M main
+git remote add origin https://github.com/TU-USUARIO/mi-tienda.git
+git push -u origin main</pre>
+      <button class="copy-btn">Copiar</button>
+    </div>
+    <p>La primera vez se abre una <strong>ventana del navegador para iniciar sesión</strong> en GitHub: elegí "Sign in with your browser" y autorizá. Es una sola vez. Recargá la página de tu repo: <strong>¡tus archivos están en GitHub!</strong> 🎉</p>
+    <div class="callout tip"><span class="c-ico">🔑</span><div>Git <b>no</b> acepta tu contraseña de GitHub en la terminal: siempre se inicia sesión por la ventana del navegador. Si te pide "password" en la terminal, cancelá con <code>Ctrl + C</code> y avisale al docente.</div></div>
+
+    <h3><span class="s-badge">7</span>El ciclo de todos los días</h3>
+    <p>Cada vez que terminás algo que funciona (un requisito, un arreglo), guardalo y subilo:</p>
+    <div class="copyable">
+      <div class="bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">terminal · el ciclo</span></div>
+      <pre>git status
+git add .
+git commit -m "Agrego filtro por categoría"
+git push</pre>
+      <button class="copy-btn">Copiar</button>
+    </div>
+    <table>
+      <tr><th>❌ Mensaje malo</th><th>✅ Mensaje bueno</th></tr>
+      <tr><td><code>cambios</code></td><td><code>Agrego buscador por nombre</code></td></tr>
+      <tr><td><code>asdasd</code></td><td><code>Arreglo el total del carrito con cantidades</code></td></tr>
+      <tr><td><code>final final ahora sí</code></td><td><code>Pulo el diseño con la skill frontend-design</code></td></tr>
+    </table>
+    <p class="muted">💡 Regla práctica: <b>un commit = una tarea</b>, igual que con el agente: un prompt = una tarea.</p>
+
+    <h3><span class="s-badge">8</span>Bajar tu proyecto en otra compu</h3>
+    <p>En la compu de tu casa (con Git y Node instalados):</p>
+    <div class="copyable">
+      <div class="bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">terminal · otra compu</span></div>
+      <pre>git clone https://github.com/TU-USUARIO/mi-tienda.git
+cd mi-tienda
+npm install</pre>
+      <button class="copy-btn">Copiar</button>
+    </div>
+    <p>Después creá tu <code>.env</code> copiando el <code>.env.example</code> (el <code>.env</code> no viaja por GitHub, ¡justamente!) y corré <code>npm run dev</code>. Si después hacés cambios en la otra compu, antes de empezar a trabajar en la primera hacé <code>git pull</code> para bajarlos.</p>
+  </div>
+
+  <h2><span class="ico">🤖</span>Hacerlo con el agente (OpenCode)</h2>
+  <p>El agente también sabe usar Git. Pedile que lo haga <strong>paso a paso y explicando</strong>, así aprendés mientras tanto. Antes, creá el repo vacío en GitHub (paso 5):</p>
+  <div class="copyable">
+    <div class="bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">prompt · opencode</span></div>
+    <pre>Quiero subir este proyecto a GitHub, a este repo vacío:
+https://github.com/TU-USUARIO/mi-tienda.git
+Hacelo paso a paso, explicándome cada comando en una línea:
+1) Revisá que el .gitignore excluya node_modules, dist y .env (agregá lo que falte).
+2) Creá un .env.example con los nombres de mis variables, sin valores secretos.
+3) Hacé git init y git add, y mostrame el git status. Esperá mi OK antes del commit.
+4) Recién con mi OK: commit, remote y push.</pre>
+    <button class="copy-btn">Copiar</button>
+  </div>
+  <div class="copyable">
+    <div class="bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">prompt · opencode · día a día</span></div>
+    <pre>Hacé un commit con lo que cambiamos recién: mostrame primero el git status,
+proponé un mensaje de commit claro en español y esperá mi OK antes del push.</pre>
+    <button class="copy-btn">Copiar</button>
+  </div>
+  <div class="callout tip"><span class="c-ico">🖱️</span><div><b>¿Preferís botones en vez de comandos?</b> <b>GitHub Desktop</b> (desktop.github.com) hace lo mismo con una ventana: ves los cambios, escribís el mensaje y apretás <em>Commit</em> y <em>Push</em>. Es la misma idea de siempre, con otra interfaz.</div></div>
+
+  <h2><span class="ico">🌐</span>Extra: publicar una página con GitHub Pages</h2>
+  <p>GitHub te da hosting <strong>gratis</strong> para páginas HTML. Así está publicada esta misma guía: <code>nawe1337.github.io/…</code>. Para tu <code>index.html</code> del Día 2:</p>
+  <ol class="req">
+    <li>Subí la carpeta a un repo (pasos 5 y 6). El <code>index.html</code> tiene que estar en la raíz</li>
+    <li>En el repo: <strong>Settings → Pages</strong></li>
+    <li><em>Source</em>: <strong>Deploy from a branch</strong> · <em>Branch</em>: <strong>main</strong> · carpeta <strong>/ (root)</strong> → <em>Save</em></li>
+    <li>Esperá 1-2 minutos y recargá: arriba aparece tu link <code>https://TU-USUARIO.github.io/NOMBRE-DEL-REPO/</code> 🎉</li>
+  </ol>
+  <p class="muted">⚛️ Un proyecto de React + Vite (como mi-tienda) primero se tiene que <em>compilar</em> (<code>npm run build</code>) para poder publicarlo. Eso lo vemos cuando hablemos de deploy.</p>
+
+  <h2><span class="ico">🧯</span>Errores comunes (y cómo salir)</h2>
+  <table>
+    <tr><th>El error dice…</th><th>Qué pasó</th><th>Solución</th></tr>
+    <tr><td><code>git: command not found</code> / "no se reconoce"</td><td>Git no está instalado o la terminal es vieja</td><td>Instalalo (paso 2) y <b>cerrá y abrí</b> la terminal</td></tr>
+    <tr><td><code>not a git repository</code></td><td>Estás en otra carpeta</td><td><code>cd mi-tienda</code> (la carpeta del <code>package.json</code>)</td></tr>
+    <tr><td><code>Author identity unknown</code></td><td>Falta decirle quién sos</td><td>Hacé el paso 3</td></tr>
+    <tr><td><code>remote origin already exists</code></td><td>Ya conectaste un repo antes</td><td><code>git remote set-url origin https://github.com/TU-USUARIO/mi-tienda.git</code></td></tr>
+    <tr><td><code>rejected … fetch first</code></td><td>El repo de GitHub tiene algo que vos no (ej: creaste el README desde la web)</td><td><code>git pull --rebase origin main</code> y después <code>git push</code></td></tr>
+    <tr><td><code>Authentication failed</code></td><td>Pusiste la contraseña en la terminal</td><td>Volvé a hacer <code>git push</code> y usá la ventana del navegador</td></tr>
+    <tr><td>Subí el <code>.env</code> por error 😱</td><td>Faltaba en el <code>.gitignore</code></td><td>Agregalo al <code>.gitignore</code> y corré <code>git rm --cached .env</code> → commit → push. Si tenía una <b>clave real</b>: <b>cambiala</b> (borrar el archivo no alcanza, queda en el historial)</td></tr>
+  </table>
+
+  <h2><span class="ico">✅</span>Checklist final</h2>
+  <ul class="checklist">
+    <li>Tengo cuenta en GitHub con 2FA activado y guardé los códigos de recuperación</li>
+    <li><code>git --version</code> me muestra la versión</li>
+    <li>Configuré mi <code>user.name</code> y <code>user.email</code></li>
+    <li>Mi <code>.gitignore</code> excluye <code>node_modules</code>, <code>dist</code> y <code>.env</code></li>
+    <li>Veo mi <code>mi-tienda</code> en <code>github.com/MI-USUARIO/mi-tienda</code> y <b>sin</b> el <code>.env</code></li>
+    <li>Hice al menos un commit más con el ciclo diario (status → add → commit → push)</li>
+  </ul>
+</section>
+
 <!-- ══════════════ CLASES ══════════════ -->
 <section class="doc" id="clases">
   <h2><span class="ico">📚</span>Material de las clases</h2>
@@ -651,13 +874,25 @@ muestra este error: [PEGA EL ERROR EXACTO].
         <a class="btn" href="dia5_backend.html" download>⬇️ Descargar</a>
       </div>
     </div>
+
+    <div class="clase-card c6">
+      <span class="num">Día 6</span>
+      <h3>🐙 Git y GitHub</h3>
+      <p>Qué es Git y qué es GitHub, cómo crear tu cuenta, instalar Git, proteger el <code>.env</code> con el <code>.gitignore</code> y subir tus proyectos. Incluye el ciclo diario de commits y GitHub Pages.</p>
+      <div class="btn-row">
+        <a class="btn btn-primary" href="dia6_github.html" target="_blank">👀 Ver online</a>
+        <a class="btn" href="dia6_github.html" download>⬇️ Descargar</a>
+        <a class="btn" href="#github" data-goto="github">📘 Instructivo</a>
+      </div>
+    </div>
   </div>
 
-  <div class="callout tip"><span class="c-ico">💡</span><div>Las diapositivas del Día 3, 4 (Parte 1 y Parte 2) y 5 se abren en el navegador: navegá con las flechas <strong>← →</strong> del teclado. En la Parte 2, hacé <strong>clic en un comando</strong> y queda copiado.</div></div>
+  <div class="callout tip"><span class="c-ico">💡</span><div>Las diapositivas del Día 3, 4 (Parte 1 y Parte 2), 5 y 6 se abren en el navegador: navegá con las flechas <strong>← →</strong> del teclado. En la Parte 2, hacé <strong>clic en un comando</strong> y queda copiado.</div></div>
 </section>
 
 <!-- ══════════════ GUÍA ══════════════ -->
 <section class="doc" id="guia">
+  <div class="callout brand"><span class="c-ico">🐙</span><div><b>Regla nueva de la casa (Día 6):</b> todo lo que funciona se guarda con un <b>commit</b> y se sube a GitHub, con un commit por tarea, igual que un prompt por tarea. Cómo hacerlo: pestaña <a href="#github" data-goto="github">🐙 GitHub</a>.</div></div>
   <h2><span class="ico">🧠</span>1. La mentalidad: tú eres el supervisor</h2>
   <p>Un agente de IA (como el que corre dentro de OpenCode) no es un robot todopoderoso ni un simple autocompletado. Es un <strong>asistente muy rápido pero poco confiable</strong>:</p>
   <ul>
@@ -739,7 +974,7 @@ muestra este error: [PEGA EL ERROR EXACTO].
   <ul class="checklist">
     <li>¿Entiendo todo el código que tengo en mi proyecto?</li>
     <li>¿Mi página funciona en el navegador?</li>
-    <li>¿Guardé mi avance?</li>
+    <li>¿Guardé mi avance? → <code>git add .</code> + <code>git commit -m "..."</code> + <code>git push</code> (ver <a href="#github" data-goto="github">🐙 GitHub</a>)</li>
     <li>¿Qué quiero construir la próxima clase? (anotalo: será tu primer prompt)</li>
   </ul>
   <h2><span class="ico">🤖</span>8. Guía a tu agente con un <code>AGENTS.md</code></h2>
@@ -995,6 +1230,11 @@ dist</pre>
     b.classList.add('active');
     document.getElementById(b.dataset.tab).classList.add('active');
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+  // Links internos a otra pestaña (data-goto)
+  document.querySelectorAll('[data-goto]').forEach(a => a.onclick = e => {
+    e.preventDefault();
+    document.querySelector('nav button[data-tab="' + a.dataset.goto + '"]').click();
   });
   // Botones copiar
   document.querySelectorAll('.copy-btn').forEach(btn => {
