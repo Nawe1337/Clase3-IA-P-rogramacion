@@ -178,3 +178,65 @@ button:disabled { cursor: not-allowed; }
   .hero__deco { display: none; }
   .chips__titulo { width: 100%; }
 }
+
+/* ── Fase 2: login, cuenta en el header y panel admin ── */
+.login { display: flex; justify-content: center; margin: 1.5rem 0 0; }
+.login__form {
+  background: var(--blanco); border: 1px solid var(--linea); border-radius: var(--radio);
+  padding: 1.6rem; width: min(380px, 100%);
+  display: flex; flex-direction: column; gap: .9rem;
+  box-shadow: 0 14px 30px -22px rgba(20, 18, 16, .5);
+}
+.login__titulo { font-family: var(--display); font-size: 1.6rem; letter-spacing: -.01em; }
+.login__bajada { color: var(--gris); font-size: .9rem; }
+.login__campo { display: flex; flex-direction: column; gap: .3rem; font-weight: 600; font-size: .9rem; }
+.login__campo input { border: 2px solid var(--tinta); border-radius: 10px; padding: .7rem .9rem; font: inherit; background: var(--blanco); }
+.login__error { color: var(--fuego); font-weight: 600; font-size: .9rem; }
+.login__boton { border: 0; border-radius: 999px; padding: .8rem 1rem; font-weight: 700; background: var(--tinta); color: var(--papel); }
+.login__boton:disabled { opacity: .6; }
+
+.cuenta-header { display: flex; align-items: center; gap: .55rem; flex-wrap: wrap; }
+.cuenta-header__saludo { font-weight: 600; font-size: .88rem; white-space: nowrap; }
+.cuenta__rol {
+  font-size: .7rem; font-weight: 800; text-transform: uppercase; letter-spacing: .08em;
+  border-radius: 999px; padding: .22rem .65rem;
+}
+.cuenta__rol--admin { background: var(--tinta); color: var(--papel); }
+.cuenta__rol--cliente { background: var(--papel); color: var(--tinta); border: 1.5px solid var(--tinta); }
+.header .cuenta__salir { border: 2px solid var(--tinta); background: transparent; border-radius: 999px; padding: .32rem .95rem; font-weight: 700; font-size: .85rem; }
+.header .cuenta__salir:hover { background: var(--tinta); color: var(--papel); }
+.header__ingresar {
+  text-decoration: none; border: 2px solid var(--tinta); border-radius: 999px;
+  padding: .42rem 1.05rem; font-weight: 700; font-size: .9rem; color: var(--tinta); white-space: nowrap;
+}
+.header__ingresar:hover { background: var(--tinta); color: var(--papel); }
+
+.volver { margin: 1rem 0 0; text-align: center; }
+.volver a, .admin__volver { text-decoration: none; color: var(--gris); font-weight: 600; font-size: .92rem; }
+.volver a:hover, .admin__volver:hover { color: var(--tinta); }
+.admin__top { display: flex; justify-content: space-between; align-items: center; margin: 1.2rem 0 0; }
+.admin__url { font-size: .78rem; }
+
+.panel { background: var(--blanco); border: 1px solid var(--linea); border-radius: var(--radio); margin: 1.5rem 0; overflow: hidden; }
+.panel__titulo { background: var(--tinta); color: var(--papel); font-family: var(--display); font-size: 1.3rem; padding: .8rem 1.2rem; }
+.panel__bajada { color: var(--gris); font-size: .85rem; padding: .8rem 1.2rem 0; }
+.panel__mensaje { margin: .7rem 1.2rem 0; font-weight: 600; color: var(--fuego); }
+.panel__nuevo { display: flex; gap: .5rem; flex-wrap: wrap; padding: .9rem 1.2rem; border-bottom: 1px solid var(--linea); }
+.panel__nuevo input { border: 2px solid var(--tinta); border-radius: 999px; padding: .5rem .9rem; font: inherit; min-width: 140px; }
+.panel__nuevo button { border: 0; border-radius: 999px; padding: .5rem 1.1rem; font-weight: 700; background: var(--verde); color: var(--blanco); }
+.panel__lista { list-style: none; }
+.panel__fila { display: flex; align-items: center; gap: .7rem; flex-wrap: wrap; padding: .7rem 1.2rem; border-bottom: 1px solid var(--linea); }
+.panel__fila:last-child { border-bottom: 0; }
+.panel__nombre { flex: 1; min-width: 180px; font-weight: 600; font-size: .95rem; }
+.panel__fila label { display: flex; align-items: center; gap: .4rem; font-size: .85rem; font-weight: 600; color: var(--gris); }
+.panel__fila input { width: 110px; border: 2px solid var(--tinta); border-radius: 10px; padding: .4rem .6rem; font: inherit; text-align: right; }
+.panel__fila button { border: 2px solid var(--tinta); background: var(--blanco); border-radius: 999px; padding: .4rem 1rem; font-weight: 700; font-size: .85rem; }
+.panel__fila button:hover { background: var(--tinta); color: var(--papel); }
+.panel__borrar { border-color: var(--fuego); color: var(--fuego); }
+.panel__borrar:hover { background: var(--fuego); color: var(--blanco); }
+
+@media (max-width: 700px) {
+  .panel__nombre { flex-basis: 100%; }
+  .cuenta-header__saludo { display: none; }
+  .cuenta-header { gap: .4rem; }
+}

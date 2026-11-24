@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Programación con IA · Día 6 — Git y GitHub</title>
+  <title>Programación con IA · Día 7 — Login y roles</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -383,25 +383,26 @@
 
 <div class="hero">
   <canvas id="hero3d"></canvas>
-  <span class="badge"><span class="dot"></span> Programación con IA · Día 6</span>
-  <div class="kicker">// clase seis · tu código en la nube</div>
-  <h1><span class="grad">Git + GitHub</span><span class="outline">tu código en la nube</span></h1>
-  <p>Creá tu cuenta, instalá Git y subí tu <code>mi-tienda</code> a GitHub sin exponer tu <code>.env</code>. El instructivo paso a paso está en la pestaña <b>🐙 GitHub</b>; el desafío de la tienda y el material de todas las clases siguen acá.</p>
+  <span class="badge"><span class="dot"></span> Programación con IA · Día 7</span>
+  <div class="kicker">// clase siete · una puerta, dos mundos</div>
+  <h1><span class="grad">Login + roles</span><span class="outline">una puerta, dos mundos</span></h1>
+  <p>El cliente entra, ve el catálogo y compra. El admin entra por la misma puerta y modifica la base de datos en vivo. El instructivo paso a paso está en la pestaña <b>🔐 Login</b>; el material de todas las clases sigue acá.</p>
   <div class="hero-chips">
-    <span>🐙 <b>GitHub</b></span><span>🌿 <b>Git</b></span><span>💾 <b>Commits</b></span><span>🛡️ <b>.gitignore</b></span><span>🌐 <b>Pages</b></span>
+    <span>🔐 <b>Login</b></span><span>🎟️ <b>Token</b></span><span>🎨 <b>Roles</b></span><span>💂 <b>Middleware</b></span><span>🔒 <b>Hash</b></span><span>🛠️ <b>Panel admin</b></span>
   </div>
 </div>
 
 <div class="marquee" aria-hidden="true">
   <div class="track">
-    <span>Día 6 <em>///</em> <i>Git</i> <em>///</em> GitHub <em>///</em> <i>commit</i> <em>///</em> push <em>///</em> <i>.gitignore</i> <em>///</em> Pages <em>///</em> </span>
-    <span>Día 6 <em>///</em> <i>Git</i> <em>///</em> GitHub <em>///</em> <i>commit</i> <em>///</em> push <em>///</em> <i>.gitignore</i> <em>///</em> Pages <em>///</em> </span>
+    <span>Día 7 <em>///</em> <i>login</i> <em>///</em> token <em>///</em> <i>rol</i> <em>///</em> portero <em>///</em> <i>huella</i> <em>///</em> panel admin <em>///</em> </span>
+    <span>Día 7 <em>///</em> <i>login</i> <em>///</em> token <em>///</em> <i>rol</i> <em>///</em> portero <em>///</em> <i>huella</i> <em>///</em> panel admin <em>///</em> </span>
   </div>
 </div>
 
 <div class="nav-wrap">
   <nav>
-    <button class="active" data-tab="github">🐙 GitHub</button>
+    <button class="active" data-tab="login">🔐 Login</button>
+    <button data-tab="github">🐙 GitHub</button>
     <button data-tab="desafio">🏆 Desafío</button>
     <button data-tab="herramientas">🧰 Herramientas</button>
     <button data-tab="guia">🛡️ Guía de trabajo</button>
@@ -596,8 +597,178 @@ muestra este error: [PEGA EL ERROR EXACTO].
   <div class="callout tip"><span class="c-ico">🎯</span><div><b>Recuerdo del día:</b> el agente acelera tus manos, no reemplaza tu cabeza.</div></div>
 </section>
 
+<!-- ══════════════ LOGIN (Día 7) ══════════════ -->
+<section class="doc active" id="login">
+
+  <div class="meta-card">
+    <div><b>⏱ Tiempo</b>~55 minutos de práctica</div>
+    <div><b>🧰 Necesitás</b>tu mi-tienda con backend Express + SQLite andando</div>
+    <div><b>📦 Instalaciones</b>cero — hash y token salen de node:crypto</div>
+  </div>
+
+  <div class="callout tip"><span class="c-ico">🎯</span><div><b>Al terminar esta guía</b> tu tienda tiene login de verdad: clientes que entran a comprar y un admin que modifica la base de datos desde su panel. La misma puerta para todos: el <b>rol</b> decide qué se ve.</div></div>
+
+  <h2><span class="ico">🚪</span>La idea en 30 segundos</h2>
+  <p>Tu API no tiene memoria: para ella, <strong>cada pedido es un desconocido</strong>. El login resuelve eso con cuatro piezas, las mismas que viste en la demo de <strong>Pisada</strong>:</p>
+  <table>
+    <tr><th>Pieza</th><th>Analogía</th><th>Qué es en palabras simples</th></tr>
+    <tr><td>🪪 <b>Autenticación</b></td><td>el DNI en la recepción</td><td>el login: tu email + tu clave</td></tr>
+    <tr><td>🔒 <b>Hash</b></td><td>guardo la huella, no la llave</td><td>la clave se guarda "molidita", sin vuelta atrás</td></tr>
+    <tr><td>🎟️ <b>Token + rol</b></td><td>la pulsera y su color</td><td>el código que te entrega el login + si sos cliente o admin</td></tr>
+    <tr><td>💂 <b>El portero</b></td><td>el que revisa la pulsera en las puertas de atrás</td><td>el control que avisa con <b>401</b> o <b>403</b> cuando no podés</td></tr>
+  </table>
+  <div class="callout warn"><span class="c-ico">⚠️</span><div>Ver el catálogo es <b>libre para todos</b>, como en cualquier tienda real. El portero revisa solo cuando alguien quiere <b>crear, editar o borrar</b> productos.</div></div>
+
+  <h2><span class="ico">🧭</span>Paso a paso (5 pasos, un punto de control cada uno)</h2>
+  <div class="steps">
+
+    <h3><span class="s-badge">1</span>Las tablas: usuarios y sesiones</h3>
+    <p>En tu base de datos van a aparecer dos tablas nuevas: <code>usuarios</code> guarda el email, el <strong>hash</strong> de la contraseña y el <code>rol</code>; <code>sesiones</code> guarda las pulseras entregadas (el token es una fila más — se ve, se cuenta, se borra). Este es el plano:</p>
+    <div class="copyable">
+      <div class="bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">el plano · así van a quedar tus tablas</span></div>
+      <pre>CREATE TABLE IF NOT EXISTS usuarios (
+  id            INTEGER PRIMARY KEY AUTOINCREMENT,
+  email         TEXT NOT NULL UNIQUE,
+  password_hash TEXT NOT NULL,   -- "sal:hash" — NUNCA la contraseña
+  rol           TEXT NOT NULL DEFAULT 'cliente'
+);
+
+CREATE TABLE IF NOT EXISTS sesiones (
+  token      TEXT PRIMARY KEY,   -- la pulsera
+  usuario_id INTEGER NOT NULL,
+  creado_en  TEXT NOT NULL DEFAULT (datetime('now'))
+);</pre>
+      <button class="copy-btn">Copiar</button>
+    </div>
+    <p>Después, pedile al agente que siembre dos usuarios de <strong>demo</strong> (contraseñas de mentira, nunca reales):</p>
+    <div class="copyable">
+      <div class="bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">prompt · opencode</span></div>
+      <pre>Quiero agregar usuarios a mi tienda. Creá en mi base de datos las
+dos tablas del plano (usuarios y sesiones) y dos usuarios de prueba:
+admin@mi-tienda.test (clave admin123) y cliente@mi-tienda.test
+(clave cliente123). El admin es el único que después va a poder
+modificar los productos.
+IMPORTANTE: la clave NUNCA se guarda escrita como texto: guardá su
+"huella" (hash), imposible de recuperar. No instales librerías
+nuevas para esto.
+Mostrame la tabla usuarios para confirmar que las claves no se ven.</pre>
+      <button class="copy-btn">Copiar</button>
+    </div>
+    <p>✅ <strong>Punto de control:</strong> en la tabla se ven códigos raros (<code>a1b2…:9f8e…</code>), <strong>jamás</strong> las claves.</p>
+
+    <h3><span class="s-badge">2</span>La puerta: el login</h3>
+    <p>El usuario escribe su email y su clave. Tu API los revisa contra la tabla: si están bien, <strong>entrega la pulsera</strong> (el token) y dice quién es. Si no: <code>401</code>.</p>
+    <div class="copyable">
+      <div class="bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">prompt · opencode</span></div>
+      <pre>Ahora agregá la puerta de login a mi backend: el usuario manda su
+email y su clave. Si están bien → mi API responde con un "token"
+(un código único que funciona como pulsera de entrada) y quién es
+(su email y su rol). Si el email o la clave están mal → respondé
+401 con un mensaje que no diga cuál de las dos cosas falló.
+El token tiene que quedar anotado en la tabla sesiones para poder
+revisarlo después.
+Mostrame un ejemplo de respuesta correcta y una incorrecta.</pre>
+      <button class="copy-btn">Copiar</button>
+    </div>
+    <p>✅ <strong>Punto de control:</strong> probalo con el agente (más abajo está el pedido listo) — login bien → pulsera · clave mal → 401.</p>
+
+    <h3><span class="s-badge">3</span>El portero: el que revisa la pulsera</h3>
+    <p>Es el control que se para antes de las puertas importantes. En cada pedido revisa si la pulsera (el token) <strong>existe de verdad</strong> en la tabla de sesiones. Sin pulsera o con una falsa → <code>401</code>.</p>
+    <div class="copyable">
+      <div class="bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">prompt · opencode</span></div>
+      <pre>Creá el "portero": un control que mira en cada pedido si trae la
+pulsera (el token) y si esa pulsera existe de verdad en mi tabla
+de sesiones. Si no existe → respondé 401 con un mensaje claro, y
+si existe → dejá pasar el pedido y contale a la ruta quién es el
+usuario (su email y su rol).
+IMPORTANTE: por ahora no lo actives en ninguna puerta. Solo crealo
+y mostramelo para verlo.</pre>
+      <button class="copy-btn">Copiar</button>
+    </div>
+
+    <h3><span class="s-badge">4</span>Solo el admin modifica: la pulsera VIP</h3>
+    <p>El segundo control mira el <strong>color de la pulsera</strong>: si no sos admin → <code>403</code> («te conozco, pero no pasás»). Ahora sí: activá <strong>los dos controles</strong> en las puertas de crear, editar y borrar productos.</p>
+    <div class="copyable">
+      <div class="bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">prompt · opencode</span></div>
+      <pre>Creá el control "solo admin": si el usuario que llegó no es admin →
+respondé 403 con un mensaje claro.
+Después activá los dos controles (el portero y el solo-admin) en las
+puertas de CREAR, EDITAR y BORRAR productos. Ver productos queda
+libre para todos, como hasta ahora.
+Mostrame en qué parte del código quedaron activados.</pre>
+      <button class="copy-btn">Copiar</button>
+    </div>
+    <p>✅ <strong>Punto de control:</strong> la prueba de fuego: cambiar sin loguearse → <b>401</b> · cambiar logueado como cliente → <b>403</b> · como admin → funciona.</p>
+
+    <h3><span class="s-badge">5</span>Tu tienda: la pantalla de ingreso</h3>
+    <p>En tu tienda agregá la pantalla para entrar: email y clave. Si está bien, la persona queda logueada (se ve su email y un botón <strong>Salir</strong>) y al recargar sigue logueada. Si es admin, arriba aparece el <strong>panel</strong> con los productos para cambiar precios y borrar. El botón Salir desloguea de verdad.</p>
+    <div class="copyable">
+      <div class="bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">prompt · opencode</span></div>
+      <pre>Ahora el frente de mi tienda: una pantalla de ingreso con email y
+clave que le habla a mi login. Si está bien, la persona queda
+logueada: arriba se ve su email y un botón "Salir", y al recargar
+la página sigue logueada. Si el rol es admin, arriba de todo mostrá
+un panel simple con la lista de productos, para cambiar el precio
+y borrar productos.
+El botón "Salir" tiene que desloguear de verdad (avisale a mi API).
+Hacelo de a un paso: primero el ingreso, después el saludo, después
+el panel. Mostrame cada paso antes de seguir.</pre>
+      <button class="copy-btn">Copiar</button>
+    </div>
+    <p>✅ <strong>Punto de control:</strong> recargás la página y seguís logueado; logout y volvés al form.</p>
+
+    <div class="callout tip"><span class="c-ico">✨</span><div><b>Extra pro — URLs propias:</b> ¿querés que tu puerta y tu depósito tengan su propia dirección, como en las tiendas de verdad? Pedilo así: <i>"Hacé que el login viva en la URL /login y el panel del admin en /admin (usá react-router). Si alguien entra a /admin sin ser admin, que lo mande a /login, y al loguear el admin que caiga directo a su panel"</i>. Es la misma idea que la demo de Pisada.</div></div>
+  </div>
+
+  <h2><span class="ico">🧪</span>Cómo probar todo (el punto de control)</h2>
+  <p>No hace falta escribir código para verificar. Primero probalo <strong>desde tu propia tienda</strong> (paso 5): logueate, mirá tu nombre arriba, salí y volvé a entrar. Y para martillar la puerta <strong>antes</strong> de tener el front, pedile al agente:</p>
+  <div class="copyable">
+    <div class="bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">prompt · opencode</span></div>
+    <pre>Probá mi login de a un paso por vez y mostrame qué responde mi API
+en cada caso:
+1) Entrar con una clave mal → tiene que dar 401.
+2) Entrar con el admin → me tiene que dar su token y quién es.
+3) Cambiar un producto sin estar logueado → 401.
+4) Cambiar un producto logueado como cliente → 403.
+5) Cambiar un producto como admin → tiene que funcionar.
+Si alguno no da así, decime qué pasó antes de arreglar nada.</pre>
+    <button class="copy-btn">Copiar</button>
+  </div>
+  <table>
+    <tr><th>Prueba</th><th>Tenés que ver</th><th>Qué significa</th></tr>
+    <tr><td>Login con clave mal</td><td><b>401</b></td><td>La puerta no abre (bien 🎉)</td></tr>
+    <tr><td>Escribir sin pulsera</td><td><b>401</b></td><td>El portero funciona</td></tr>
+    <tr><td>Cliente intenta escribir</td><td><b>403</b></td><td>El rol funciona</td></tr>
+    <tr><td>Admin edita y recargás la tienda</td><td><b>precio nuevo</b></td><td>La BD cambió de verdad</td></tr>
+  </table>
+  <p class="muted">💡 El 401/403 no son errores que "se rompieron": es el portero hablando. Leé el mensaje que trae.</p>
+
+  <h2><span class="ico">🧯</span>Errores comunes (y cómo salir)</h2>
+  <table>
+    <tr><th>El error dice…</th><th>Qué pasó</th><th>Solución</th></tr>
+    <tr><td>401 con todo "bien"</td><td>La pulsera no llegó en el pedido (o llegó mal escrita)</td><td>Pedile al agente que te muestre qué llegó de verdad. El 401 ES el feedback</td></tr>
+    <tr><td>401 al VER los productos</td><td>Nada — ver el catálogo es libre <b>por diseño</b></td><td>El portero cuida solo crear, editar y borrar, como en las tiendas de verdad</td></tr>
+    <tr><td>Guardé la clave en el navegador</td><td>Comodidad traicionera</td><td>Nunca: en el navegador solo vive el <b>token</b> (acordate del Día 4: secretos)</td></tr>
+    <tr><td>Salí… y "sigo logueado"</td><td>Borraste el navegador, pero la pulsera sigue viva en la base</td><td>Salir = borrar la pulsera de los <b>dos</b> lados</td></tr>
+    <tr><td>"¿Y cómo recupero la clave de la huella?"</td><td>Se confunde con encriptación</td><td>No se puede: es de una sola vía. Verificar = moler de nuevo y comparar</td></tr>
+    <tr><td>El navegador bloquea los pedidos (CORS)</td><td>El mostrador (:5173) y la cocina (:3001) son direcciones distintas</td><td>Pedile al agente: "habilitá que solo mi tienda pueda hablar con mi API"</td></tr>
+  </table>
+
+  <h2><span class="ico">✅</span>Checklist final</h2>
+  <ul class="checklist">
+    <li>El requisito R8 · Login está en mi <code>docs/SPEC.md</code> (Dado/Cuando/Entonces)</li>
+    <li>En la tabla de usuarios se ven códigos raros (las huellas), nunca las claves</li>
+    <li>Clave mal → 401 · cambiar sin loguearse → 401 · cambiar como cliente → 403</li>
+    <li>Ver el catálogo sigue libre para todos; el portero cuida solo los cambios</li>
+    <li>Recargás y seguís logueado · el botón Salir te desloguea de verdad</li>
+    <li>Commit + push (regla del Día 6) — sin tu <code>.env</code> y sin tu base de datos</li>
+  </ul>
+
+  <div class="callout tip"><span class="c-ico">🧠</span><div><b>Recuerdo del día:</b> la seguridad no es una puerta mágica — es <b>decidir</b> ponerle portero a las puertas importantes… y comprobar que el 401 aparezca.</div></div>
+</section>
+
 <!-- ══════════════ GITHUB (Día 6) ══════════════ -->
-<section class="doc active" id="github">
+<section class="doc" id="github">
 
   <div class="meta-card">
     <div><b>⏱ Tiempo</b>~30 minutos la primera vez</div>
@@ -885,9 +1056,19 @@ proponé un mensaje de commit claro en español y esperá mi OK antes del push.<
         <a class="btn" href="#github" data-goto="github">📘 Instructivo</a>
       </div>
     </div>
+    <div class="clase-card c1">
+      <span class="num">Día 7</span>
+      <h3>🔐 Login y roles: una puerta, dos mundos</h3>
+      <p>Quién sos y qué podés hacer, la clave guardada como huella, la pulsera (token) y su color (rol), el portero con su semáforo 401/403, y el panel admin que modifica la base de datos en vivo.</p>
+      <div class="btn-row">
+        <a class="btn btn-primary" href="dia7_login.html" target="_blank">👀 Ver online</a>
+        <a class="btn" href="dia7_login.html" download>⬇️ Descargar</a>
+        <a class="btn" href="#login" data-goto="login">📘 Instructivo</a>
+      </div>
+    </div>
   </div>
 
-  <div class="callout tip"><span class="c-ico">💡</span><div>Las diapositivas del Día 3, 4 (Parte 1 y Parte 2), 5 y 6 se abren en el navegador: navegá con las flechas <strong>← →</strong> del teclado. En la Parte 2, hacé <strong>clic en un comando</strong> y queda copiado.</div></div>
+  <div class="callout tip"><span class="c-ico">💡</span><div>Las diapositivas del Día 3, 4 (Parte 1 y Parte 2), 5, 6 y 7 se abren en el navegador: navegá con las flechas <strong>← →</strong> del teclado. En varias de ellas, hacé <strong>clic en un comando o prompt</strong> y queda copiado.</div></div>
 </section>
 
 <!-- ══════════════ GUÍA ══════════════ -->

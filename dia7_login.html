@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Día 7 — Login y roles: una puerta, dos mundos</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --panel: #161b22;
+    --border: #30363d;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --accent: #a371f7;
+    --accent2: #58a6ff;
+    --green: #3fb950;
+    --red: #f85149;
+    --yellow: #d29922;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; overflow: hidden; }
+  body {
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+  }
+  .deck { height: 100vh; position: relative; }
+  .slide {
+    display: none;
+    height: 100vh;
+    padding: 6vh 8vw;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2.5vh;
+    position: relative;
+  }
+  .slide.active { display: flex; }
+  .slide::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, var(--green), var(--accent));
+  }
+  h1 { font-size: clamp(2.2rem, 5.5vw, 4.2rem); line-height: 1.15; }
+  h2 { font-size: clamp(1.6rem, 3.8vw, 2.8rem); margin-bottom: 1vh; }
+  h2 .n {
+    color: var(--accent);
+    font-family: Consolas, monospace;
+    font-size: 0.75em;
+    vertical-align: middle;
+    margin-right: 0.4em;
+  }
+  p, li { font-size: clamp(1rem, 2.1vw, 1.45rem); line-height: 1.55; color: var(--text); }
+  .muted { color: var(--muted); }
+  ul, ol { padding-left: 1.4em; display: flex; flex-direction: column; gap: 1.2vh; }
+  .tag {
+    display: inline-block;
+    background: rgba(63,185,80,.15);
+    border: 1px solid var(--green);
+    color: var(--green);
+    padding: .2em .8em;
+    border-radius: 999px;
+    font-size: .85em;
+    font-family: Consolas, monospace;
+  }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 2vw; align-items: stretch; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.2vw; align-items: stretch; }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 2vh 1.4vw;
+  }
+  .card h3 { font-size: clamp(.95rem, 1.8vw, 1.25rem); margin-bottom: .6vh; }
+  .card p, .card li { font-size: clamp(.8rem, 1.4vw, 1rem); }
+  pre {
+    background: #0a0d12;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.6vh 1.2vw;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: clamp(.72rem, 1.4vw, 1rem);
+    line-height: 1.6;
+    overflow: auto;
+    white-space: pre;
+  }
+  pre.copiable { cursor: pointer; border-color: rgba(88,166,255,.45); }
+  pre.copiable:hover { border-color: var(--accent2); }
+  pre.copiable.copied { border-color: var(--green); box-shadow: 0 0 12px rgba(63,185,80,.35); }
+  pre.copiable.copied::after {
+    content: " ✓ ¡copiado!";
+    color: var(--green);
+    font-size: .8em;
+  }
+  .kw { color: #ff7b72; }
+  .fn { color: #d2a8ff; }
+  .str { color: #a5d6ff; }
+  .cm { color: var(--muted); font-style: italic; }
+  .bad { border-left: 4px solid var(--red); }
+  .good { border-left: 4px solid var(--green); }
+  .star { border-left: 4px solid var(--yellow); }
+  .bad h3 { color: var(--red); }
+  .good h3 { color: var(--green); }
+  .star h3 { color: var(--yellow); }
+  .big-emoji { font-size: clamp(3rem, 8vw, 6rem); text-align: center; }
+  .center { text-align: center; }
+  .flow { display: flex; align-items: center; justify-content: center; gap: 1vw; flex-wrap: wrap; }
+  .flow .step {
+    background: var(--panel);
+    border: 1px solid var(--accent);
+    border-radius: 10px;
+    padding: 1.2vh 1.2vw;
+    font-size: clamp(.8rem, 1.5vw, 1.05rem);
+    text-align: center;
+  }
+  .flow .arr { color: var(--accent2); font-size: 1.6rem; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { border: 1px solid var(--border); padding: 1.2vh 1vw; text-align: left; font-size: clamp(.8rem, 1.45vw, 1.05rem); }
+  th { background: var(--panel); color: var(--green); }
+  .checklist li { list-style: none; }
+  .checklist li::before { content: "☐ "; color: var(--accent2); font-weight: bold; }
+  .subtitle { font-size: clamp(1.1rem, 2.4vw, 1.8rem); color: var(--muted); }
+  .hl { color: var(--accent); font-weight: 600; }
+  .hl2 { color: var(--accent2); font-weight: 600; }
+  .hl-green { color: var(--green); font-weight: 600; }
+  .hl-red { color: var(--red); font-weight: 600; }
+  .hl-yellow { color: var(--yellow); font-weight: 600; }
+  /* ══ Capturas conceptuales (mockups, sin código) ══ */
+  .mock { border: 1px solid var(--border); border-radius: 12px; background: #0a0d12; overflow: hidden; }
+  .mock-bar { display: flex; align-items: center; gap: .45vw; padding: .9vh 1vw; background: #161b22; border-bottom: 1px solid var(--border); }
+  .mock-bar .d { width: 11px; height: 11px; border-radius: 50%; flex: none; }
+  .d1 { background: #ff5f57; } .d2 { background: #febc2e; } .d3 { background: #28c840; }
+  .mock-bar .lbl { margin-left: .6vw; color: var(--muted); font-family: Consolas, monospace; font-size: .8em; letter-spacing: .05em; }
+  .mock-body { padding: 1.4vh 1.2vw; font-family: Consolas, "Courier New", monospace; font-size: clamp(.68rem, 1.3vw, .98rem); line-height: 1.8; color: var(--text); }
+  .mock-body .ok { color: var(--green); font-weight: 700; }
+  .mock-body .err { color: var(--red); font-weight: 700; }
+  .mock-body .dim { color: var(--muted); }
+  .mock-body .tk { color: var(--accent2); font-weight: 700; }
+  .mock-body .warn { color: var(--yellow); font-weight: 700; }
+  .form-mock { display: flex; flex-direction: column; gap: 1vh; max-width: 360px; margin: 0 auto; font-family: "Segoe UI", sans-serif; }
+  .f-titulo { font-weight: 700; font-size: 1.15em; }
+  .f-sub { color: var(--muted); font-size: .85em; }
+  .f-campo { border: 1px solid var(--border); border-radius: 9px; padding: .9vh .9vw; background: #0d1117; }
+  .f-boton { background: var(--green); color: #04140b; border-radius: 9px; padding: .9vh; font-weight: 700; text-align: center; }
+  .f-error { color: var(--red); font-size: .9em; text-align: center; }
+  .saludo-mock { display: flex; align-items: center; gap: .8vw; flex-wrap: wrap; font-family: "Segoe UI", sans-serif; }
+  .s-chip { border-radius: 999px; padding: .3vh 1vw; font-size: .85em; font-weight: 700; }
+  .s-chip--admin { background: rgba(63,185,80,.15); border: 1px solid var(--green); color: var(--green); }
+  .s-chip--cliente { background: rgba(88,166,255,.12); border: 1px solid var(--accent2); color: var(--accent2); }
+  .s-salir { border: 1px solid var(--border); border-radius: 999px; padding: .3vh 1vw; color: var(--text); }
+  /* Controles */
+  #progress { position: fixed; bottom: 0; left: 0; height: 5px; background: linear-gradient(90deg, var(--green), var(--accent)); width: 0; transition: width .2s; z-index: 10; }
+  #counter { position: fixed; bottom: 14px; right: 20px; color: var(--muted); font-family: Consolas, monospace; font-size: .9rem; z-index: 10; }
+  #hint { position: fixed; bottom: 14px; left: 20px; color: var(--muted); font-size: .8rem; z-index: 10; opacity: .7; }
+  .nav-btn {
+    position: fixed; top: 50%; transform: translateY(-50%);
+    background: var(--panel); border: 1px solid var(--border); color: var(--text);
+    width: 44px; height: 44px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; z-index: 10;
+  }
+  .nav-btn:hover { border-color: var(--accent); color: var(--accent); }
+  #prev { left: 14px; } #next { right: 14px; }
+  .two-col { display: grid; grid-template-columns: 1.2fr 1fr; gap: 2vw; align-items: center; }
+  @media (max-width: 800px) {
+    .grid2, .grid3, .two-col { grid-template-columns: 1fr; }
+    .nav-btn { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+<!-- 1 · Portada -->
+<section class="slide">
+  <div><span class="tag">Día 7 · Clase 7</span></div>
+  <h1>Login y roles: <span class="hl2">una puerta</span>, <span class="hl-green">dos mundos</span> 🚪</h1>
+  <p class="subtitle">El cliente entra y compra. El admin entra por la misma puerta… y modifica la base de datos.</p>
+  <p class="muted">Hoy <strong>no escribimos código</strong>: entendés las <strong>5 piezas</strong> que tiene cualquier login del mundo. El código lo escribe tu agente — tu trabajo es pedírselas bien y comprobar que funcionan. Lo vemos andando de punta a punta en <code>Pisada</code> 👟.</p>
+</section>
+
+<!-- 2 · Dónde quedamos -->
+<section class="slide">
+  <h2><span class="n">01</span>Dónde quedamos</h2>
+  <div class="grid3">
+    <div class="card good">
+      <h3>✅ Ya tienen</h3>
+      <ul>
+        <li><span class="hl-green">mi-tienda</span>: catálogo, filtros y carrito</li>
+        <li>Su <span class="hl-green">API + base de datos</span> andando</li>
+        <li>El catálogo ya <span class="hl-green">lee de la BD</span></li>
+        <li>Repo en GitHub + <span class="hl-green">push</span> cada clase</li>
+      </ul>
+    </div>
+    <div class="card bad">
+      <h3>🤔 Pero…</h3>
+      <ul>
+        <li><span class="hl-red">Cualquiera</span> puede cambiar los precios de tu tienda</li>
+        <li>Tu tienda no sabe <span class="hl-red">quién</span> está entrando</li>
+        <li>No existe el <span class="hl-red">panel del admin</span></li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>🎯 Hoy</h3>
+      <ul>
+        <li>La <span class="hl">puerta</span> 🚪 (el login)</li>
+        <li>La <span class="hl">pulsera</span> 🎟️ (el token y el rol)</li>
+        <li>El <span class="hl">portero</span> 💂 (quién puede hacer qué)</li>
+        <li>El <span class="hl">depósito</span> 🛠️ (panel del admin)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 3 · Agenda -->
+<section class="slide">
+  <h2><span class="n">02</span>Agenda</h2>
+  <ul>
+    <li>🎣 <span class="hl-red">El problema</span>: alguien cambia tus precios sin pasar por ninguna puerta</li>
+    <li>🧠 <span class="hl">Las 4 ideas</span> con sus analogías (esto es lo que te llevás de la clase)</li>
+    <li>🔑 <span class="hl-green">Demo completa</span> en Pisada: la puerta, el portero y los famosos 401/403</li>
+    <li>🏆 <span class="hl-green">Práctica</span>: pedirle las 5 piezas al agente, una por vez, y comprobarlas</li>
+    <li>💎 <span class="hl-yellow">Desafío</span>: el panel admin y la tienda "en tiempo real"</li>
+    <li>🏁 Cierre + <span class="hl2">push</span> (regla del Día 6)</li>
+  </ul>
+</section>
+
+<!-- 4 · El problema -->
+<section class="slide">
+  <h2><span class="n">03</span>El problema 🎣</h2>
+  <div class="two-col">
+    <div>
+      <p>Con tu tienda andando, <span class="hl-red">nadie te impide</span> hacer esto. En la demo yo saco <strong>una sola línea</strong> de Pisada y mirá lo que pasa:</p>
+      <ul>
+        <li>Ver el catálogo es <span class="hl-green">libre</span> ✓ (como en toda tienda real)</li>
+        <li>Pero también es libre <span class="hl-red">cambiar los precios</span> ✗</li>
+        <li>Internet "no tiene memoria": para tu tienda, <strong>cada visita es un desconocido</strong> — no se acuerda de que ya entraste</li>
+      </ul>
+      <p class="muted">Vuelvo a poner la línea → el mismo intento recibe <span class="hl-red">401</span>. Toda tu seguridad es esa línea.</p>
+    </div>
+    <div class="mock">
+      <div class="mock-bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">lo que vamos a ver en la demo</span></div>
+      <div class="mock-body">
+<span class="dim">🕵️ alguien que NO es admin, sin loguearse:</span>
+
+cambiar un precio  → <span class="err">permitido</span>
+<span class="dim">"Velox Ráfaga 3" pasa de $ 89.999 a $ 1</span>
+
+<span class="dim">…con el portero puesto (1 línea):</span>
+
+cambiar un precio  → <span class="err">401</span> <span class="dim">🚫 ¿quién sos?</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5 · Las 4 ideas -->
+<section class="slide">
+  <h2><span class="n">04</span>Las 4 ideas de la clase 🧠</h2>
+  <table>
+    <tr><th>La idea</th><th>La pregunta que responde</th><th>La analogía</th></tr>
+    <tr>
+      <td><span class="hl">Autenticación</span></td>
+      <td>¿<strong>quién sos</strong>?</td>
+      <td>🪪 el DNI en la recepción (email + clave)</td>
+    </tr>
+    <tr>
+      <td><span class="hl">Autorización</span></td>
+      <td>¿<strong>qué podés hacer</strong>?</td>
+      <td>🎟️ la pulsera VIP del boliche (si sos cliente o admin)</td>
+    </tr>
+    <tr>
+      <td><span class="hl">Hash</span></td>
+      <td>¿cómo guardo tu clave <strong>sin tenerla</strong>?</td>
+      <td>🔒 guardo la <strong>huella</strong> de la llave, no la llave</td>
+    </tr>
+    <tr>
+      <td><span class="hl">Token</span></td>
+      <td>¿cómo te <strong>recuerdo</strong> en tu próxima visita?</td>
+      <td>🎟️ la pulsera que llevás puesta todo el boliche</td>
+    </tr>
+  </table>
+  <p class="muted">La noche completa: la recepción te pide el DNI → compara la huella → te entrega la <span class="hl">pulsera</span> → el <span class="hl">portero</span> la revisa en las puertas de atrás → el <span class="hl">color</span> de la pulsera decide si entrás al depósito.</p>
+</section>
+
+<!-- 6 · La huella: hash -->
+<section class="slide">
+  <h2><span class="n">05</span>La huella 🔒 (nunca guardamos la clave)</h2>
+  <div class="flow" style="margin:1.5vh 0">
+    <div class="step">🔑 la clave<br><span class="muted">"gatonegro"</span></div><div class="arr">+</div>
+    <div class="step">🧂 su toque secreto<br><span class="muted">distinto para cada persona</span></div><div class="arr">→</div>
+    <div class="step">⚙️ se "muele"<br><span class="muted">sin vuelta atrás</span></div><div class="arr">→</div>
+    <div class="step"><span class="hl">la huella</span><br><span class="muted">lo único que se guarda</span></div>
+  </div>
+  <div class="grid2">
+    <div class="mock">
+      <div class="mock-bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">la tabla de usuarios, como la vas a ver en tu BD</span></div>
+      <div class="mock-body">
+<span class="ok">email</span>              <span class="ok">clave guardada (la huella)</span>   <span class="ok">rol</span>
+admin@pisada.test     <span class="warn">a1b2c3d4…:9f8e7d6…</span>           admin
+cliente@pisada.test   <span class="warn">4e5f6a7b…:1a2b3c4…</span>           cliente
+
+<span class="dim">↑ eso que parece basura ES la seguridad:</span>
+<span class="dim">  la clave no está en ningún lado</span>
+      </div>
+    </div>
+    <ul>
+      <li>Es <span class="hl-red">de una sola vía</span>: no existe "descifrarla". <span class="hl-green">Para saber si tu clave está bien: la muelen de nuevo y comparan huellas</span></li>
+      <li>El "toque secreto" (la sal) hace que dos personas con la misma clave tengan huellas distintas</li>
+      <li>Si alguien roba tu base de datos… <strong>no se lleva ninguna clave</strong></li>
+      <li><span class="hl-green">No instalás nada</span>: tu agente lo arma con lo que ya viene en Node</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 7 · La pulsera: token + rol -->
+<section class="slide">
+  <h2><span class="n">06</span>La pulsera 🎟️ (lo que te entrega el login)</h2>
+  <div class="two-col">
+    <div class="mock">
+      <div class="mock-bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">tu "recibo" al entrar</span></div>
+      <div class="mock-body">
+<span class="dim">entras con email + clave…</span>
+
+🎟️ token:  <span class="tk">1b03dd108a9f…</span>
+   <span class="dim">↑ tu pulsera: única, imposible de adivinar,</span>
+   <span class="dim">  y queda anotada en la tabla de sesiones</span>
+
+👤 quién sos: admin@pisada.test
+🎨 tu rol:   <span class="ok">admin</span>  <span class="dim">(el color de la pulsera)</span>
+      </div>
+    </div>
+    <div>
+      <ul>
+        <li>La pulsera viaja <strong>pegada a cada pedido</strong> que hace tu tienda — así te reconoce sin que entres de nuevo</li>
+        <li>Tu <span class="hl">rol no lo elige tu navegador</span>: te lo da la base de datos → <strong>nadie "se hace admin"</strong> desde afuera</li>
+        <li><span class="hl-green">Salir</span> = <strong>devolver la pulsera</strong>: se borra el registro de la base de datos (no solo del navegador)</li>
+        <li>Pisada tiene dos usuarios de prueba: <code>admin@pisada.test</code> / <code>admin123</code> y <code>cliente@pisada.test</code> / <code>cliente123</code></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 8 · Demo: el menú -->
+<section class="slide">
+  <h2><span class="n">07</span>Demo en vivo: lo que van a ver 🔑</h2>
+  <div class="grid3">
+    <div class="card good">
+      <h3>🖥️ Dos ventanas</h3>
+      <ul>
+        <li>La API (la cocina) en el <span class="hl">:3001</span></li>
+        <li>La tienda (el mostrador) en el <span class="hl">:5173</span></li>
+      </ul>
+    </div>
+    <div class="card star">
+      <h3>🎬 La secuencia</h3>
+      <ol>
+        <li>Entra el <span class="hl-green">admin</span> → recibe su pulsera</li>
+        <li>Alguien quiere cambiar un precio <span class="hl-red">sin pulsera</span> → 401</li>
+        <li>Entra uno con pulsera de <span class="hl">cliente</span> → 403</li>
+        <li>El <span class="hl-green">admin</span> cambia un precio → funciona</li>
+        <li>F5 en la tienda → precio nuevo</li>
+      </ol>
+    </div>
+    <div class="mock">
+      <div class="mock-bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">el semáforo del portero</span></div>
+      <div class="mock-body">
+entrar con clave mal    → <span class="err">401</span> <span class="dim">🚫 ¿quién sos?</span>
+
+cambiar algo sin pulsera → <span class="err">401</span> <span class="dim">🚫 ¿quién sos?</span>
+
+cambiar algo siendo      → <span class="warn">403</span> <span class="dim">🚫 te conozco,
+cliente                        pero no pasás</span>
+
+cambiar algo siendo      → <span class="ok">OK ✅</span> <span class="dim">la BD cambió</span>
+admin
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 9 · La puerta por dentro -->
+<section class="slide">
+  <h2><span class="n">08</span>La puerta por dentro 🚪</h2>
+  <div class="flow" style="margin:1.5vh 0">
+    <div class="step">1 · ¿existe<br>ese email?</div><div class="arr">→</div>
+    <div class="step">2 · muela la clave y compare<br>con la huella guardada</div><div class="arr">→</div>
+    <div class="step">3 · entregue<br>la pulsera 🎟️</div><div class="arr">→</div>
+    <div class="step"><span class="hl-green">¡Bienvenido!</span></div>
+  </div>
+  <div class="grid2">
+    <div class="mock">
+      <div class="mock-bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">la puerta, del lado del cliente</span></div>
+      <div class="mock-body"><div class="form-mock">
+        <div class="f-titulo">Ingresar</div>
+        <div class="f-sub">La misma puerta para todos. Tu rol decide qué ves.</div>
+        <div class="f-campo">📧 admin@pisada.test</div>
+        <div class="f-campo">🔒 ••••••••</div>
+        <div class="f-boton">Ingresar</div>
+        <div class="f-error">Email o clave incorrectos</div>
+      </div></div>
+    </div>
+    <ul>
+      <li>El mensaje de error es <span class="hl-red">vago a propósito</span>: nunca le digas al intruso si falló el email o la clave (ni si el email existe)</li>
+      <li>Tu clave <strong>viaja en ese pedido y desaparece</strong>: no se guarda en la base, ni en el navegador, ni en GitHub</li>
+      <li>Email o clave mal → mismo error, mismo <span class="hl-red">401</span>. Así nadie averigua qué parte falló</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 10 · El portero -->
+<section class="slide">
+  <h2><span class="n">09</span>El portero 💂</h2>
+  <div class="flow" style="margin:1.5vh 0">
+    <div class="step">📦 llega un pedido de<br><span class="muted">cambiar algo en la BD</span></div><div class="arr">→</div>
+    <div class="step">💂 "pulsera, por favor"<br><span class="muted">¿existe de verdad en la tabla?</span></div><div class="arr">→</div>
+    <div class="step"><span class="hl-red">401</span> si no la tiene<br><span class="muted">"¿quién sos?"</span></div>
+    <div class="arr">/</div>
+    <div class="step"><span class="hl-green">pasa</span> y avisa quién es<br><span class="muted">"este pedido es de Ana, admin"</span></div>
+  </div>
+  <ul>
+    <li>El portero <span class="hl">vive en la cocina</span> (el servidor): no importa lo que muestre el navegador — <strong>la decisión la toma el servidor</strong></li>
+    <li>En el código a este control lo llaman "middleware": algo que se para <strong>antes</strong> de cada puerta que querés cuidar. Tu agente lo sabe escribir; <strong>vos decidís dónde ponerlo</strong></li>
+    <li>El 401 <strong>no es que "se rompió algo"</strong>: es el portero hablando. Si algo falla, <span class="hl-green">leé su mensaje</span></li>
+    <li>El portero no decide si entrás al depósito: solo confirma <strong>quién sos</strong> (el color de la pulsera decide lo demás)</li>
+  </ul>
+</section>
+
+<!-- 11 · La pulsera VIP + el mapa de puertas -->
+<section class="slide">
+  <h2><span class="n">10</span>La pulsera VIP y el mapa de puertas 💎</h2>
+  <div class="grid2">
+    <div class="card">
+      <h3>🌍 Abierto a todos</h3>
+      <ul>
+        <li>Ver el catálogo y comprar</li>
+        <li>Como en toda tienda: entrás sin loguearte</li>
+      </ul>
+    </div>
+    <div class="card star">
+      <h3>💂 Solo el admin</h3>
+      <ul>
+        <li><strong>Crear, editar y borrar</strong> productos</li>
+        <li>Portero (¿quién sos?) + pulsera VIP (¿sos admin?)</li>
+      </ul>
+    </div>
+  </div>
+  <table>
+    <tr><th>Lo que ves</th><th>Traducción</th><th>Qué le decís al cliente</th></tr>
+    <tr><td><span class="hl-red">401</span></td><td>"¿Quién sos?" — no tiene pulsera o es falsa</td><td>Primero entrá con tu usuario</td></tr>
+    <tr><td><span class="hl-yellow">403</span></td><td>"Te conozco, pero tu rol no pasa"</td><td>Esa zona es solo del admin</td></tr>
+    <tr><td><span class="hl-green">OK</span></td><td>"Adelante" — la base cambió de verdad</td><td>¡Listo! 🎉</td></tr>
+  </table>
+  <p class="muted">🔐 La idea potente: poner portero en las puertas importantes es <strong>un solo pedido al agente</strong> — y toda la seguridad de tu tienda queda en esa decisión.</p>
+</section>
+
+<!-- 12 · El frente -->
+<section class="slide">
+  <h2><span class="n">11</span>La puerta en tu tienda 🖥️</h2>
+  <div class="two-col">
+    <div class="mock">
+      <div class="mock-bar"><span class="d d1"></span><span class="d d2"></span><span class="d d3"></span><span class="lbl">así se ve tu tienda con la pulsera puesta</span></div>
+      <div class="mock-body">
+<div class="saludo-mock">
+  <span>👋 Hola, <strong>admin@pisada.test</strong></span>
+  <span class="s-chip s-chip--admin">admin</span>
+  <span class="s-salir">Salir</span>
+</div>
+
+<span class="dim">y si tu rol es admin, arriba aparece:</span>
+
+🛠️ <span class="ok">Panel admin — el depósito</span>
+<span class="dim"> nombre · precio · [Guardar] [Borrar]</span>
+<span class="dim"> + crear producto nuevo</span>
+
+<span class="dim">(si sos cliente: nada de esto existe —</span>
+<span class="dim"> solo el saludo y el catálogo)</span>
+      </div>
+    </div>
+    <ul>
+      <li>La pulsera se guarda en el <span class="hl">bolsillo del navegador</span> → <span class="hl-green">recargás la página y seguís logueado</span></li>
+      <li>El panel aparece <span class="hl">solo si sos admin</span>: la tienda decide qué mostrar según tu pulsera</li>
+      <li>Tu <span class="hl">rol llega desde la base de datos</span> cuando entrás — el navegador no lo inventa</li>
+      <li><span class="hl-green">Salir</span> = devolver la pulsera: se borra de la base <strong>y</strong> del bolsillo</li>
+      <li class="muted">Regla de la casa: la pantalla nunca habla directo con la API — siempre a través de tu servicio de siempre</li>
+    </ul>
+    <p>✨ <strong>Nivel pro — URLs propias:</strong> la puerta puede vivir en <span class="hl">/login</span> y el depósito en <span class="hl">/admin</span> (así está Pisada). Si entrás a /admin sin ser admin, te manda a la puerta. El agente lo arma con react-router.</p>
+  </div>
+</section>
+
+<!-- 13 · Tiempo real -->
+<section class="slide">
+  <h2><span class="n">12</span>"Tiempo real" (el truco) ⚡</h2>
+  <div class="flow" style="margin:2vh 0">
+    <div class="step">🛠️ el admin guarda<br><span class="muted">en su panel</span></div><div class="arr">→</div>
+    <div class="step">📤 el pedido pasa<br><span class="muted">al portero</span></div><div class="arr">→</div>
+    <div class="step">🗄️ la base de datos cambia<br><span class="muted">AL TOQUE</span></div><div class="arr">→</div>
+    <div class="step">👀 el catálogo lee<br><span class="muted">de la base</span></div><div class="arr">→</div>
+    <div class="step">🔄 F5 del cliente<br><span class="muted">precio nuevo</span></div>
+  </div>
+  <ul>
+    <li><span class="hl">No es magia</span>: ya lo tenés desde que el catálogo lee de la base de datos (Día 5)</li>
+    <li>"Tiempo real" de verdad = que el navegador del cliente <strong>se entere solo</strong>, sin apretar F5</li>
+    <li>💎 <span class="hl-yellow">Extra (si terminás antes)</span>: pedile al agente que tu tienda se fije cada 5 segundos si algo cambió — y "se actualiza sola"</li>
+  </ul>
+</section>
+
+<!-- 14 · Los 5 pasos -->
+<section class="slide">
+  <h2><span class="n">13</span>Práctica: pedirle las 5 piezas al agente 🏆</h2>
+  <table>
+    <tr><th>#</th><th>Pieza</th><th>Qué pedís (en palabras simples)</th><th>Cómo la comprobás</th></tr>
+    <tr><td><strong>1</strong></td><td>Los usuarios</td><td>las tablas + 2 usuarios de prueba (un admin y un cliente)</td><td>En la base se ven <span class="hl-green">códigos raros</span>, nunca las claves</td></tr>
+    <tr><td><strong>2</strong></td><td>La puerta</td><td>el login que entrega la pulsera</td><td>Clave bien → pulsera · clave mal → <span class="hl-red">401</span></td></tr>
+    <tr><td><strong>3</strong></td><td>El portero</td><td>el control que revisa la pulsera (todavía sin activarlo)</td><td>Le pedís al agente que lo pruebe: sin pulsera → <span class="hl-red">401</span></td></tr>
+    <tr><td><strong>4</strong></td><td>La pulsera VIP</td><td>el control solo-admin, activado en crear/editar/borrar</td><td>Cliente intenta cambiar → <span class="hl-yellow">403</span> · admin → funciona</td></tr>
+    <tr><td><strong>5</strong></td><td>Tu tienda</td><td>la pantalla de ingreso + el saludo + el botón Salir</td><td>Recargás y seguís logueado · salís y volvés al ingreso</td></tr>
+  </table>
+  <p class="muted">Prioridad: piezas 1 a 4 (eso es lo evaluable). La 5 queda de tarea si no llega. El panel <strong>siempre</strong> es extra. Y como siempre: primero el requisito en tu SPEC, después el código.</p>
+</section>
+
+<!-- 15 · Los pedidos para el agente -->
+<section class="slide">
+  <h2><span class="n">14</span>Los pedidos para el agente 🤖 (clic y copiá)</h2>
+  <p class="muted">El código lo escribe el agente. Tu poder está en <strong>pedirlo en palabras simples, una pieza por vez, y comprobar que funcionó</strong>. Los nombres técnicos los conoce él.</p>
+  <div class="grid3">
+    <div>
+      <p><span class="hl">1 · Primero la spec</span></p>
+      <pre class="copiable">Antes de escribir código: agregá a mi docs/SPEC.md
+el requisito "R8 · Login": se entra con email y
+clave; si están mal → 401; y solo el admin puede
+crear, editar o borrar productos (los demás → 403).
+Escribilo con Dado/Cuando/Entonces, como los otros
+requisitos, y esperá mi OK antes de tocar código.</pre>
+    </div>
+    <div>
+      <p><span class="hl">2 · Los usuarios</span></p>
+      <pre class="copiable">Paso 1: creá las dos tablas del plano (usuarios y
+sesiones) y dos usuarios de prueba: admin@mi-tienda
+.test (clave admin123) y cliente@mi-tienda.test
+(clave cliente123).
+IMPORTANTE: la clave nunca se guarda escrita como
+texto: guardá su "huella" (hash), imposible de
+recuperar. Sin instalar librerías nuevas.
+Mostrame la tabla usuarios: las claves no se
+tienen que ver.</pre>
+    </div>
+    <div>
+      <p><span class="hl">3 · La puerta y el portero</span></p>
+      <pre class="copiable">Paso 2: agregá el login: si el email y la clave
+están bien, mi API me devuelve el "token" (la
+pulsera) y quién es; si están mal → 401.
+Después lo importante: que NADIE pueda crear,
+editar ni borrar productos sin ser admin. Sin
+pulsera → 401. Cliente con pulsera → 403. Ver el
+catálogo sigue libre para todos.
+Probalo y mostrame los tres resultados.</pre>
+    </div>
+  </div>
+</section>
+
+<!-- 16 · Errores comunes -->
+<section class="slide">
+  <h2><span class="n">15</span>Errores comunes (y cómo pensarlos) 🧯</h2>
+  <table>
+    <tr><th>Lo que ves</th><th>Qué significa de verdad</th><th>Qué hacer</th></tr>
+    <tr><td><span class="hl-red">401</span> "con todo bien"</td><td>La pulsera no llegó en el pedido, o llegó mal escrita</td><td>Pedile al agente que te muestre qué llegó de verdad. El 401 <strong>te está hablando</strong></td></tr>
+    <tr><td><span class="hl-red">401</span> al VER los productos</td><td>Nada — ver el catálogo es libre <strong>por diseño</strong></td><td>El portero cuida solo crear, editar y borrar, como en las tiendas de verdad</td></tr>
+    <tr><td>"Guardé la clave en el navegador"</td><td>Comodidad traicionera</td><td>Nunca: en el navegador solo vive la <span class="hl">pulsera</span> (acordate del Día 4: secretos)</td></tr>
+    <tr><td>Salí… y "sigo logueado"</td><td>Borraste el navegador, pero la pulsera sigue viva en la base</td><td>Salir = borrar la pulsera de los <strong>dos</strong> lados</td></tr>
+    <tr><td>"¿Y cómo recupero la clave de la huella?"</td><td>Se confunde con encriptación</td><td>No se puede: es de una sola vía. Saber si está bien = moler de nuevo y comparar</td></tr>
+    <tr><td>El navegador bloquea los pedidos</td><td>El mostrador (:5173) y la cocina (:3001) son direcciones distintas</td><td>Pedile al agente: "habilitá que solo mi tienda pueda hablar con mi API"</td></tr>
+  </table>
+</section>
+
+<!-- 17 · Cierre -->
+<section class="slide">
+  <h2><span class="n">16</span>Cierre 🏁</h2>
+  <ul class="checklist">
+    <li>Sabés explicar las 4 ideas: <span class="hl-green">quiénes sos, qué podés hacer, la huella y la pulsera</span></li>
+    <li>El requisito R8 está en tu SPEC, con Dado/Cuando/Entonces (spec primero, como siempre)</li>
+    <li>Las 5 piezas pedidas al agente, cada una comprobada por vos</li>
+    <li>El semáforo: <span class="hl-red">401</span> ¿quién sos? · <span class="hl-yellow">403</span> tu rol no pasa · <span class="hl-green">OK</span> adelante</li>
+    <li><span class="hl2">Commit + push</span> — regla del Día 6: toda clase termina en push</li>
+  </ul>
+  <p>📅 Para casa: el panel admin completo + la tienda "en tiempo real".</p>
+  <p>📅 Próxima clase (a definir): <span class="hl-green">poner tu tienda online</span>, el pago, o que los clientes se registren solos.</p>
+  <p class="muted">🔐 La seguridad no es una puerta mágica: es <strong>decidir</strong> ponerle portero a las puertas importantes… y comprobar que el 401 aparezca.</p>
+</section>
+
+</div>
+
+<div id="progress"></div>
+<div id="counter">1 / 17</div>
+<div id="hint">← → navegar · clic en un pedido → lo copia</div>
+<button class="nav-btn" id="prev">‹</button>
+<button class="nav-btn" id="next">›</button>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  let i = 0;
+  function show(n) {
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach((s, k) => s.classList.toggle('active', k === i));
+    document.getElementById('progress').style.width = ((i + 1) / slides.length * 100) + '%';
+    document.getElementById('counter').textContent = (i + 1) + ' / ' + slides.length;
+  }
+  document.getElementById('next').onclick = () => show(i + 1);
+  document.getElementById('prev').onclick = () => show(i - 1);
+  document.addEventListener('keydown', e => {
+    if (['ArrowRight','ArrowDown',' ','PageDown','Enter'].includes(e.key)) { e.preventDefault(); show(i + 1); }
+    else if (['ArrowLeft','ArrowUp','PageUp'].includes(e.key)) { e.preventDefault(); show(i - 1); }
+    else if (e.key === 'Home') { e.preventDefault(); show(0); }
+    else if (e.key === 'End') { e.preventDefault(); show(slides.length - 1); }
+  });
+  document.addEventListener('click', e => {
+    if (e.target.closest('button')) return;
+    if (e.target.closest('pre.copiable')) return; // el clic en un pedido copia, no navega
+    if (e.clientX > window.innerWidth / 2) show(i + 1); else show(i - 1);
+  });
+  // Copiar pedidos con un clic
+  document.querySelectorAll('pre.copiable').forEach(p => {
+    p.title = 'Clic para copiar';
+    p.onclick = () => {
+      navigator.clipboard.writeText(p.textContent.trim());
+      p.classList.add('copied');
+      setTimeout(() => p.classList.remove('copied'), 1200);
+    };
+  });
+  show(0);
+</script>
+</body>
+</html>
